@@ -293,6 +293,56 @@
           }
         }
       },
+      "/yuks/feed": {
+        "get": {
+          "summary": "Get recent yuks from users you follow",
+          "description": "Get most recent yuks from users you follow. Use query parameters to limit. Auth is required",
+          "tags": [
+            "yuks"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "GetyuksFeed",
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Limit number of yuks returned (default is 20)",
+              "required": false,
+              "default": 20,
+              "type": "integer"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Offset/skip number of yuks (default is 0)",
+              "required": false,
+              "default": 0,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/MultipleyuksResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
       "/articles/feed": {
         "get": {
           "summary": "Get recent articles from users you follow",
@@ -329,6 +379,113 @@
               "description": "OK",
               "schema": {
                 "$ref": "#/definitions/MultipleArticlesResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
+      "/yuks": {
+        "get": {
+          "summary": "Get recent yuks globally",
+          "description": "Get most recent yuks globally. Use query parameters to filter results. Auth is optional",
+          "tags": [
+            "yuks"
+          ],
+          "operationId": "Getyuks",
+          "parameters": [
+            {
+              "name": "tag",
+              "in": "query",
+              "description": "Filter by tag",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "author",
+              "in": "query",
+              "description": "Filter by author (username)",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "favorited",
+              "in": "query",
+              "description": "Filter by favorites of a user (username)",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Limit number of yuks returned (default is 20)",
+              "required": false,
+              "default": 20,
+              "type": "integer"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Offset/skip number of yuks (default is 0)",
+              "required": false,
+              "default": 0,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/MultipleyuksResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Create an yuk",
+          "description": "Create an yuk. Auth is required",
+          "tags": [
+            "yuks"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "Createyuk",
+          "parameters": [
+            {
+              "name": "yuk",
+              "in": "body",
+              "required": true,
+              "description": "yuk to create",
+              "schema": {
+                "$ref": "#/definitions/NewyukRequest"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleyukResponse"
               }
             },
             "401": {
@@ -437,6 +594,123 @@
               "schema": {
                 "$ref": "#/definitions/SingleArticleResponse"
               }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
+      "/yuks/{slug}": {
+        "get": {
+          "summary": "Get an yuk",
+          "description": "Get an yuk. Auth not required",
+          "tags": [
+            "yuks"
+          ],
+          "operationId": "Getyuk",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk to get",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleyukResponse"
+              }
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        },
+        "put": {
+          "summary": "Update an yuk",
+          "description": "Update an yuk. Auth is required",
+          "tags": [
+            "yuks"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "Updateyuk",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk to update",
+              "type": "string"
+            },
+            {
+              "name": "yuk",
+              "in": "body",
+              "required": true,
+              "description": "yuk to update",
+              "schema": {
+                "$ref": "#/definitions/UpdateyukRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleyukResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete an yuk",
+          "description": "Delete an yuk. Auth is required",
+          "tags": [
+            "yuks"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "Deleteyuk",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk to delete",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
             },
             "401": {
               "description": "Unauthorized"
@@ -567,6 +841,90 @@
           }
         }
       },
+      "/yuks/{slug}/comments": {
+        "get": {
+          "summary": "Get comments for an yuk",
+          "description": "Get the comments for an yuk. Auth is optional",
+          "tags": [
+            "Comments"
+          ],
+          "operationId": "GetyukComments",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk that you want to get comments for",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/MultipleCommentsResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a comment for an yuk",
+          "description": "Create a comment for an yuk. Auth is required",
+          "tags": [
+            "Comments"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "CreateyukComment",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk that you want to create a comment for",
+              "type": "string"
+            },
+            {
+              "name": "comment",
+              "in": "body",
+              "required": true,
+              "description": "Comment you want to create",
+              "schema": {
+                "$ref": "#/definitions/NewCommentRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleCommentResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
       "/articles/{slug}/comments": {
         "get": {
           "summary": "Get comments for an article",
@@ -651,6 +1009,51 @@
           }
         }
       },
+      "/yuks/{slug}/comments/{id}": {
+        "delete": {
+          "summary": "Delete a comment for an yuk",
+          "description": "Delete a comment for an yuk. Auth is required",
+          "tags": [
+            "Comments"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "DeleteyukComment",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk that you want to delete a comment for",
+              "type": "string"
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID of the comment you want to delete",
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
       "/articles/{slug}/comments/{id}": {
         "delete": {
           "summary": "Delete a comment for an article",
@@ -683,6 +1086,86 @@
           "responses": {
             "200": {
               "description": "OK"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        }
+      },
+      "/yuks/{slug}/favorite": {
+        "post": {
+          "summary": "Favorite an yuk",
+          "description": "Favorite an yuk. Auth is required",
+          "tags": [
+            "Favorites"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "CreateyukFavorite",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk that you want to favorite",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleyukResponse"
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Unexpected error",
+              "schema": {
+                "$ref": "#/definitions/GenericErrorModel"
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Unfavorite an yuk",
+          "description": "Unfavorite an yuk. Auth is required",
+          "tags": [
+            "Favorites"
+          ],
+          "security": [
+            {
+              "Token": []
+            }
+          ],
+          "operationId": "DeleteyukFavorite",
+          "parameters": [
+            {
+              "name": "slug",
+              "in": "path",
+              "required": true,
+              "description": "Slug of the yuk that you want to unfavorite",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/SingleyukResponse"
+              }
             },
             "401": {
               "description": "Unauthorized"
@@ -959,6 +1442,55 @@
           "following"
         ]
       },
+      "Yuk": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "liked": {
+            "type": "boolean"
+          },
+          "disliked": {
+            "type": "boolean"
+          },
+          "likesCount": {
+            "type": "integer"
+          },
+          "dislikesCount": {
+            "type": "integer"
+          },
+          "author": {
+            "$ref": "#/definitions/Profile"
+          }
+        },
+        "required": [
+          "slug",
+          "content",
+          "image",
+          "createdAt",
+          "updatedAt",
+          "liked",
+          "disliked",
+          "likesCount",
+          "dislikesCount",
+          "author"
+        ]
+      },
       "Article": {
         "type": "object",
         "properties": {
@@ -1011,6 +1543,17 @@
           "author"
         ]
       },
+      "SingleyukResponse": {
+        "type": "object",
+        "properties": {
+          "Yuk": {
+            "$ref": "#/definitions/Yuk"
+          }
+        },
+        "required": [
+          "yuk"
+        ]
+      },
       "SingleArticleResponse": {
         "type": "object",
         "properties": {
@@ -1020,6 +1563,24 @@
         },
         "required": [
           "article"
+        ]
+      },
+      "MultipleyuksResponse": {
+        "type": "object",
+        "properties": {
+          "Yuks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Yuk"
+            }
+          },
+          "yuksCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "yuks",
+          "yuksCount"
         ]
       },
       "MultipleArticlesResponse": {
@@ -1038,6 +1599,21 @@
         "required": [
           "articles",
           "articlesCount"
+        ]
+      },
+      "NewYuk": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "image"
         ]
       },
       "NewArticle": {
@@ -1065,6 +1641,17 @@
           "body"
         ]
       },
+      "NewYukRequest": {
+        "type": "object",
+        "properties": {
+          "Yuk": {
+            "$ref": "#/definitions/NewYuk"
+          }
+        },
+        "required": [
+          "yuk"
+        ]
+      },
       "NewArticleRequest": {
         "type": "object",
         "properties": {
@@ -1075,6 +1662,20 @@
         "required": [
           "article"
         ]
+      },
+      "UpdateYuk": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
       },
       "UpdateArticle": {
         "type": "object",

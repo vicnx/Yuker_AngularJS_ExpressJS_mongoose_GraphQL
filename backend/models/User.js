@@ -9,7 +9,8 @@ var UserSchema = new mongoose.Schema({
   email: {type: String, lowercase: true, unique: true, required: [true, "can't be blank"], match: [/\S+@\S+\.\S+/, 'is invalid'], index: true},
   bio: String,
   image: String,
-  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+  dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   hash: String,
   salt: String
@@ -58,24 +59,46 @@ UserSchema.methods.toProfileJSONFor = function(user){
   };
 };
 
-UserSchema.methods.favorite = function(id){
-  if(this.favorites.indexOf(id) === -1){
-    this.favorites.push(id);
+//likes
+UserSchema.methods.like = function(id){
+  if(this.likes.indexOf(id) === -1){
+    this.likes.push(id);
   }
 
   return this.save();
 };
 
-UserSchema.methods.unfavorite = function(id){
-  this.favorites.remove(id);
+UserSchema.methods.unlike = function(id){
+  this.likes.remove(id);
   return this.save();
 };
 
-UserSchema.methods.isFavorite = function(id){
-  return this.favorites.some(function(favoriteId){
-    return favoriteId.toString() === id.toString();
+UserSchema.methods.isLike = function(id){
+  return this.likes.some(function(likeId){
+    return likeId.toString() === id.toString();
   });
 };
+
+//dislikes
+UserSchema.methods.dislike = function(id){
+  if(this.dislikes.indexOf(id) === -1){
+    this.dislikes.push(id);
+  }
+
+  return this.save();
+};
+
+UserSchema.methods.undislike = function(id){
+  this.dislikes.remove(id);
+  return this.save();
+};
+
+UserSchema.methods.isDisLike = function(id){
+  return this.dislikes.some(function(dislikeId){
+    return dislikeId.toString() === id.toString();
+  });
+};
+
 
 UserSchema.methods.follow = function(id){
   if(this.following.indexOf(id) === -1){
