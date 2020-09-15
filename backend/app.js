@@ -39,14 +39,14 @@ if (!isProduction) {
 if(isProduction){
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-  mongoose.connect('mongodb://localhost/conduit_nodejs');
+  mongoose.connect('mongodb://localhost/app_social_conduit_js');
   mongoose.set('debug', true);
 }
 
 require('./models/User');
+require('./models/Yuk');
 require('./models/Article');
 require('./models/Comment');
-require('./models/Yuk');
 require('./config/passport');
 
 app.use(require('./routes'));

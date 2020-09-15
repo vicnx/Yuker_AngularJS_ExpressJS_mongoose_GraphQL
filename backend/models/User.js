@@ -62,7 +62,7 @@ UserSchema.methods.toProfileJSONFor = function(user){
 //likes
 UserSchema.methods.like = function(id){
   if(this.likes.indexOf(id) === -1){
-    this.likes.push(id);
+    this.likes=this.likes.concat(id);
   }
 
   return this.save();
@@ -82,7 +82,7 @@ UserSchema.methods.isLike = function(id){
 //dislikes
 UserSchema.methods.dislike = function(id){
   if(this.dislikes.indexOf(id) === -1){
-    this.dislikes.push(id);
+    this.dislikes=this.dislikes.concat(id);
   }
 
   return this.save();
@@ -102,7 +102,8 @@ UserSchema.methods.isDisLike = function(id){
 
 UserSchema.methods.follow = function(id){
   if(this.following.indexOf(id) === -1){
-    this.following.push(id);
+    this.following=this.following.concat(id);
+    //this.following.push(id);
   }
 
   return this.save();

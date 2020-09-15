@@ -27,7 +27,7 @@ YukSchema.methods.slugify = function() {
     this.slug = slug(this.author.username) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
   };
 
-YukSchema.methods.updateFavoriteCount = function() {
+YukSchema.methods.updateLikesCount = function() {
     var yuk = this;
   
     return User.count({likes: {$in: [yuk._id]}}).then(function(count){
@@ -37,6 +37,16 @@ YukSchema.methods.updateFavoriteCount = function() {
     });
 };
 
+YukSchema.methods.updateDisLikesCount = function() {
+  var yuk = this;
+
+  return User.count({dislikes: {$in: [yuk._id]}}).then(function(count){
+    yuk.dislikesCount = count;
+
+    return yuk.save();
+  });
+};
+
 YukSchema.methods.toJSONFor = function(user){
     return {
       slug: this.slug,
@@ -44,10 +54,13 @@ YukSchema.methods.toJSONFor = function(user){
       image: this.image,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      liked: user ? user.isLiked(this._id) : false,
+      liked: user ? user.isLike(this._id) : false,
       likesCount: this.likesCount,
-      disliked: user ? user.isDisLiked(this._id) : false,
-      dislikesCount: this.LikesCount,
-      author: this.author.toProfileJSONFor(user)
+      disliked: user ? user.isDisLike(this._id) : false,
+      dislikesCount: this.dislikesCount,
+      author: this.author.toProfileJSONFor(user),
+      // comments: this.comments.toJSONFor(this._id)
     };
   };
+
+  mongoose.model('Yuk', YukSchema);

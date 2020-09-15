@@ -1,0 +1,39 @@
+------------------------------------- Register ---------------------------------------------- 
+POST http://0.0.0.0:3000/api/users
+{
+  "user":{
+    "username": "vicnx",
+    "email": "andanivicente@gmail.com",
+    "password": "vicnx1"
+  }
+}
+------------------------------------- Login ---------------------------------------------- 
+POST http://0.0.0.0:3000/api/users/login
+{
+  "user":{
+    "email": "andanivicente@gmail.com",
+    "password": "vicnx1"
+  }
+}
+------------------------------------- New_Yuk ---------------------------------------------- 
+Primero autorizar por TOKEN de login
+POST http://0.0.0.0:3000/api/yuks
+{
+  "yuk": {
+    "content": "Cuanto dinero se gana en 2 meses?",
+    "image": "null"
+  }
+}
+------------------------------------- Get_All_Yuks ---------------------------------------------- 
+GET http://0.0.0.0:3000/api/yuks
+------------------------------------- Delete_one_Yuk ---------------------------------------------- 
+Primero autorizar por token de login
+DELETE http://0.0.0.0:3000/api/yuks/SLUGDELYUK
+------------------------------------- Modify_one_Yuk ---------------------------------------------- 
+Primero autorizar por token de login
+PUT http://0.0.0.0:3000/api/yuks/SLUGDELYUK
+{
+  "yuk": {
+    "content": "Prueba modificado"
+  }
+}
