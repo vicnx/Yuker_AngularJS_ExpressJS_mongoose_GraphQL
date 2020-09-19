@@ -5,12 +5,14 @@ var User = mongoose.model('User');
 
 var YukSchema = new mongoose.Schema({
     slug: {type: String, lowercase: true, unique: true},
+    title: String,
     content: String,
     image: String,
     likesCount: {type: Number, default: 0},
     dislikesCount: {type: Number, default: 0},
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    tagList: [{ type: String }],
   }, {timestamps: true});
 
 //comprueba que los campos unicos lo sean
@@ -50,6 +52,7 @@ YukSchema.methods.updateDisLikesCount = function() {
 YukSchema.methods.toJSONFor = function(user){
     return {
       slug: this.slug,
+      title:this.title,
       content: this.content,
       image: this.image,
       createdAt: this.createdAt,
@@ -59,6 +62,7 @@ YukSchema.methods.toJSONFor = function(user){
       disliked: user ? user.isDisLike(this._id) : false,
       dislikesCount: this.dislikesCount,
       author: this.author.toProfileJSONFor(user),
+      tagList: this.tagList,
       // comments: this.comments.toJSONFor(this._id)
     };
   };

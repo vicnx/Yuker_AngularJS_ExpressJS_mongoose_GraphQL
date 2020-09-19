@@ -20,8 +20,10 @@ Primero autorizar por TOKEN de login
 POST http://0.0.0.0:3000/api/yuks
 {
   "yuk": {
-    "content": "Cuanto dinero se gana en 2 meses?",
-    "image": "null"
+    "title":"Prueba titulo1",
+    "content": "Prueba de preguntes 2",
+    "image": "null",
+    "tagList":["test","prueba"]
   }
 }
 ------------------------------------- Get_All_Yuks ---------------------------------------------- 

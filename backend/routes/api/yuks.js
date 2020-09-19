@@ -158,8 +158,16 @@ router.put('/:yuk', auth.required, function(req, res, next) {
         req.yuk.content = req.body.yuk.content;
       }
 
+      if(typeof req.body.yuk.title !== 'undefined'){
+        req.yuk.title = req.body.yuk.title;
+      }
+
       if(typeof req.body.yuk.image !== 'undefined'){
         req.yuk.image = req.body.yuk.image;
+      }
+
+      if(typeof req.body.yuk.tagList !== 'undefined'){
+        req.yuk.tagList = req.body.yuk.tagList
       }
 
       req.yuk.save().then(function(yuk){

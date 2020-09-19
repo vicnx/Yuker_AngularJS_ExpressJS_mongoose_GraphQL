@@ -1,0 +1,34 @@
+<div class="home-page">
+    <!-- Splash banner that only shows when not logged in -->
+    <div class="banner" style="background-color: rgb(172, 0, 0);" show-authed="false">
+      <div class="container">
+        <p>All Yuks! Jiji</p>
+      </div>
+    </div>
+    <div class="container page">
+      <div class="row">
+        <div class="col-md-9">
+          <div class="feed-toggle">
+            <ul class="nav nav-pills outline-active">
+            </ul>
+          </div>
+          <div ng-repeat="yuk in yuks">
+            <hr>
+            <a > {{yuk.title}}</a>
+            <a > {{yuk.content}}</a>
+            <p id="author">{{yuk.author.username}}</p>
+            <span><b>TAGS:</b>
+              <span ng-repeat="tag in yuk.tagList">
+                  <a>{{tag}}</a>
+              </span>
+            </span>
+            <br>
+           <button ui-sref="app.detailyuk({slug:yuk.slug})">Details</button> 
+           <hr>
+        </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
