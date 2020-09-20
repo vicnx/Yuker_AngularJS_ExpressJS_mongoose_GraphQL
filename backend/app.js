@@ -45,6 +45,7 @@ if(isProduction){
 
 require('./models/User');
 require('./models/Yuk');
+require('./models/Noticia');
 require('./models/Article');
 require('./models/Comment');
 require('./config/passport');

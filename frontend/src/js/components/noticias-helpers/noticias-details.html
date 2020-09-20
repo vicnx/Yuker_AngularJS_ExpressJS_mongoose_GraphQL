@@ -1,0 +1,12 @@
+<div class="noticia">
+        <h2> {{$ctrl.noticia.titulo}}jj</h2>
+        <p> {{$ctrl.noticia.titulo}}</p>
+        <p>{{$ctrl.noticia.author.username}}</p>
+        <span><b>TAGS:</b>
+            <span ng-repeat="t in $ctrl.noticia.tagList">
+                <a>{{t}}</a>
+            </span>
+        </span>
+        <br>
+        <button ui-sref="app.listarnoticias">Volver</button> 
+</div>

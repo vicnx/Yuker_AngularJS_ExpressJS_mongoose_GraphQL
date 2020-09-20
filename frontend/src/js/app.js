@@ -14,6 +14,7 @@ import './home';
 import './profile';
 import './article';
 import './yuks';
+import './noticias';
 import './services';
 import './auth';
 import './settings';
@@ -32,6 +33,7 @@ const requires = [
   'app.profile',
   'app.article',
   'app.yuks',
+  'app.noticias',
   // 'app.listaryuks',
   'app.services',
   'app.auth',

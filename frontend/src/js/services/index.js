@@ -19,6 +19,9 @@ servicesModule.service('Articles', ArticlesService);
 import YuksService from './yuks.service';
 servicesModule.service('Yuks', YuksService);
 
+import NoticiasService from './noticias.service';
+servicesModule.service('Noticias', NoticiasService);
+
 import CommentsService from './comments.service';
 servicesModule.service('Comments', CommentsService);
 

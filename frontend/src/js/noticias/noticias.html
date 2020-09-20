@@ -1,0 +1,23 @@
+<div class="banner" style="background-color: rgb(0, 172, 172);" show-authed="false">
+  <div class="container">
+    <h1>NOTICIAS</h1>
+    <p>Aqui tienes las noticias más recientes.</p>
+  </div>
+</div>
+<div class="container page">
+<noticias-list noticias="$ctrl.noticias"></noticias-list>
+</div>
+<!-- <div ng-repeat="noticia in noticias">
+    <hr>
+    <a > {{noticia.titulo}}</a>
+    <a > {{noticia.contenido}}</a>
+    <p id="author">{{noticia.author.username}}</p>
+    <span><b>TAGS:</b>
+      <span ng-repeat="t in noticia.tagList">
+          <a>{{t}}</a>
+      </span>
+    </span>
+    <br>
+   <button ui-sref="app.detailnoticia({slug:noticia.slug})">View more</button> 
+   <hr>
+</div> -->
