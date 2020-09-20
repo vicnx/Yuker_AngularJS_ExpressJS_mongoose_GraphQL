@@ -1,0 +1,12 @@
+<div class="yuk">
+        <h2> {{$ctrl.yuk.title}}</h2>
+        <p> {{$ctrl.yuk.content}}</p>
+        <p>{{$ctrl.yuk.author.username}}</p>
+        <span><b>TAGS:</b>
+            <span ng-repeat="t in $ctrl.yuk.tagList">
+                <a>{{t}}</a>
+            </span>
+        </span>
+        <br>
+        <button ui-sref="app.listaryuks">Volver</button> 
+</div>

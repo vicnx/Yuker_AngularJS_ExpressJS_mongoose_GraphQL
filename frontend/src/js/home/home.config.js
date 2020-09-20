@@ -14,6 +14,11 @@ function HomeConfig($stateProvider) {
           (yuks) => yuks
         )
       },
+      noticias: function(Noticias) {
+        return Noticias.getAllNoticias().then(
+          (noticias) => noticias
+        )
+      },
     }
   });
   

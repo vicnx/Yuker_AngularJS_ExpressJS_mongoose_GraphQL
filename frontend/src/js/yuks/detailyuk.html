@@ -1,12 +1,8 @@
-<div class="container page"> 
-    <a > {{yuk.title}}</a>
-    <p > {{yuk.content}}</p>
-    <p id="author">{{yuk.author.username}}</p>
-    <span><b>TAGS:</b>
-        <span ng-repeat="tag in yuk.tagList">
-            <a>{{tag}}</a> , 
-        </span>
-    </span>
-    <br>
-    <button ui-sref="app.home">Volver</button> 
+<div class="banner" style="background-color: rgb(172, 34, 0);" show-authed="false">
+    <div class="container">
+      <h1>DETAILS YUKS</h1>
+    </div>
+  </div>
+  <div class="container page">
+    <yuks-detail yuk="$ctrl.yuk"></yuks-detail>
 </div>

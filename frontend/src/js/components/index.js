@@ -29,10 +29,19 @@ componentsModule.component('favoriteBtn', FavoriteBtn);
 import ListPagination from './article-helpers/list-pagination.component';
 componentsModule.component('listPagination', ListPagination);
 
+
+//NOTICIAS
 import NoticiasList from './noticias-helpers/noticias-list.component';
 componentsModule.component('noticiasList', NoticiasList);
 
 import NoticiasDetail from './noticias-helpers/noticias-details.component';
 componentsModule.component('noticiasDetail', NoticiasDetail);
+
+//YUKS
+import YuksList from './yuks-helpers/yuks-list.component';
+componentsModule.component('yuksList', YuksList);
+
+import YuksDetail from './yuks-helpers/yuks-details.component';
+componentsModule.component('yuksDetail', YuksDetail);
 
 export default componentsModule;

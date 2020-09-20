@@ -15,7 +15,7 @@
       <!-- Main view - contains tabs & article list -->
       <div class="col-md-9">
         <!-- Tabs for toggling between feed, article lists -->
-        <div class="feed-toggle">
+        <!-- <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
 
             <li class="nav-item" show-authed="true">
@@ -41,22 +41,13 @@
             </li>
 
           </ul>
-        </div>
-        <div ng-repeat="yuk in yuks">
-          <hr>
-          <a > {{yuk.title}}</a>
-          <p id="author">{{yuk.author.username}}</p>
-          <span><b>TAGS:</b>
-            <span ng-repeat="tag in yuk.tagList">
-                <a>{{tag}}</a>
-            </span>
-          </span>
-          <br>
-         <button ui-sref="app.detailyuk({slug:yuk.slug})">Details</button> 
-         <hr>
-      </div>
-        <!-- List the current articles -->
-        <!-- <article-list limit="10" list-config="$ctrl.listConfig"></article-list> -->
+        </div> -->
+        <h1>POPULAR YUKS</h1>
+        <yuks-list yuks="$ctrl.yuks"></yuks-list>
+        
+        <br><br><br>
+        <h1>POPULAR NEWS</h1>
+        <noticias-list noticias="$ctrl.noticias"></noticias-list>
 
       </div>
 
@@ -64,27 +55,52 @@
       <div class="col-md-3">
         <div class="sidebar">
 
-          <p>Popular Tags</p>
+          <p>Popular Yuk Tags</p>
 
-          <div class="tag-list" ng-show="$ctrl.tags">
+          <div class="tag-list" ng-show="$ctrl.tagsYuks">
             <a href="" class="tag-default tag-pill"
               ng-click="$ctrl.changeList({ type: 'all', filters: { tag: tagName } })"
-              ng-repeat="tagName in $ctrl.tags"
+              ng-repeat="tagName in $ctrl.tagsYuks"
               ng-bind="tagName">
             </a>
           </div>
 
-          <div ng-show="!$ctrl.tagsLoaded">
+          <div ng-show="!$ctrl.tagsYuksLoaded">
             Loading tags...
           </div>
 
           <div class="post-preview"
-            ng-show="$ctrl.tagsLoaded && !$ctrl.tags.length">
+            ng-show="$ctrl.tagsYuksLoaded && !$ctrl.tagsYuks.length">
+            No tags are here... yet.
+          </div>
+
+        </div>
+
+        <div class="sidebar">
+
+          <p>Categorias Noticias</p>
+
+          <div class="tag-list" ng-show="$ctrl.tagsNoticias">
+            <a href="" class="tag-default tag-pill"
+              ng-click="$ctrl.changeList({ type: 'all', filters: { tag: tagName } })"
+              ng-repeat="tagName in $ctrl.tagsNoticias"
+              ng-bind="tagName">
+            </a>
+          </div>
+
+          <div ng-show="!$ctrl.tagsNoticiasLoaded">
+            Loading tags...
+          </div>
+
+          <div class="post-preview"
+            ng-show="$ctrl.tagsNoticiasLoaded && !$ctrl.tagsNoticias.length">
             No tags are here... yet.
           </div>
 
         </div>
       </div>
+
+      
 
       <!-- End the row & container divs -->
     </div>

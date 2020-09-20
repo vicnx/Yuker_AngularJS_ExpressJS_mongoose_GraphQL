@@ -3,12 +3,12 @@ class DetailYukCtrl {
 
   // constructor(User, Tags, AppConstants, $scope) {
     'ngInject';
-    console.log(yuk)
-    console.log("Yuks controller");
-    this.appName = AppConstants.appName;
-    this._$scope = $scope;
+    // console.log(yuk)
+    // console.log("Yuks controller");
+    // this.appName = AppConstants.appName;
+    // this._$scope = $scope;
     this.yuk = yuk;
-    $scope.yuk = this.yuk;
+    // $scope.yuk = this.yuk;
     
 
   }

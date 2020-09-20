@@ -12,7 +12,8 @@
             <ul class="nav nav-pills outline-active">
             </ul>
           </div>
-          <div ng-repeat="yuk in yuks">
+          <yuks-list yuks="$ctrl.yuks"></yuks-list>
+          <!-- <div ng-repeat="yuk in yuks">
             <hr>
             <a > {{yuk.title}}</a>
             <a > {{yuk.content}}</a>
@@ -25,7 +26,7 @@
             <br>
            <button ui-sref="app.detailyuk({slug:yuk.slug})">Details</button> 
            <hr>
-        </div>
+        </div> -->
         </div>
       </div>
     </div>

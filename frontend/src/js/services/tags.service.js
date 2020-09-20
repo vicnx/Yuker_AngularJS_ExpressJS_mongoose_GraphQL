@@ -16,9 +16,17 @@ export default class Tags {
     }).then(console.log(tags),(res) => res.data.tags);
 
   }
-  getAllTags(){
+  getAllYuksTags(){
     return this._$http({
-      url: this._AppConstants.api + "/tags",
+      url: this._AppConstants.api + "/tags/yuks",
+      method: "GET"
+    }).then(res => {
+      return res.data.tags;
+    });
+  }
+  getAllNoticiasTags(){
+    return this._$http({
+      url: this._AppConstants.api + "/tags/noticias",
       method: "GET"
     }).then(res => {
       return res.data.tags;
