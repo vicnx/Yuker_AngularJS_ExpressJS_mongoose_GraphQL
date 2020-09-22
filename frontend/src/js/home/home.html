@@ -1,7 +1,7 @@
  <div class="home-page">
 
   <!-- Splash banner that only shows when not logged in -->
-  <div class="banner" style="background-color: rgb(0, 172, 172);" show-authed="false">
+  <div class="banner" style="background-color: rgb(0, 172, 172);">
     <div class="container">
       <h1 class="logo-font" ng-bind="::$ctrl.appName | lowercase"></h1>
       <p>A place to share your knowledge.</p>
@@ -43,10 +43,12 @@
           </ul>
         </div> -->
         <h1>POPULAR YUKS</h1>
+        <br>
         <yuks-list yuks="$ctrl.yuks"></yuks-list>
         
         <br><br><br>
         <h1>POPULAR NEWS</h1>
+        <br>
         <noticias-list noticias="$ctrl.noticias"></noticias-list>
 
       </div>

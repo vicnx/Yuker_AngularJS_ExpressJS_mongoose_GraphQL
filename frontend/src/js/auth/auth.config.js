@@ -10,6 +10,7 @@ function AuthConfig($stateProvider, $httpProvider) {
     title: 'Sign in',
     resolve: {
       auth: function(User) {
+        console.log(User);
         return User.ensureAuthIs(false);
       }
     }
@@ -22,6 +23,7 @@ function AuthConfig($stateProvider, $httpProvider) {
     title: 'Sign up',
     resolve: {
       auth: function(User) {
+        console.log(User);
         return User.ensureAuthIs(false);
       }
     }

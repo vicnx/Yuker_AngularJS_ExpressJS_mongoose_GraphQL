@@ -62,14 +62,25 @@ router.post('/users/login', function(req, res, next){
 
 router.post('/users', function(req, res, next){
   var user = new User();
+  // console.log(user);
 
   user.username = req.body.user.username;
   user.email = req.body.user.email;
   user.setPassword(req.body.user.password);
+  User.find( { $or:[ {'username':user.username}, {'email':user.email}]}, 
+  function(err,user){
+    if(user[0]){
+      return res.json("errors");
+    }
+  }).then()
+  // if(!data){
+    user.save().then(function(){
+      return res.json({user: user.toAuthJSON()});
+    }).catch(next)
+  // }
 
-  user.save().then(function(){
-    return res.json({user: user.toAuthJSON()});
-  }).catch(next);
+
+
 });
 
 module.exports = router;
