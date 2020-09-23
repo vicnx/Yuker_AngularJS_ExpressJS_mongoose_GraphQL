@@ -50,6 +50,11 @@ require('./models/Article');
 require('./models/Comment');
 require('./config/passport');
 
+//social login
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.use(require('./routes'));
 
 //// Swagger ////

@@ -1,5 +1,5 @@
 class AuthCtrl {
-  constructor(User, $state) {
+  constructor(User, $state,$scope) {
     'ngInject';
 
     this._User = User;
@@ -16,9 +16,11 @@ class AuthCtrl {
       (res) => {
         if(res.data=="errors"){
           console.log("error");
+          this.error = true;
           //Si el user/email ya existix
           // this._$state.go('app.register');
         }else{
+          this.error = false;
           this._$state.go('app.home');
         }
         
@@ -29,6 +31,7 @@ class AuthCtrl {
       // }
     )
   }
+
 }
 
 export default AuthCtrl;

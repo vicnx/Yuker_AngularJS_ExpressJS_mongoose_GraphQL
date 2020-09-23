@@ -14,9 +14,11 @@
             Need an account?
           </a>
         </p>
-
-        <list-errors errors="$ctrl.errors"></list-errors>
-
+        <div class="error" ng-show="$ctrl.error">
+          <p>El usuario o el correo ya existe.</p>
+        </div>
+        <!-- <list-errors errors="$ctrl.errors"></list-errors> -->
+        <a href="http://localhost:3000/api/auth/github" style="font-size: 25px; color:black"><i class="ion-social-github"></i>&nbsp;Github</a>
         <form ng-submit="$ctrl.submitForm()">
           <fieldset ng-disabled="$ctrl.isSubmitting">
 
