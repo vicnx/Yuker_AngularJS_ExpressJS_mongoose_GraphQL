@@ -40,7 +40,9 @@ router.put('/user', auth.required, function(req, res, next){
 });
 
 router.post('/users/login', function(req, res, next){
+  console.log(req.body)
   if(!req.body.user.email){
+    console.log("no email")
     return res.status(422).json({errors: {email: "can't be blank"}});
   }
 
@@ -67,6 +69,7 @@ router.post('/users', function(req, res, next){
   user.username = req.body.user.username;
   user.email = req.body.user.email;
   user.setPassword(req.body.user.password);
+  //comprobamos si existe ya el usuario
   User.find( { $or:[ {'username':user.username}, {'email':user.email}]}, 
   function(err,user){
     if(user[0]){
@@ -109,7 +112,7 @@ router.get("/auth/github", passport.authenticate("github"));
 router.get(
   "/auth/github/callback",
   passport.authenticate("github", {
-    successRedirect: "http://localhost:3001/#!/auth/sociallogin",
+    successRedirect: "http://localhost:4000/#!/auth/sociallogin",
     failureRedirect: "/"
   })
 );

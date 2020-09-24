@@ -14,7 +14,14 @@ export default class User {
 
 
   attemptAuth(type, credentials) {
-    let route = (type === 'login') ? '/login' : '';
+    let route= '';
+    if(type=='login'){
+      route="/login"
+    }
+    if(type=="sociallogin"){
+      route="/sociallogin"
+    }
+    // let route = (type === 'login') ? '/login' : '';
     return this._$http({
       url: this._AppConstants.api + '/users' + route,
       method: 'POST',

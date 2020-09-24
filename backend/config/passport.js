@@ -42,33 +42,41 @@ passport.use(new GithubStrategy({
   passReqToCallback: true
   },
   function(request, accessToken, refreshToken, profile, done) {
-    console.log(profile);
+    // console.log(profile);
+              //   var user = new User({
+              //   idsocial: profile.id,
+              //   username: profile.username,
+              //   // type: "client",
+              //   email: profile.emails[0].value,
+              //   image: profile.photos[0].value,
+              // });
+              // console.log(user);
     User.findOne({idsocial:profile.id.toString()}, function(err, user) {
-      console.log(user)
-      //   if (err)
-      //     return done(err);
-      //   // if the user is found then log them in
-      //   if (user) {
-      //       return done(null, user);
-      //   } else {
-      //     if(!profile.emails[0].value){
-      //       return done("The email is private");
-      //     }else{
-      //       var user = new User({
-      //           idsocial: profile.id,
-      //           username: profile.username,
-      //           // type: "client",
-      //           email: profile.emails[0].value,
-      //           image: profile.photos[0].value,
-      //       });
-      //       user.save(function(err) {
-      //           //if(err){
-      //             console.log(err);
-      //               return done(null, user);
-      //           //}
-      //       });
-      //     }
-      // }
+        if (err)
+          return done(err);
+        // if the user is found then log them in
+        if (user) {
+            return done(null, user);
+        } else {
+          if(!profile.emails[0].value){
+            return done("The email is private");
+          }else{
+            var user = new User({
+                idsocial: profile.id,
+                username: profile.username,
+                // type: "client",
+                email: profile.emails[0].value,
+                image: profile.photos[0].value,
+            });
+            user.save(function(err) {
+              // console.log("dentro del save");
+                //if(err){
+                  console.log(err);
+                    return done(null, user);
+                //}
+            });
+          }
+      }
     });
   }
 ));

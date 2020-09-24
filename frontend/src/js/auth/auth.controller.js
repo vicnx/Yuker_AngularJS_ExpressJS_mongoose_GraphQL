@@ -14,6 +14,7 @@ class AuthCtrl {
     this.isSubmitting = true;
     this._User.attemptAuth(this.authType, this.formData).then(
       (res) => {
+        console.log(res)
         if(res.data=="errors"){
           console.log("error");
           this.error = true;
