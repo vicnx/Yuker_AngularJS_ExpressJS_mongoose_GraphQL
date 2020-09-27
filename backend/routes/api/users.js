@@ -73,7 +73,7 @@ router.post('/users', function(req, res, next){
   User.find( { $or:[ {'username':user.username}, {'email':user.email}]}, 
   function(err,user){
     if(user[0]){
-      return res.json("errors");
+      return res.sendStatus(422).json("Email or username already used");
     }
   }).then()
   // if(!data){
@@ -108,9 +108,10 @@ router.post("/users/sociallogin", function(req, res, next) {
     }
   });
 });
+
 router.get("/auth/github", passport.authenticate("github"));
-router.get(
-  "/auth/github/callback",
+
+router.get("/auth/github/callback",
   passport.authenticate("github", {
     successRedirect: "http://localhost:4000/#!/auth/sociallogin",
     failureRedirect: "/"

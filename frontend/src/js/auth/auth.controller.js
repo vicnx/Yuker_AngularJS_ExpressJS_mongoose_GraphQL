@@ -1,6 +1,8 @@
 class AuthCtrl {
-  constructor(User, $state,$scope) {
+  constructor(User, $state,Toastr) {
     'ngInject';
+
+    this._toastr = Toastr;
 
     this._User = User;
     this._$state = $state;
@@ -14,22 +16,17 @@ class AuthCtrl {
     this.isSubmitting = true;
     this._User.attemptAuth(this.authType, this.formData).then(
       (res) => {
-        console.log(res)
-        if(res.data=="errors"){
-          console.log("error");
-          this.error = true;
-          //Si el user/email ya existix
-          // this._$state.go('app.register');
-        }else{
-          this.error = false;
+        this._toastr.showToastr("success", "Login");
+        setTimeout(() => {
           this._$state.go('app.home');
-        }
+        }, 1500);
         
       },
-      // (err) => {
-      //   this.isSubmitting = false;
-      //   this.errors = err.data.errors;
-      // }
+      (err) => {
+        this.isSubmitting = false;
+        this._toastr.showToastr("error", "Login Fail");
+        this.errors = err.data.errors;
+      }
     )
   }
 

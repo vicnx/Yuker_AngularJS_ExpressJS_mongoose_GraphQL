@@ -20,6 +20,9 @@
     "gulp-util": "^3.0.7",
     "marked": "^0.3.5",
     "merge-stream": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "angular-toastr": "^2.1.1",
+    "angular2-toaster": "^6.1.0",
+    "angularjs-toaster": "^3.0.0"
   }
 }

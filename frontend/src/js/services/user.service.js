@@ -15,6 +15,7 @@ export default class User {
 
   attemptAuth(type, credentials) {
     let route= '';
+    console.log(type)
     if(type=='login'){
       route="/login"
     }
