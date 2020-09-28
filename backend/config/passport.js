@@ -3,6 +3,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var GithubStrategy = require('passport-github').Strategy;
+var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 var socialKeys = require('../credentials/credentials.json');
 
 passport.use(new LocalStrategy({
@@ -79,4 +80,35 @@ passport.use(new GithubStrategy({
       }
     });
   }
+));
+
+passport.use(new GoogleStrategy({
+  clientID:     socialKeys.GOOGLE_CLIENT_ID,
+  clientSecret: socialKeys.GOOGLE_CLIENT_SECRET,
+  callbackURL: socialKeys.GOOGLE_CALLBACK,
+  passReqToCallback   : true
+},
+function(request, accessToken, refreshToken, profile, done) {
+  User.findOne({idsocial:profile.id.toString()}, function(err, user) {
+    console.log(profile)
+      if (err)
+        return done(err);
+      // if the user is found then log them in
+      if (user) {
+          return done(null, user);
+      } else {
+          var user = new User({
+              idsocial: profile.id,
+              username: profile.emails[0].value.split('@')[0],
+              // type: "client",
+              email: profile.emails[0].value,
+              image: profile.photos[0].value,
+          });
+          user.save(function(err) {
+                console.log(err);
+                  return done(null, user);
+          });
+        }
+  });
+}
 ));

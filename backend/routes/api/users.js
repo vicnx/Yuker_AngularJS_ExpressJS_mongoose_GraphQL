@@ -69,8 +69,9 @@ router.post('/users', function(req, res, next){
   user.username = req.body.user.username;
   user.email = req.body.user.email;
   user.setPassword(req.body.user.password);
+  user.idsocial = req.body.user.username;
   //comprobamos si existe ya el usuario
-  User.find( { $or:[ {'username':user.username}, {'email':user.email}]}, 
+  User.find( { $or:[ {'username':user.username}, {'idsocial':user.idsocial}]}, 
   function(err,user){
     if(user[0]){
       return res.sendStatus(422).json("Email or username already used");
@@ -113,6 +114,22 @@ router.get("/auth/github", passport.authenticate("github"));
 
 router.get("/auth/github/callback",
   passport.authenticate("github", {
+    successRedirect: "http://localhost:4000/#!/auth/sociallogin",
+    failureRedirect: "/"
+  })
+);
+
+//GLUGLU
+router.get('/auth/google',
+  passport.authenticate('google', { scope: 
+      [ 'https://www.googleapis.com/auth/plus.login',
+      , 'https://www.googleapis.com/auth/plus.profile.emails.read',
+      , 'https://www.googleapis.com/auth/userinfo.profile',
+      , 'https://www.googleapis.com/auth/userinfo.email' ] }
+));
+
+router.get("/auth/google/callback",
+  passport.authenticate("google", {
     successRedirect: "http://localhost:4000/#!/auth/sociallogin",
     failureRedirect: "/"
   })

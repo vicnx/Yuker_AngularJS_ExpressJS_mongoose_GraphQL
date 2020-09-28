@@ -31,16 +31,18 @@
     "mongoose-unique-validator": "1.0.2",
     "morgan": "1.7.0",
     "passport": "0.3.2",
-    "passport-local": "1.0.0",
     "passport-github": "^1.1.0",
     "passport-github2": "^0.1.12",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-local": "1.0.0",
     "request": "2.69.0",
     "slug": "0.9.1",
-    "underscore": "1.8.3",
-    "swagger-ui-express": "2.0.6"
+    "swagger-ui-express": "2.0.6",
+    "underscore": "1.8.3"
   },
   "devDependencies": {
     "newman": "^3.8.2",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "passport-google-oauth2": "^0.2.0"
   }
 }
