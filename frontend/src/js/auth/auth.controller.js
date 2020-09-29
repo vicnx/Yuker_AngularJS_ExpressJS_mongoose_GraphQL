@@ -24,7 +24,7 @@ class AuthCtrl {
       },
       (err) => {
         this.isSubmitting = false;
-        this._toastr.showToastr("error", "Login Fail");
+        this._toastr.showToastr("error", "Fail");
         this.errors = err.data.errors;
       }
     )
