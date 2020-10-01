@@ -1,0 +1,9 @@
+
+
+    <i ng-click="$ctrl.submit()" ng-class="{ 'disabled' : $ctrl.isSubmitting,
+    'toggled': $ctrl.yuk.disliked,
+    'untoggled': !$ctrl.yuk.disliked }"
+    class="far fa-thumbs-down"></i>
+    <span class="badge badge-light">
+        <ng-transclude></ng-transclude>
+    </span>

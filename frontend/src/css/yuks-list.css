@@ -1,0 +1,74 @@
+.image{
+    border-radius: 50%;
+    max-width: 100%;
+    max-height: 100%;
+}
+.yuk{
+   display: flex;
+   /* border: 1px solid black; */
+   padding: 5px;
+   justify-content: space-between;
+}
+.yuk:hover{
+   background-color: rgba(0, 0, 0, 0.027);
+   cursor: pointer;
+}
+.leftyuk{
+    padding: 5px;
+    /* border: 1px solid black; */
+    width: 9%;
+}
+.rightyuk{
+   padding: 5px;
+   /* border: 1px solid black; */
+    width: 90%;
+}
+.yuk_body{
+    overflow: hidden;
+}
+.yuk_title{
+   font-size: 25px;
+   font-weight: bold;
+}
+.yuk_footer1{
+   display: flex;
+   /* border: 1px solid red; */
+   padding: 5px;
+   justify-content: space-between;
+}
+.rightyuk_footer1{
+    display: flex;
+   /* border: 1px solid red; */
+   width: 15%;
+   justify-content: center;
+   align-content: center;
+}
+.like_dislike{
+   display: flex;
+   width: 100%;
+}
+.like_dislike a{
+   margin-right: 5px;
+}
+.like_dislike a i{
+   margin-left: 5px;
+}
+.like_dislike a i:hover{
+   color: brown;
+}
+
+.toggled{
+   color: brown;
+}
+
+.untoggled{
+   color: black;
+}
+
+.left_footer1{
+   /* border: 1px solid red; */
+   width: 84%;
+}
+.yuk_author{
+    color: rgb(0, 153, 158);
+}

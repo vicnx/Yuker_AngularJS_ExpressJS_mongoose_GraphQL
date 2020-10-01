@@ -44,4 +44,11 @@ componentsModule.component('yuksList', YuksList);
 import YuksDetail from './yuks-helpers/yuks-details.component';
 componentsModule.component('yuksDetail', YuksDetail);
 
+//botones
+import LikeBtn from './buttons/like-btn.component';
+componentsModule.component('likeBtn', LikeBtn);
+import DislikeBtn from './buttons/dislike-btn.component';
+componentsModule.component('dislikeBtn', DislikeBtn);
+
+
 export default componentsModule;

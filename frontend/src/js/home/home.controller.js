@@ -6,6 +6,7 @@ class HomeCtrl {
     this.appName = AppConstants.appName;
     this._$scope = $scope;
     this.yuks = yuks;
+    console.log(this.yuks);
     this.noticias = noticias;
     $scope.yuks = this.yuks;
     // Get list of all tags

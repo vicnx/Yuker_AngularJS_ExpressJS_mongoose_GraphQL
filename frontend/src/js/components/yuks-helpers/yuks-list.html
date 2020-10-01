@@ -1,64 +1,10 @@
-<style>
- .image{
-     border-radius: 50%;
-     max-width: 100%;
-     max-height: 100%;
- }
- .yuk{
-    display: flex;
-    /* border: 1px solid black; */
-    padding: 5px;
-    justify-content: space-between;
- }
- .yuk:hover{
-    background-color: rgba(0, 0, 0, 0.027);
-    cursor: pointer;
- }
- .left{
-     padding: 5px;
-     /* border: 1px solid black; */
-     width: 9%;
- }
- .right{
-    padding: 5px;
-    /* border: 1px solid black; */
-     width: 90%;
- }
- .yuk_body{
-     overflow: hidden;
- }
- .yuk_title{
-    font-size: 25px;
-    font-weight: bold;
- }
- .yuk_footer1{
-    display: flex;
-    /* border: 1px solid red; */
-    padding: 5px;
-    justify-content: space-between;
- }
- .right_footer1{
-     display: flex;
-    /* border: 1px solid red; */
-    width: 15%;
-    justify-content: center;
-    align-content: center;
- }
- .left_footer1{
-    /* border: 1px solid red; */
-    width: 84%;
- }
- .yuk_author{
-     color: rgb(0, 153, 158);
- }
-
-</style>
+<link rel="stylesheet" href="css/yuks-list.css">
 <div ng-repeat="yuk in $ctrl.yuks">
-    <article class="yuk" ui-sref="app.detailyuk({slug:yuk.slug})">
-        <div class="left">
+    <article class="yuk">
+        <div class="leftyuk">
             <img class="image" src="{{yuk.author.image}}" alt="">
         </div>
-        <div class="right">
+        <div class="rightyuk">
             <div class="yuk_title">{{yuk.title}}</div>
             <div class="yuk_body">{{yuk.content}}</div>
             <div class="yuk_author">@{{yuk.author.username}}</div>
@@ -72,7 +18,19 @@
                         </span>
                     </span>
                 </div>
-                <div class="right_footer1">
+                <div class="like_dislike">
+                    <like-btn yuk="yuk">
+                        {{yuk.likesCount}}
+                    </like-btn>
+                    <dislike-btn yuk="yuk">
+                        {{yuk.dislikesCount}}
+                    </dislike-btn>
+                    <!-- <a ng-click="$ctrl.submit()"><i class="far fa-thumbs-up"></i> <span class="badge badge-light">{{yuk.likesCount}}</span></a> -->
+                    <!-- <a ng-click="$ctrl.submit()"><i class="far fa-thumbs-down"></i> <span class="badge badge-light">{{yuk.dislikesCount}}</span></a> -->
+
+                    
+                </div>
+                <div class="rightyuk_footer1">
                     <button class="btn btn-success" ui-sref="app.detailyuk({slug:yuk.slug})">Details</button> 
                 </div>
             </div>

@@ -217,7 +217,7 @@ router.post('/:yuk/dislike', auth.required, function(req, res, next) {
     if (!user) { return res.sendStatus(401); }
 
     return user.dislike(yukId).then(function(){
-      return req.yuk.updatedisDisLikesCount().then(function(yuk){
+      return req.yuk.updateDisLikesCount().then(function(yuk){
         return res.json({yuk: yuk.toJSONFor(user)});
       });
     });

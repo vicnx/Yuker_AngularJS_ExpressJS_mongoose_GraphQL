@@ -13,6 +13,7 @@ var merge         = require('merge-stream');
 // Where our files are located
 var jsFiles   = "src/js/**/*.js";
 var viewFiles = "src/js/**/*.html";
+var cssFiles = "src/css/**/*.css";
 
 var interceptErrors = function(error) {
   var args = Array.prototype.slice.call(arguments);
@@ -37,13 +38,19 @@ gulp.task('browserify', ['views'], function() {
       //Pass desired output filename to vinyl-source-stream
       .pipe(source('main.js'))
       // Start piping stream to tasks!
-      .pipe(gulp.dest('./build/'));
+      .pipe(gulp.dest('../backend/build/'));
 });
 
 gulp.task('html', function() {
   return gulp.src("src/index.html")
       .on('error', interceptErrors)
-      .pipe(gulp.dest('./build/'));
+      .pipe(gulp.dest('../backend/build/'));
+});
+
+gulp.task('css', function() {
+  return gulp.src("src/css/*.css")
+      .on('error', interceptErrors)
+      .pipe(gulp.dest('../backend/build/css'));
 });
 
 gulp.task('views', function() {
@@ -55,6 +62,12 @@ gulp.task('views', function() {
       .pipe(rename("app.templates.js"))
       .pipe(gulp.dest('./src/js/config/'));
 });
+
+gulp.task('img', function() {
+  return gulp.src("src/images/*.*")
+      .on('error', interceptErrors)
+      .pipe(gulp.dest('../backend/build/images'));
+  });
 
 // This task is used for building production ready
 // minified JS/CSS files into the dist/ folder
@@ -69,10 +82,10 @@ gulp.task('build', ['html', 'browserify'], function() {
   return merge(html,js);
 });
 
-gulp.task('default', ['html', 'browserify'], function() {
+gulp.task('default', ['html','css','img', 'browserify'], function() {
 
-  browserSync.init(['./build/**/**.**'], {
-    server: "./build",
+  browserSync.init(['../backend/build/**/**.**'], {
+    server: "../backend/build",
     port: 4000,
     notify: false,
     ui: {
@@ -82,5 +95,6 @@ gulp.task('default', ['html', 'browserify'], function() {
 
   gulp.watch("src/index.html", ['html']);
   gulp.watch(viewFiles, ['views']);
+  gulp.watch(cssFiles, ['css']);
   gulp.watch(jsFiles, ['browserify']);
 });
