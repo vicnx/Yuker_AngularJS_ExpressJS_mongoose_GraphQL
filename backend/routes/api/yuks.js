@@ -287,4 +287,25 @@ router.delete('/:yuk/comments/:comment', auth.required, function(req, res, next)
   }
 });
 
+//comentarios del yuk
+router.get('/:yuk/comments', auth.optional, function(req, res, next){
+  Promise.resolve(req.payload ? User.findById(req.payload.id) : null).then(function(user){
+    return req.yuk.populate({
+      path: 'comments',
+      populate: {
+        path: 'author'
+      },
+      options: {
+        sort: {
+          createdAt: 'desc'
+        }
+      }
+    }).execPopulate().then(function(yuk) {
+      return res.json({comments: req.yuk.comments.map(function(comment){
+        return comment.toJSONFor(user);
+      })});
+    });
+  }).catch(next);
+});
+
 module.exports = router;

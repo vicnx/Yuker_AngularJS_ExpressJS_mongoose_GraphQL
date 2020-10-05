@@ -52316,7 +52316,7 @@ var ListPagination = {
 exports.default = ListPagination;
 
 },{}],23:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -52339,13 +52339,25 @@ var DislikeBtnCtrl = function () {
   }
 
   _createClass(DislikeBtnCtrl, [{
-    key: 'submit',
+    key: "submit",
     value: function submit() {
       var _this = this;
 
       this.isSubmitting = true;
       console.log("disLike component");
       console.log(this.yuk);
+
+      if (this.yuk.liked) {
+        this._Yuks.unlike(this.yuk.slug).then(function () {
+          console.log("estaba liked y le quitamos el like");
+          _this.isSubmitting = false;
+          _this.yuk.liked = false;
+          // this._Yuks.dislike(this.yuk.slug);
+          _this.yuk.likesCount--;
+          // this.yuk.dislikesCount++;
+        });
+      }
+
       if (!this._User.current) {
         this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
         return;
@@ -52362,17 +52374,6 @@ var DislikeBtnCtrl = function () {
           _this.isSubmitting = false;
           _this.yuk.disliked = true;
           _this.yuk.dislikesCount++;
-        });
-      }
-
-      if (this.yuk.liked) {
-        this._Yuks.unlike(this.yuk.slug).then(function () {
-
-          _this.isSubmitting = false;
-          _this.yuk.liked = false;
-          // this._Yuks.dislike(this.yuk.slug);
-          _this.yuk.likesCount--;
-          // this.yuk.dislikesCount++;
         });
       }
     }
@@ -52524,7 +52525,7 @@ var FollowBtn = {
 exports.default = FollowBtn;
 
 },{}],26:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -52547,13 +52548,24 @@ var LikeBtnCtrl = function () {
   }
 
   _createClass(LikeBtnCtrl, [{
-    key: 'submit',
+    key: "submit",
     value: function submit() {
       var _this = this;
 
       this.isSubmitting = true;
       console.log("Like component");
       console.log(this.yuk);
+      //si al darle like tiene dislike
+      if (this.yuk.disliked) {
+        this._Yuks.undislike(this.yuk.slug).then(function () {
+          console.log("estaba dislike, ahora esta like");
+          _this.isSubmitting = false;
+          _this.yuk.disliked = false;
+          //   this._Yuks.like(this.yuk.slug);
+          _this.yuk.dislikesCount--;
+        });
+      }
+
       if (!this._User.current) {
         this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
         return;
@@ -52570,16 +52582,6 @@ var LikeBtnCtrl = function () {
           _this.isSubmitting = false;
           _this.yuk.liked = true;
           _this.yuk.likesCount++;
-        });
-      }
-
-      if (this.yuk.disliked) {
-        this._Yuks.undislike(this.yuk.slug).then(function () {
-
-          _this.isSubmitting = false;
-          _this.yuk.disliked = false;
-          //   this._Yuks.like(this.yuk.slug);
-          _this.yuk.dislikesCount--;
         });
       }
     }

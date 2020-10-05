@@ -13,6 +13,21 @@ class DislikeBtnCtrl {
       this.isSubmitting = true;
         console.log("disLike component")
         console.log(this.yuk)
+
+        if(this.yuk.liked){
+          this._Yuks.unlike(this.yuk.slug).then(
+              () => {
+                console.log("estaba liked y le quitamos el like")
+                this.isSubmitting = false;
+                this.yuk.liked = false;
+                // this._Yuks.dislike(this.yuk.slug);
+                this.yuk.likesCount--;
+                // this.yuk.dislikesCount++;
+          
+              }
+            )
+        }
+
         if (!this._User.current) {
             this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
             return;
@@ -36,20 +51,6 @@ class DislikeBtnCtrl {
             this.yuk.dislikesCount++;
           }
         )
-      }
-
-      if(this.yuk.liked){
-        this._Yuks.unlike(this.yuk.slug).then(
-            () => {
-                
-              this.isSubmitting = false;
-              this.yuk.liked = false;
-              // this._Yuks.dislike(this.yuk.slug);
-              this.yuk.likesCount--;
-              // this.yuk.dislikesCount++;
-        
-            }
-          )
       }
   
     }
