@@ -22,6 +22,7 @@ import './services';
 import './auth';
 import './settings';
 import './yuk_editor';
+import './noticias_editor';
 import './editor';
 
 
@@ -43,6 +44,7 @@ const requires = [
   'app.auth',
   'app.settings',
   'app.yuk_editor',
+  'app.noticias_editor',
   'app.editor',
   "ngMessages",
   toastr

@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="css/yuks-list.css">
+<article class="yuk">
+    <div class="leftyuk">
+        <img class="image" src="{{$ctrl.yuk.author.image}}" alt="">
+    </div>
+    <div class="rightyuk">
+        <div class="yuk_title">{{$ctrl.yuk.title}}</div>
+        <div class="yuk_body">{{$ctrl.yuk.content}}</div>
+        <div class="yuk_author">@{{$ctrl.yuk.author.username}}</div>
+        <div class="yuk_footer1">
+            <div class="left_footer1">
+                <span><b>TAGS:</b>
+                    <span ng-repeat="t in $ctrl.yuk.tagList">
+                        <a>{{t}}</a>
+                    </span>
+                </span>
+            </div>
+            <div class="like_dislike">
+                <like-btn yuk="$ctrl.yuk">
+                    {{$ctrl.yuk.likesCount}}
+                </like-btn>
+                <dislike-btn yuk="$ctrl.yuk">
+                    {{$ctrl.yuk.dislikesCount}}
+                </dislike-btn>
+            </div>
+            <div class="rightyuk_footer1">
+                <button class="btn btn-success" ui-sref="app.detailyuk({slug:$ctrl.yuk.slug})">Details</button> 
+            </div>
+        </div>
+    </div>
+</article>
+<hr>

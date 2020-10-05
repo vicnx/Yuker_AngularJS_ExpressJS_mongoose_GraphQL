@@ -1,5 +1,8 @@
-<link rel="stylesheet" href="css/yuks-list.css">
-<div ng-repeat="yuk in $ctrl.yuks">
+<!-- <link rel="stylesheet" href="css/yuks-list.css"> -->
+<yuks-preview yuk="yuk" ng-repeat="yuk in $ctrl.yuks">
+</yuks-preview> 
+<!-- <div ng-repeat="yuk in $ctrl.yuks">
+
     <article class="yuk">
         <div class="leftyuk">
             <img class="image" src="{{yuk.author.image}}" alt="">
@@ -8,8 +11,6 @@
             <div class="yuk_title">{{yuk.title}}</div>
             <div class="yuk_body">{{yuk.content}}</div>
             <div class="yuk_author">@{{yuk.author.username}}</div>
-            <!-- <p class="content-list">{{yuk.content}}</p> -->
-            <!-- <p id="author">{{yuk.author.username}}</p> -->
             <div class="yuk_footer1">
                 <div class="left_footer1">
                     <span><b>TAGS:</b>
@@ -25,8 +26,6 @@
                     <dislike-btn yuk="yuk">
                         {{yuk.dislikesCount}}
                     </dislike-btn>
-                    <!-- <a ng-click="$ctrl.submit()"><i class="far fa-thumbs-up"></i> <span class="badge badge-light">{{yuk.likesCount}}</span></a> -->
-                    <!-- <a ng-click="$ctrl.submit()"><i class="far fa-thumbs-down"></i> <span class="badge badge-light">{{yuk.dislikesCount}}</span></a> -->
 
                     
                 </div>
@@ -38,5 +37,5 @@
         </div>
     </article>
     <hr>
-</div>
+</div> -->
 

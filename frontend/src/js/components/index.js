@@ -38,6 +38,9 @@ import NoticiasDetail from './noticias-helpers/noticias-details.component';
 componentsModule.component('noticiasDetail', NoticiasDetail);
 
 //YUKS
+import YuksPreview from './yuks-helpers/yuks-preview.component';
+componentsModule.component('yuksPreview', YuksPreview);
+
 import YuksList from './yuks-helpers/yuks-list.component';
 componentsModule.component('yuksList', YuksList);
 

@@ -51788,6 +51788,8 @@ require('./settings');
 
 require('./yuk_editor');
 
+require('./noticias_editor');
+
 require('./editor');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -51803,7 +51805,7 @@ console.log("app.js");
 // Create and bootstrap application
 var requires = ['ui.router', 'ui.bootstrap', 'templates', 'app.layout', 'app.components', 'app.home', 'app.profile', 'app.article', 'app.yuks', 'app.noticias',
 // 'app.listaryuks',
-'app.services', 'app.auth', 'app.settings', 'app.yuk_editor', 'app.editor', "ngMessages", _angularToastr2.default];
+'app.services', 'app.auth', 'app.settings', 'app.yuk_editor', 'app.noticias_editor', 'app.editor', "ngMessages", _angularToastr2.default];
 
 // Mount on window for testing
 window.app = _angular2.default.module('app', requires);
@@ -51818,7 +51820,7 @@ _angular2.default.bootstrap(document, ['app'], {
   strictDi: true
 });
 
-},{"./article":16,"./auth":19,"./components":27,"./config/app.config":34,"./config/app.constants":35,"./config/app.run":36,"./config/app.templates":37,"./editor":41,"./home":45,"./layout":48,"./noticias":50,"./profile":53,"./services":59,"./settings":67,"./yuk_editor":70,"./yuks":74,"angular":9,"angular-messages":2,"angular-toastr":4,"angular-ui-bootstrap":6,"angular-ui-router":7}],12:[function(require,module,exports){
+},{"./article":16,"./auth":19,"./components":27,"./config/app.config":35,"./config/app.constants":36,"./config/app.run":37,"./config/app.templates":38,"./editor":42,"./home":46,"./layout":49,"./noticias":51,"./noticias_editor":54,"./profile":57,"./services":63,"./settings":71,"./yuk_editor":74,"./yuks":78,"angular":9,"angular-messages":2,"angular-toastr":4,"angular-ui-bootstrap":6,"angular-ui-router":7}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52655,6 +52657,10 @@ var _noticiasDetails = require('./noticias-helpers/noticias-details.component');
 
 var _noticiasDetails2 = _interopRequireDefault(_noticiasDetails);
 
+var _yuksPreview = require('./yuks-helpers/yuks-preview.component');
+
+var _yuksPreview2 = _interopRequireDefault(_yuksPreview);
+
 var _yuksList = require('./yuks-helpers/yuks-list.component');
 
 var _yuksList2 = _interopRequireDefault(_yuksList);
@@ -52702,6 +52708,8 @@ componentsModule.component('noticiasDetail', _noticiasDetails2.default);
 
 //YUKS
 
+componentsModule.component('yuksPreview', _yuksPreview2.default);
+
 componentsModule.component('yuksList', _yuksList2.default);
 
 componentsModule.component('yuksDetail', _yuksDetails2.default);
@@ -52714,7 +52722,7 @@ componentsModule.component('dislikeBtn', _dislikeBtn2.default);
 
 exports.default = componentsModule;
 
-},{"./article-helpers/article-meta.component":21,"./article-helpers/list-pagination.component":22,"./buttons/dislike-btn.component":23,"./buttons/favorite-btn.component":24,"./buttons/follow-btn.component":25,"./buttons/like-btn.component":26,"./list-errors.component":28,"./noticias-helpers/noticias-details.component":29,"./noticias-helpers/noticias-list.component":30,"./show-authed.directive":31,"./yuks-helpers/yuks-details.component":32,"./yuks-helpers/yuks-list.component":33,"angular":9}],28:[function(require,module,exports){
+},{"./article-helpers/article-meta.component":21,"./article-helpers/list-pagination.component":22,"./buttons/dislike-btn.component":23,"./buttons/favorite-btn.component":24,"./buttons/follow-btn.component":25,"./buttons/like-btn.component":26,"./list-errors.component":28,"./noticias-helpers/noticias-details.component":29,"./noticias-helpers/noticias-list.component":30,"./show-authed.directive":31,"./yuks-helpers/yuks-details.component":32,"./yuks-helpers/yuks-list.component":33,"./yuks-helpers/yuks-preview.component":34,"angular":9}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52889,6 +52897,21 @@ exports.default = YuksList;
 },{}],34:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var YuksPreview = {
+  bindings: {
+    yuk: '='
+  },
+  templateUrl: 'components/yuks-helpers/yuks-preview.html'
+};
+
+exports.default = YuksPreview;
+
+},{}],35:[function(require,module,exports){
+'use strict';
+
 AppConfig.$inject = ["$httpProvider", "$stateProvider", "$locationProvider", "$urlRouterProvider"];
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -52926,7 +52949,7 @@ function AppConfig($httpProvider, $stateProvider, $locationProvider, $urlRouterP
 
 exports.default = AppConfig;
 
-},{"./auth.interceptor":38}],35:[function(require,module,exports){
+},{"./auth.interceptor":39}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52941,7 +52964,7 @@ var AppConstants = {
 
 exports.default = AppConstants;
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 AppRun.$inject = ["AppConstants", "$rootScope"];
@@ -52970,7 +52993,7 @@ function AppRun(AppConstants, $rootScope) {
 
 exports.default = AppRun;
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 angular.module("templates", []).run(["$templateCache", function ($templateCache) {
@@ -52984,9 +53007,10 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("home/homeSlider.html", "<div style=\"height: 400px\">\n    <div uib-carousel active=\"active\" interval=\"$ctrl.myInterval\" no-wrap=\"$ctrl.noWrapSlides\">\n        <div uib-slide ng-repeat=\"slide in $ctrl.slides track by slide.id\" index=\"slide.id\" style=\"height: 400px\">\n        <img ng-src=\"{{slide.image}}\" class=\"img-fluid\" style=\"filter: blur(1px);\">\n        <div class=\"carousel-caption\" style=\"padding-bottom:100px;\">\n        </div>\n        </div>\n    </div>\n</div>\n \n");
   $templateCache.put("layout/app-view.html", "<app-header></app-header>\n\n<div ui-view></div>\n\n<app-footer></app-footer>\n");
   $templateCache.put("layout/footer.html", "<footer>\n  <div class=\"container\">\n    <a class=\"logo-font\" ui-sref=\"app.home\" ng-bind=\"::$ctrl.appName | lowercase\"></a>\n    <span class=\"attribution\">\n      &copy; {{::$ctrl.date | date:\'yyyy\'}}.\n      An interactive learning project from <a href=\"https://thinkster.io\">Thinkster</a>.\n      Code licensed under MIT.\n    </span>\n  </div>\n</footer>\n");
-  $templateCache.put("layout/header.html", "<nav class=\"navbar navbar-light\">\n  <div class=\"container\">\n\n    <a class=\"navbar-brand\"\n      ui-sref=\"app.home\"\n      ng-bind=\"::$ctrl.appName | lowercase\">\n    </a>\n\n    <!-- Show this for logged out users -->\n    <ul show-authed=\"false\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.login\">\n          Sign in\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.register\">\n          Sign up\n        </a>\n      </li>\n\n    </ul>\n\n    <!-- Show this for logged in users -->\n    <ul show-authed=\"true\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <!-- <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New Article\n        </a>\n      </li> -->\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.yuk_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New Yuk\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.settings\">\n          <i class=\"ion-gear-a\"></i>&nbsp;Settings\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.profile.main({ username: $ctrl.currentUser.username})\">\n          <img ng-src=\"{{$ctrl.currentUser.image}}\" class=\"user-pic\" />\n          {{ $ctrl.currentUser.username }}\n        </a>\n      </li>\n\n    </ul>\n\n\n  </div>\n</nav>\n");
+  $templateCache.put("layout/header.html", "<nav class=\"navbar navbar-light\">\n  <div class=\"container\">\n\n    <a class=\"navbar-brand\"\n      ui-sref=\"app.home\"\n      ng-bind=\"::$ctrl.appName | lowercase\">\n    </a>\n\n    <!-- Show this for logged out users -->\n    <ul show-authed=\"false\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.login\">\n          Sign in\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.register\">\n          Sign up\n        </a>\n      </li>\n\n    </ul>\n\n    <!-- Show this for logged in users -->\n    <ul show-authed=\"true\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.noticias_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New noticia\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.yuk_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New Yuk\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.settings\">\n          <i class=\"ion-gear-a\"></i>&nbsp;Settings\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.profile.main({ username: $ctrl.currentUser.username})\">\n          <img ng-src=\"{{$ctrl.currentUser.image}}\" class=\"user-pic\" />\n          {{ $ctrl.currentUser.username }}\n        </a>\n      </li>\n\n    </ul>\n\n\n  </div>\n</nav>\n");
   $templateCache.put("noticias/detailnoticia.html", "<div class=\"banner\" style=\"background-color: rgb(0, 172, 172);\" show-authed=\"false\">\n    <div class=\"container\">\n      <h1>DETAILS NOTICIAS</h1>\n    </div>\n  </div>\n  <div class=\"container page\">\n<noticias-detail noticia=\"$ctrl.noticia\"></noticias-detail>\n</div>");
   $templateCache.put("noticias/noticias.html", "<div class=\"banner\" style=\"background-color: rgb(0, 172, 172);\" show-authed=\"false\">\n  <div class=\"container\">\n    <h1>NOTICIAS</h1>\n    <p>Aqui tienes las noticias más recientes.</p>\n  </div>\n</div>\n<div class=\"container page\">\n<noticias-list noticias=\"$ctrl.noticias\"></noticias-list>\n</div>\n<!-- <div ng-repeat=\"noticia in noticias\">\n    <hr>\n    <a > {{noticia.titulo}}</a>\n    <a > {{noticia.contenido}}</a>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n      <span ng-repeat=\"t in noticia.tagList\">\n          <a>{{t}}</a>\n      </span>\n    </span>\n    <br>\n   <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n   <hr>\n</div> -->");
+  $templateCache.put("noticias_editor/noticias_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <h1>EDITOR DE NOTICIAS</h1>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.noticia.titulo\"\n                type=\"text\"\n                placeholder=\"Titulo de la noticia\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.noticia.contenido\"\n                placeholder=\"Escribe tu Noticia\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.noticia.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publicar la nueva noticia\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("profile/profile-articles.html", "<article-list limit=\"5\" list-config=\"$ctrl.listConfig\"></article-list>\n");
   $templateCache.put("profile/profile.html", "<div class=\"profile-page\">\n\n  <!-- User\'s basic info & action buttons -->\n  <div class=\"user-info\">\n    <div class=\"container\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n          <img ng-src=\"{{::$ctrl.profile.image}}\" class=\"user-img\" />\n          <h4 ng-bind=\"::$ctrl.profile.username\"></h4>\n          <p ng-bind=\"::$ctrl.profile.bio\"></p>\n\n          <a ui-sref=\"app.settings\"\n            class=\"btn btn-sm btn-outline-secondary action-btn\"\n            ng-show=\"$ctrl.isUser\">\n            <i class=\"ion-gear-a\"></i> Edit Profile Settings\n          </a>\n\n          <follow-btn user=\"$ctrl.profile\" ng-hide=\"$ctrl.isUser\"></follow-btn>\n\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Container where User\'s posts & favs are list w/ toggle tabs -->\n  <div class=\"container\">\n    <div class=\"row\">\n\n      <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n        <!-- Tabs for switching between author articles & favorites -->\n        <div class=\"articles-toggle\">\n          <ul class=\"nav nav-pills outline-active\">\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link active\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.main({username: $ctrl.profile.username})\">\n                My Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.favorites({username: $ctrl.profile.username})\">\n                Favorited Articles\n              </a>\n            </li>\n\n          </ul>\n        </div>\n\n        <!-- List of articles -->\n        <div ui-view></div>\n\n\n      </div>\n\n    <!-- End row & container divs -->\n    </div>\n  </div>\n\n</div>\n");
   $templateCache.put("settings/settings.html", "<div class=\"settings-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-6 offset-md-3 col-xs-12\">\n\n        <h1 class=\"text-xs-center\">Your Settings</h1>\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form ng-submit=\"$ctrl.submitForm()\">\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"URL of profile picture\"\n                ng-model=\"$ctrl.formData.image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"text\"\n                placeholder=\"Username\"\n                ng-model=\"$ctrl.formData.username\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control form-control-lg\"\n                rows=\"8\"\n                placeholder=\"Short bio about you\"\n                ng-model=\"$ctrl.formData.bio\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"email\"\n                placeholder=\"Email\"\n                ng-model=\"$ctrl.formData.email\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"New Password\"\n                ng-model=\"$ctrl.formData.password\" />\n            </fieldset>\n\n            <button class=\"btn btn-lg btn-primary pull-xs-right\"\n              type=\"submit\">\n              Update Settings\n            </button>\n\n          </fieldset>\n        </form>\n\n        <!-- Line break for logout button -->\n        <hr />\n\n        <button class=\"btn btn-outline-danger\"\n          ng-click=\"$ctrl.logout()\">\n          Or click here to logout.\n        </button>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
@@ -53001,14 +53025,15 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("components/buttons/dislike-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.disliked,\n    \'untoggled\': !$ctrl.yuk.disliked }\"\n    class=\"far fa-thumbs-down\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n");
   $templateCache.put("components/buttons/favorite-btn.html", "<button class=\"btn btn-sm\"\n  ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n              \'btn-outline-primary\': !$ctrl.article.favorited,\n              \'btn-primary\': $ctrl.article.favorited }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-heart\"></i> <ng-transclude></ng-transclude>\n</button>\n");
   $templateCache.put("components/buttons/follow-btn.html", "<button\n  class=\"btn btn-sm action-btn\"\n  ng-class=\"{ \'disabled\': $ctrl.isSubmitting,\n              \'btn-outline-secondary\': !$ctrl.user.following,\n              \'btn-secondary\': $ctrl.user.following }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-plus-round\"></i>\n  &nbsp;\n  {{ $ctrl.user.following ? \'Unfollow\' : \'Follow\' }} {{ $ctrl.user.username }}\n</button>\n");
-  $templateCache.put("components/buttons/like-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" class=\"far fa-thumbs-up\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.liked,\n    \'untoggled\': !$ctrl.yuk.liked }\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>");
+  $templateCache.put("components/buttons/like-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" class=\"far fa-thumbs-up\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.liked,\n    \'untoggled\': !$ctrl.yuk.liked }\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n    ");
   $templateCache.put("components/noticias-helpers/noticias-details.html", "<div class=\"noticia\">\n        <h2> {{$ctrl.noticia.titulo}}jj</h2>\n        <p> {{$ctrl.noticia.titulo}}</p>\n        <p>{{$ctrl.noticia.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.noticia.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <br>\n        <button ui-sref=\"app.listarnoticias\">Volver</button> \n</div>\n");
   $templateCache.put("components/noticias-helpers/noticias-list.html", "<div class=\"noticia\" ng-repeat=\"noticia in $ctrl.noticias\">\n    <hr>\n    <h3>{{noticia.titulo}}</h3>\n    <p>{{noticia.contenido}}</p>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n        <span ng-repeat=\"t in noticia.tagList\">\n            <a>{{t}}</a>\n        </span>\n    </span>\n    <br>\n    <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n</div>\n\n");
   $templateCache.put("components/yuks-helpers/yuks-details.html", "<div class=\"yuk\">\n        <h2> {{$ctrl.yuk.title}}</h2>\n        <p> {{$ctrl.yuk.content}}</p>\n        <p>{{$ctrl.yuk.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.yuk.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <br>\n        <button ui-sref=\"app.listaryuks\">Volver</button> \n</div>\n");
-  $templateCache.put("components/yuks-helpers/yuks-list.html", "<link rel=\"stylesheet\" href=\"css/yuks-list.css\">\n<div ng-repeat=\"yuk in $ctrl.yuks\">\n    <article class=\"yuk\">\n        <div class=\"leftyuk\">\n            <img class=\"image\" src=\"{{yuk.author.image}}\" alt=\"\">\n        </div>\n        <div class=\"rightyuk\">\n            <div class=\"yuk_title\">{{yuk.title}}</div>\n            <div class=\"yuk_body\">{{yuk.content}}</div>\n            <div class=\"yuk_author\">@{{yuk.author.username}}</div>\n            <!-- <p class=\"content-list\">{{yuk.content}}</p> -->\n            <!-- <p id=\"author\">{{yuk.author.username}}</p> -->\n            <div class=\"yuk_footer1\">\n                <div class=\"left_footer1\">\n                    <span><b>TAGS:</b>\n                        <span ng-repeat=\"t in yuk.tagList\">\n                            <a>{{t}}</a>\n                        </span>\n                    </span>\n                </div>\n                <div class=\"like_dislike\">\n                    <like-btn yuk=\"yuk\">\n                        {{yuk.likesCount}}\n                    </like-btn>\n                    <dislike-btn yuk=\"yuk\">\n                        {{yuk.dislikesCount}}\n                    </dislike-btn>\n                    <!-- <a ng-click=\"$ctrl.submit()\"><i class=\"far fa-thumbs-up\"></i> <span class=\"badge badge-light\">{{yuk.likesCount}}</span></a> -->\n                    <!-- <a ng-click=\"$ctrl.submit()\"><i class=\"far fa-thumbs-down\"></i> <span class=\"badge badge-light\">{{yuk.dislikesCount}}</span></a> -->\n\n                    \n                </div>\n                <div class=\"rightyuk_footer1\">\n                    <button class=\"btn btn-success\" ui-sref=\"app.detailyuk({slug:yuk.slug})\">Details</button> \n                </div>\n            </div>\n            \n        </div>\n    </article>\n    <hr>\n</div>\n\n");
+  $templateCache.put("components/yuks-helpers/yuks-list.html", "<!-- <link rel=\"stylesheet\" href=\"css/yuks-list.css\"> -->\n<yuks-preview yuk=\"yuk\" ng-repeat=\"yuk in $ctrl.yuks\">\n</yuks-preview> \n<!-- <div ng-repeat=\"yuk in $ctrl.yuks\">\n\n    <article class=\"yuk\">\n        <div class=\"leftyuk\">\n            <img class=\"image\" src=\"{{yuk.author.image}}\" alt=\"\">\n        </div>\n        <div class=\"rightyuk\">\n            <div class=\"yuk_title\">{{yuk.title}}</div>\n            <div class=\"yuk_body\">{{yuk.content}}</div>\n            <div class=\"yuk_author\">@{{yuk.author.username}}</div>\n            <div class=\"yuk_footer1\">\n                <div class=\"left_footer1\">\n                    <span><b>TAGS:</b>\n                        <span ng-repeat=\"t in yuk.tagList\">\n                            <a>{{t}}</a>\n                        </span>\n                    </span>\n                </div>\n                <div class=\"like_dislike\">\n                    <like-btn yuk=\"yuk\">\n                        {{yuk.likesCount}}\n                    </like-btn>\n                    <dislike-btn yuk=\"yuk\">\n                        {{yuk.dislikesCount}}\n                    </dislike-btn>\n\n                    \n                </div>\n                <div class=\"rightyuk_footer1\">\n                    <button class=\"btn btn-success\" ui-sref=\"app.detailyuk({slug:yuk.slug})\">Details</button> \n                </div>\n            </div>\n            \n        </div>\n    </article>\n    <hr>\n</div> -->\n\n");
+  $templateCache.put("components/yuks-helpers/yuks-preview.html", "<link rel=\"stylesheet\" href=\"css/yuks-list.css\">\n<article class=\"yuk\">\n    <div class=\"leftyuk\">\n        <img class=\"image\" src=\"{{$ctrl.yuk.author.image}}\" alt=\"\">\n    </div>\n    <div class=\"rightyuk\">\n        <div class=\"yuk_title\">{{$ctrl.yuk.title}}</div>\n        <div class=\"yuk_body\">{{$ctrl.yuk.content}}</div>\n        <div class=\"yuk_author\">@{{$ctrl.yuk.author.username}}</div>\n        <div class=\"yuk_footer1\">\n            <div class=\"left_footer1\">\n                <span><b>TAGS:</b>\n                    <span ng-repeat=\"t in $ctrl.yuk.tagList\">\n                        <a>{{t}}</a>\n                    </span>\n                </span>\n            </div>\n            <div class=\"like_dislike\">\n                <like-btn yuk=\"$ctrl.yuk\">\n                    {{$ctrl.yuk.likesCount}}\n                </like-btn>\n                <dislike-btn yuk=\"$ctrl.yuk\">\n                    {{$ctrl.yuk.dislikesCount}}\n                </dislike-btn>\n            </div>\n            <div class=\"rightyuk_footer1\">\n                <button class=\"btn btn-success\" ui-sref=\"app.detailyuk({slug:$ctrl.yuk.slug})\">Details</button> \n            </div>\n        </div>\n    </div>\n</article>\n<hr>");
 }]);
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 authInterceptor.$inject = ["JWT", "AppConstants", "$window", "$q"];
@@ -53043,7 +53068,7 @@ function authInterceptor(JWT, AppConstants, $window, $q) {
 
 exports.default = authInterceptor;
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 EditorConfig.$inject = ["$stateProvider"];
@@ -53086,7 +53111,7 @@ function EditorConfig($stateProvider) {
 
 exports.default = EditorConfig;
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53155,7 +53180,7 @@ var EditorCtrl = function () {
 
 exports.default = EditorCtrl;
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53189,7 +53214,7 @@ editorModule.controller('EditorCtrl', _editor4.default);
 
 exports.default = editorModule;
 
-},{"./editor.config":39,"./editor.controller":40,"angular":9}],42:[function(require,module,exports){
+},{"./editor.config":40,"./editor.controller":41,"angular":9}],43:[function(require,module,exports){
 'use strict';
 
 HomeConfig.$inject = ["$stateProvider"];
@@ -53222,7 +53247,7 @@ function HomeConfig($stateProvider) {
 
 exports.default = HomeConfig;
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53273,7 +53298,7 @@ HomeCtrl.$inject = ["User", "yuks", "noticias", "Tags", "AppConstants", "$state"
 
 exports.default = HomeCtrl;
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53300,7 +53325,7 @@ var homeSlider = {
 
 exports.default = homeSlider;
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53344,7 +53369,7 @@ homeModule.component('homeSliderCmp', _homeSlider2.default);
 
 exports.default = homeModule;
 
-},{"./home.config":42,"./home.controller":43,"./homeSlider.component":44,"angular":9}],46:[function(require,module,exports){
+},{"./home.config":43,"./home.controller":44,"./homeSlider.component":45,"angular":9}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53372,7 +53397,7 @@ var AppFooter = {
 
 exports.default = AppFooter;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53404,7 +53429,7 @@ var AppHeader = {
 
 exports.default = AppHeader;
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53436,7 +53461,7 @@ layoutModule.component('appFooter', _footer2.default);
 
 exports.default = layoutModule;
 
-},{"./footer.component":46,"./header.component":47,"angular":9}],49:[function(require,module,exports){
+},{"./footer.component":47,"./header.component":48,"angular":9}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53460,7 +53485,7 @@ DetailNoticiaCtrl.$inject = ["noticia", "$scope"];
 
 exports.default = DetailNoticiaCtrl;
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53515,7 +53540,7 @@ noticiasModule.controller('NoticiasCtrl', _noticias4.default);
 
 exports.default = noticiasModule;
 
-},{"./detailnoticia.controller":49,"./noticias.config":51,"./noticias.controller":52,"angular":9}],51:[function(require,module,exports){
+},{"./detailnoticia.controller":50,"./noticias.config":52,"./noticias.controller":53,"angular":9}],52:[function(require,module,exports){
 "use strict";
 
 NoticiasConfig.$inject = ["$stateProvider"];
@@ -53557,7 +53582,7 @@ function NoticiasConfig($stateProvider) {
 
 exports.default = NoticiasConfig;
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53581,7 +53606,157 @@ NoticiasCtrl.$inject = ["noticias", "$state", "$scope", "$stateParams"];
 
 exports.default = NoticiasCtrl;
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _noticias_editor = require('./noticias_editor.config');
+
+var _noticias_editor2 = _interopRequireDefault(_noticias_editor);
+
+var _noticias_editor3 = require('./noticias_editor.controller');
+
+var _noticias_editor4 = _interopRequireDefault(_noticias_editor3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+console.log("index.js Noticias Editor");
+// Create the module where our functionality can attach to
+var noticias_editorModule = _angular2.default.module('app.noticias_editor', []);
+
+// Include our UI-Router config settings
+
+noticias_editorModule.config(_noticias_editor2.default);
+
+// Controllers
+
+noticias_editorModule.controller('Noticias_EditorCtrl', _noticias_editor4.default);
+
+exports.default = noticias_editorModule;
+
+},{"./noticias_editor.config":55,"./noticias_editor.controller":56,"angular":9}],55:[function(require,module,exports){
+'use strict';
+
+Noticias_EditorConfig.$inject = ["$stateProvider"];
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function Noticias_EditorConfig($stateProvider) {
+  'ngInject';
+
+  console.log("dentro de noticias config editor");
+  $stateProvider.state('app.noticias_editor', {
+    url: '/noticias_editor/:slug',
+    controller: 'Noticias_EditorCtrl',
+    controllerAs: '$ctrl',
+    templateUrl: 'noticias_editor/noticias_editor.html',
+    title: 'Noticias Editor',
+    resolve: {
+      auth: ["User", function auth(User) {
+        return User.ensureAuthIs(true);
+      }],
+      noticia: ["Noticias", "User", "$state", "$stateParams", function noticia(Noticias, User, $state, $stateParams) {
+
+        if ($stateParams.slug) {
+
+          return Noticias.get($stateParams.slug).then(function (noticia) {
+            if (User.current.username === noticia.author.username) {
+              return noticia;
+            } else {
+              $state.go('app.home');
+            }
+          }, function (err) {
+            return $state.go('app.home');
+          });
+        } else {
+          return null;
+        }
+      }]
+    }
+  });
+};
+
+exports.default = Noticias_EditorConfig;
+
+},{}],56:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Noticias_EditorCtrl = function () {
+  Noticias_EditorCtrl.$inject = ["Noticias", "noticia", "$state"];
+  function Noticias_EditorCtrl(Noticias, noticia, $state) {
+    'ngInject';
+
+    _classCallCheck(this, Noticias_EditorCtrl);
+
+    console.log("dentro controller noticias_editor");
+    this._Noticias = Noticias;
+    this._$state = $state;
+
+    if (!noticia) {
+      console.log("noticiascreado");
+      this.noticia = {
+        titulo: '',
+        contenido: '',
+        tagList: []
+      };
+    } else {
+      this.noticia = noticia;
+    }
+  }
+
+  _createClass(Noticias_EditorCtrl, [{
+    key: "addTag",
+    value: function addTag() {
+      if (!this.noticia.tagList.includes(this.tagField)) {
+        console.log(this.noticia.tagList);
+        this.noticia.tagList.push(this.tagField);
+        this.tagField = '';
+      }
+    }
+  }, {
+    key: "removeTag",
+    value: function removeTag(tagName) {
+      this.noticia.tagList = this.noticia.tagList.filter(function (slug) {
+        return slug != tagName;
+      });
+    }
+  }, {
+    key: "submit",
+    value: function submit() {
+      var _this = this;
+
+      this.isSubmitting = true;
+
+      this._Noticias.save(this.noticia).then(function (newNoticia) {
+        _this._$state.go('app.detailnoticia', { slug: newNoticia.slug });
+      }, function (err) {
+        _this.isSubmitting = false;
+        _this.errors = err.data.errors;
+      });
+    }
+  }]);
+
+  return Noticias_EditorCtrl;
+}();
+
+exports.default = Noticias_EditorCtrl;
+
+},{}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53621,7 +53796,7 @@ profileModule.controller('ProfileArticlesCtrl', _profileArticles2.default);
 
 exports.default = profileModule;
 
-},{"./profile-articles.controller":54,"./profile.config":55,"./profile.controller":56,"angular":9}],54:[function(require,module,exports){
+},{"./profile-articles.controller":58,"./profile.config":59,"./profile.controller":60,"angular":9}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53659,7 +53834,7 @@ ProfileArticlesCtrl.$inject = ["profile", "$state", "$rootScope"];
 
 exports.default = ProfileArticlesCtrl;
 
-},{}],55:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 'use strict';
 
 ProfileConfig.$inject = ["$stateProvider"];
@@ -53702,7 +53877,7 @@ function ProfileConfig($stateProvider) {
 
 exports.default = ProfileConfig;
 
-},{}],56:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53729,7 +53904,7 @@ ProfileCtrl.$inject = ["profile", "User"];
 
 exports.default = ProfileCtrl;
 
-},{}],57:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53846,7 +54021,7 @@ var Articles = function () {
 
 exports.default = Articles;
 
-},{}],58:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53907,7 +54082,7 @@ var Comments = function () {
 
 exports.default = Comments;
 
-},{}],59:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53979,7 +54154,7 @@ servicesModule.service('Toastr', _toastr2.default);
 
 exports.default = servicesModule;
 
-},{"./articles.service":57,"./comments.service":58,"./jwt.service":60,"./noticias.service":61,"./profile.service":62,"./tags.service":63,"./toastr.service":64,"./user.service":65,"./yuks.service":66,"angular":9}],60:[function(require,module,exports){
+},{"./articles.service":61,"./comments.service":62,"./jwt.service":64,"./noticias.service":65,"./profile.service":66,"./tags.service":67,"./toastr.service":68,"./user.service":69,"./yuks.service":70,"angular":9}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54023,7 +54198,7 @@ var JWT = function () {
 
 exports.default = JWT;
 
-},{}],61:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54142,7 +54317,7 @@ var Noticias = function () {
 
 exports.default = Noticias;
 
-},{}],62:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54201,7 +54376,7 @@ var Profile = function () {
 
 exports.default = Profile;
 
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54261,7 +54436,7 @@ var Tags = function () {
 
 exports.default = Tags;
 
-},{}],64:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54301,7 +54476,7 @@ var Toastr = function () {
 
 exports.default = Toastr;
 
-},{}],65:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54437,7 +54612,7 @@ var User = function () {
 
 exports.default = User;
 
-},{}],66:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54581,7 +54756,7 @@ var Yuks = function () {
 
 exports.default = Yuks;
 
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54614,7 +54789,7 @@ settingsModule.controller('SettingsCtrl', _settings4.default);
 
 exports.default = settingsModule;
 
-},{"./settings.config":68,"./settings.controller":69,"angular":9}],68:[function(require,module,exports){
+},{"./settings.config":72,"./settings.controller":73,"angular":9}],72:[function(require,module,exports){
 'use strict';
 
 SettingsConfig.$inject = ["$stateProvider"];
@@ -54640,7 +54815,7 @@ function SettingsConfig($stateProvider) {
 
 exports.default = SettingsConfig;
 
-},{}],69:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54691,7 +54866,7 @@ var SettingsCtrl = function () {
 
 exports.default = SettingsCtrl;
 
-},{}],70:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54726,7 +54901,7 @@ yuk_editorModule.controller('Yuk_EditorCtrl', _yuk_editor4.default);
 
 exports.default = yuk_editorModule;
 
-},{"./yuk_editor.config":71,"./yuk_editor.controller":72,"angular":9}],71:[function(require,module,exports){
+},{"./yuk_editor.config":75,"./yuk_editor.controller":76,"angular":9}],75:[function(require,module,exports){
 'use strict';
 
 Yuk_EditorConfig.$inject = ["$stateProvider"];
@@ -54770,7 +54945,7 @@ function Yuk_EditorConfig($stateProvider) {
 
 exports.default = Yuk_EditorConfig;
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54842,7 +55017,7 @@ var Yuk_EditorCtrl = function () {
 
 exports.default = Yuk_EditorCtrl;
 
-},{}],73:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54870,7 +55045,7 @@ DetailYukCtrl.$inject = ["User", "yuk", "Tags", "AppConstants", "$state", "$scop
 
 exports.default = DetailYukCtrl;
 
-},{}],74:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54919,7 +55094,7 @@ yuksModule.controller('ListYuks', _yuks4.default);
 
 exports.default = yuksModule;
 
-},{"./detailyuk.controller":73,"./yuks.config":75,"./yuks.controller":76,"angular":9}],75:[function(require,module,exports){
+},{"./detailyuk.controller":77,"./yuks.config":79,"./yuks.controller":80,"angular":9}],79:[function(require,module,exports){
 'use strict';
 
 YuksConfig.$inject = ["$stateProvider"];
@@ -54962,7 +55137,7 @@ function YuksConfig($stateProvider) {
 
 exports.default = YuksConfig;
 
-},{}],76:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

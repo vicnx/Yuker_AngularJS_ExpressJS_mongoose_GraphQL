@@ -53,6 +53,9 @@
 .like_dislike a i{
    margin-left: 5px;
 }
+.like_dislike span{
+   margin-right: 10px;
+}
 .like_dislike i:hover{
    color: brown;
 }
