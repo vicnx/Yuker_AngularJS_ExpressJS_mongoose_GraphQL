@@ -52355,26 +52355,31 @@ var DislikeBtnCtrl = function () {
           // this._Yuks.dislike(this.yuk.slug);
           _this.yuk.likesCount--;
           // this.yuk.dislikesCount++;
-        });
-      }
-
-      if (!this._User.current) {
-        this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
-        return;
-      }
-
-      if (this.yuk.disliked) {
-        this._Yuks.undislike(this.yuk.slug).then(function () {
-          _this.isSubmitting = false;
-          _this.yuk.disliked = false;
-          _this.yuk.dislikesCount--;
+          //damos dislike
+          _this._Yuks.dislike(_this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.disliked = true;
+            _this.yuk.dislikesCount++;
+          });
         });
       } else {
-        this._Yuks.dislike(this.yuk.slug).then(function () {
-          _this.isSubmitting = false;
-          _this.yuk.disliked = true;
-          _this.yuk.dislikesCount++;
-        });
+        if (!this._User.current) {
+          this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
+          return;
+        }
+        if (this.yuk.disliked) {
+          this._Yuks.undislike(this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.disliked = false;
+            _this.yuk.dislikesCount--;
+          });
+        } else {
+          this._Yuks.dislike(this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.disliked = true;
+            _this.yuk.dislikesCount++;
+          });
+        }
       }
     }
   }]);
@@ -52563,26 +52568,32 @@ var LikeBtnCtrl = function () {
           _this.yuk.disliked = false;
           //   this._Yuks.like(this.yuk.slug);
           _this.yuk.dislikesCount--;
-        });
-      }
-
-      if (!this._User.current) {
-        this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
-        return;
-      }
-
-      if (this.yuk.liked) {
-        this._Yuks.unlike(this.yuk.slug).then(function () {
-          _this.isSubmitting = false;
-          _this.yuk.liked = false;
-          _this.yuk.likesCount--;
+          //damos like
+          _this._Yuks.like(_this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.liked = true;
+            _this.yuk.likesCount++;
+          });
         });
       } else {
-        this._Yuks.like(this.yuk.slug).then(function () {
-          _this.isSubmitting = false;
-          _this.yuk.liked = true;
-          _this.yuk.likesCount++;
-        });
+        if (!this._User.current) {
+          this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
+          return;
+        }
+
+        if (this.yuk.liked) {
+          this._Yuks.unlike(this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.liked = false;
+            _this.yuk.likesCount--;
+          });
+        } else {
+          this._Yuks.like(this.yuk.slug).then(function () {
+            _this.isSubmitting = false;
+            _this.yuk.liked = true;
+            _this.yuk.likesCount++;
+          });
+        }
       }
     }
   }]);

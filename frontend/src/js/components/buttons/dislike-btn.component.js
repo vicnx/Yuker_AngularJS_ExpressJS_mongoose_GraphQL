@@ -23,36 +23,42 @@ class DislikeBtnCtrl {
                 // this._Yuks.dislike(this.yuk.slug);
                 this.yuk.likesCount--;
                 // this.yuk.dislikesCount++;
+                //damos dislike
+                this._Yuks.dislike(this.yuk.slug).then(
+                  () => {
+                    this.isSubmitting = false;
+                    this.yuk.disliked = true;
+                    this.yuk.dislikesCount++;
+                  }
+                )
           
               }
             )
-        }
-
-        if (!this._User.current) {
+        }else{
+          if (!this._User.current) {
             this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
             return;
-        }
-        
-      if (this.yuk.disliked) {
-        this._Yuks.undislike(this.yuk.slug).then(
-          () => {
-            this.isSubmitting = false;
-            this.yuk.disliked = false;
-            this.yuk.dislikesCount--;
+          }
+          if (this.yuk.disliked) {
+            this._Yuks.undislike(this.yuk.slug).then(
+              () => {
+                this.isSubmitting = false;
+                this.yuk.disliked = false;
+                this.yuk.dislikesCount--;
+          
+              }
+            )
       
+          } else {
+            this._Yuks.dislike(this.yuk.slug).then(
+              () => {
+                this.isSubmitting = false;
+                this.yuk.disliked = true;
+                this.yuk.dislikesCount++;
+              }
+            )
           }
-        )
-  
-      } else {
-        this._Yuks.dislike(this.yuk.slug).then(
-          () => {
-            this.isSubmitting = false;
-            this.yuk.disliked = true;
-            this.yuk.dislikesCount++;
-          }
-        )
-      }
-  
+        }
     }
   
   }

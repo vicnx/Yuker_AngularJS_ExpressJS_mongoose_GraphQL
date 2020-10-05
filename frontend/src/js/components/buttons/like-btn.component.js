@@ -23,38 +23,43 @@ class LikeBtnCtrl {
                 this.yuk.disliked = false;
               //   this._Yuks.like(this.yuk.slug);
                 this.yuk.dislikesCount--;
+                //damos like
+                this._Yuks.like(this.yuk.slug).then(
+                  () => {
+                    this.isSubmitting = false;
+                    this.yuk.liked = true;
+                    this.yuk.likesCount++;
+                  }
+                )
           
               }
             )
-        }
-
-        if (!this._User.current) {
-            this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
-            return;
-        }
+        }else{
+            if (!this._User.current) {
+              this._$state.go('app.login'); //redirigimos a login si no hay usuario logeado
+              return;
+          }
         
-      if (this.yuk.liked) {
-        this._Yuks.unlike(this.yuk.slug).then(
-          () => {
-            this.isSubmitting = false;
-            this.yuk.liked = false;
-            this.yuk.likesCount--;
+          if (this.yuk.liked) {
+            this._Yuks.unlike(this.yuk.slug).then(
+              () => {
+                this.isSubmitting = false;
+                this.yuk.liked = false;
+                this.yuk.likesCount--;
+          
+              }
+            )
       
+          } else {
+            this._Yuks.like(this.yuk.slug).then(
+              () => {
+                this.isSubmitting = false;
+                this.yuk.liked = true;
+                this.yuk.likesCount++;
+              }
+            )
           }
-        )
-  
-      } else {
-        this._Yuks.like(this.yuk.slug).then(
-          () => {
-            this.isSubmitting = false;
-            this.yuk.liked = true;
-            this.yuk.likesCount++;
-          }
-        )
-      }
-
-    
-  
+        }
     }
   
   }
