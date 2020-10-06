@@ -2,7 +2,7 @@
     <!-- Splash banner that only shows when not logged in -->
     <div class="banner" style="background-color: rgb(172, 0, 0);" show-authed="false">
       <div class="container">
-        <p>All Yuks! Jiji</p>
+        <p>{{$ctrl.namefilter}}</p>
       </div>
     </div>
     <div class="container page">
@@ -12,7 +12,7 @@
             <ul class="nav nav-pills outline-active">
             </ul>
           </div>
-          <yuks-list yuks="$ctrl.yuks"></yuks-list>
+          <yuks-list yuks="$ctrl.yuksFiltrados"></yuks-list>
           <!-- <div ng-repeat="yuk in yuks">
             <hr>
             <a > {{yuk.title}}</a>

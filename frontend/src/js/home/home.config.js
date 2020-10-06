@@ -19,6 +19,11 @@ function HomeConfig($stateProvider) {
           (noticias) => noticias
         )
       },
+      yuktags: function(Tags) {
+        return Tags.getAllYuksTags().then(
+          (yuktags) => yuktags
+        )
+      },
     }
   });
   

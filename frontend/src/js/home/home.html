@@ -58,29 +58,14 @@
         <div class="sidebar">
 
           <p>Popular Yuk Tags</p>
-
-          <div class="tag-list" ng-show="$ctrl.tagsYuks">
-            <a href="" class="tag-default tag-pill"
-              ng-click="$ctrl.changeList({ type: 'all', filters: { tag: tagName } })"
-              ng-repeat="tagName in $ctrl.tagsYuks"
-              ng-bind="tagName">
-            </a>
+          <div class="tag-list" ng-repeat="tag in $ctrl.tagsYuks">
+            <a ui-sref="app.listaryuks({filter:tag})" class="tag-default tag-pill">{{tag}} </a>
           </div>
-
-          <div ng-show="!$ctrl.tagsYuksLoaded">
-            Loading tags...
-          </div>
-
-          <div class="post-preview"
-            ng-show="$ctrl.tagsYuksLoaded && !$ctrl.tagsYuks.length">
-            No tags are here... yet.
-          </div>
-
         </div>
 
         <div class="sidebar">
 
-          <p>Categorias Noticias</p>
+          <!-- <p>Categorias Noticias</p>
 
           <div class="tag-list" ng-show="$ctrl.tagsNoticias">
             <a href="" class="tag-default tag-pill"
@@ -99,7 +84,7 @@
             No tags are here... yet.
           </div>
 
-        </div>
+        </div> -->
       </div>
 
       

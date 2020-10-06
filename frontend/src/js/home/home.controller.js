@@ -1,5 +1,5 @@
 class HomeCtrl {
-  constructor(User, yuks,noticias, Tags,AppConstants, $state,$scope) {
+  constructor(User, yuks,noticias, yuktags,AppConstants, $state,$scope) {
     'ngInject';
     console.log(noticias)
     console.log("Home controller");
@@ -8,25 +8,28 @@ class HomeCtrl {
     this.yuks = yuks;
     console.log(this.yuks);
     this.noticias = noticias;
+    this.tagsYuks = yuktags;
     $scope.yuks = this.yuks;
     // Get list of all tags
-    Tags
-      .getAllYuksTags()
-      .then(
-        (tagsYuks) => {
-          this.tagsYuksLoaded = true;
-          this.tagsYuks = tagsYuks
-        }
-      );
+    console.log(this.yuktags);
 
-      Tags
-      .getAllNoticiasTags()
-      .then(
-        (tagsNoticias) => {
-          this.tagsNoticiasLoaded = true;
-          this.tagsNoticias = tagsNoticias
-        }
-      );
+    // Tags
+    //   .getAllYuksTags()
+    //   .then(
+    //     (tagsYuks) => {
+    //       this.tagsYuksLoaded = true;
+    //       this.tagsYuks = tagsYuks
+    //     }
+    //   );
+
+    //   Tags
+    //   .getAllNoticiasTags()
+    //   .then(
+    //     (tagsNoticias) => {
+    //       this.tagsNoticiasLoaded = true;
+    //       this.tagsNoticias = tagsNoticias
+    //     }
+    //   );
       
 
     // Set current list to either feed or all, depending on auth status.

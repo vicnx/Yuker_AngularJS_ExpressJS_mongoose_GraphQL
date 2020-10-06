@@ -15,7 +15,7 @@ console.log("yuks.config")
       }
     }
   }).state("app.listaryuks", {
-    url: "/allyuks",
+    url: "/allyuks/:filter",
     controller: "ListYuks",
     controllerAs: "$ctrl",
     templateUrl: "yuks/yuks.html",

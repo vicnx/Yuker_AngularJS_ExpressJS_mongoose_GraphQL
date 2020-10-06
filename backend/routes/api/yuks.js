@@ -308,4 +308,12 @@ router.get('/:yuk/comments', auth.optional, function(req, res, next){
   }).catch(next);
 });
 
+
+//obtenim les categories (tags)
+router.get('/:yuk/tagList', function(req, res, next) {
+  Yuks.find().distinct('tagList').then(function(tagList){
+    return res.json({tagList: tagList});
+  }).catch(next);
+ });
+
 module.exports = router;
