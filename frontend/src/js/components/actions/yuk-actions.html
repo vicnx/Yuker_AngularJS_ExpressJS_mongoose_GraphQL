@@ -1,0 +1,22 @@
+<span ng-show="$ctrl.canModify">
+    <a class="btn btn-sm btn-outline-secondary"
+      ui-sref="app.yuk_editor({ slug: $ctrl.yuk.slug })">
+      <i class="ion-edit"></i> Edit Yuk
+    </a>
+
+    <button class="btn btn-sm btn-outline-danger"
+      ng-class="{disabled: $ctrl.isDeleting}"
+      ng-click="$ctrl.deleteYuk()">
+      <i class="ion-trash-a"></i> Delete Yuk
+    </button>
+  </span>
+
+<span ng-hide="$ctrl.canModify">
+    <like-btn yuk="$ctrl.yuk">
+        {{$ctrl.yuk.likesCount}}
+    </like-btn>
+    
+    <dislike-btn yuk="$ctrl.yuk">
+        {{$ctrl.yuk.dislikesCount}}
+    </dislike-btn>
+</span>  

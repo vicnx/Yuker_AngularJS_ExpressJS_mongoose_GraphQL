@@ -60,6 +60,11 @@
    color: brown;
 }
 
+.like-dislike-btn:hover{
+   color: brown;
+   cursor: pointer;
+}
+
 .toggled{
    color: brown;
 }

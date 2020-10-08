@@ -1,0 +1,59 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,500);
+.footer {
+  width:450px;
+  text-align:center;
+  display:block;
+  margin:15px auto 30px auto;
+  font-size:0.8em;
+  color:#fff;
+}
+.details{
+    width: 100%;
+    height: 100%;
+    background-color: grey;
+    padding: 160px;
+}
+.left-yuk-box{
+    padding: 15px;
+    margin-right: 20px;
+    /* border: 1px solid black; */
+    width: 12%;
+}
+.rigth-yuk-box{
+    padding: 5px;
+    /* border: 1px solid black; */
+     width: 87%;
+ }
+.yuk-box {
+  border-radius:3px;
+  position:relative;
+  margin:8% auto auto auto;
+  width:100%;
+  padding:40px 50px;
+  background-color:rgb(255, 255, 255);
+  display: flex;
+  /* border: 1px solid black; */
+  /* padding: 5px; */
+  justify-content: space-between;
+}
+.yuk-text {
+    text-align:center;
+    width:80%;
+    height:auto;
+    clear:both;
+    font-weight:500;
+    font-size:1.75em;
+  }
+
+.yuk-text p{
+    font-size: small;
+  }
+
+  .yuk-author {
+    width:80%;
+    height:auto;
+    clear:both;
+    padding-top:20px;
+    font-size:1em; 
+    text-align:right;
+  }

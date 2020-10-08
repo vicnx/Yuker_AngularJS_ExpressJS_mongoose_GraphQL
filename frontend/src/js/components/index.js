@@ -53,5 +53,8 @@ componentsModule.component('likeBtn', LikeBtn);
 import DislikeBtn from './buttons/dislike-btn.component';
 componentsModule.component('dislikeBtn', DislikeBtn);
 
+import YukActions from './actions/yuk-actions.component';
+componentsModule.component('yukActions', YukActions);
+
 
 export default componentsModule;

@@ -1,4 +1,4 @@
-<div class="yuk">
+<!-- <div class="yuk">
         <h2> {{$ctrl.yuk.title}}</h2>
         <p> {{$ctrl.yuk.content}}</p>
         <p>{{$ctrl.yuk.author.username}}</p>
@@ -7,6 +7,28 @@
                 <a>{{t}}</a>
             </span>
         </span>
-        <br>
+        <yuk-actions yuk="$ctrl.yuk"></yuk-actions>
         <button ui-sref="app.listaryuks">Volver</button> 
+</div> -->
+
+<div class="yuk-box">
+    <div class="left-yuk-box">
+        <img class="image" src="{{$ctrl.yuk.author.image}}" alt="">
+        
+    </div>
+    <div class="rigth-yuk-box">
+        <div class="yuk-text">
+            <h2> {{$ctrl.yuk.title}}</h2>
+            <p> {{$ctrl.yuk.content}}</p>
+        </div>
+        <div class="yuk-author">
+            @<span id="author">{{$ctrl.yuk.author.username}}</span>
+            <br>
+            <follow-btn user="$ctrl.yuk.author"></follow-btn>
+        </div>
+        <yuk-actions yuk="$ctrl.yuk"></yuk-actions>
+    </div>
+
 </div>
+
+  
