@@ -23,11 +23,19 @@ class YukActionsCtrl {
     }
   
     deleteYuk() {
+      //al borrar comprueba si estaba en home o en otro lado. SI ya esta en home recarga la pagina, si no va a home (siempre despues de eliminarlo)
       this.isDeleting = true;
       this._Yuks.deleteYuk(this.yuk.slug).then(
-        console.log(this._$state.current),
-        this._$state.go('app.home'),
-      ).then()
+        (success) => this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home'),
+        (err) =>this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home')
+        // if(this._$state.current.name=="app.home"){
+        //   console.log("reload")
+        //   location.reload();
+        // }else{
+        //   console.log("go home");
+        //   this._$state.go('app.home')
+        // }
+      )
     }
   }
   

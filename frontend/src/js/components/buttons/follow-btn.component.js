@@ -6,6 +6,16 @@ class FollowBtnCtrl {
     this._User = User;
 
     this._$state = $state;
+
+
+    //comprobamos si el user del follow es igual al login
+    this.$onInit = () => {
+      if (User.current) {
+        this.canModify = (User.current.username === this.user.username);
+      } else {
+        this.canModify = false;
+      }
+    }
   }
 
   submit() {

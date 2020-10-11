@@ -1,5 +1,42 @@
 
 <div class="details">
     <yuks-detail yuk="$ctrl.yuk"></yuks-detail>
+
+          <!-- COMETATIOS -->
+          <div class="comments-container">
+            <h1>Comentarios</h1>
+            <!-- INPUT -->
+            <div class="row">      
+                <div show-authed="true" class="formulario-comment">
+                  <list-errors from="$crl.commentForm.errors"></list-errors>
+                  <form class="card comment-form" ng-submit="$ctrl.addComment()">
+                    <fieldset ng-disabled="$ctrl.commentForm.isSubmitting">
+                      <div class="card-block">
+                        <textarea class="form-control"
+                          placeholder="Write a comment..."
+                          rows="3"
+                          ng-model="$ctrl.commentForm.body"></textarea>
+                      </div>
+                      <div class="card-footer">
+                        <img ng-src="{{::$ctrl.User.current.image}}" class="comment-author-img" />
+                        <button class="btn btn-sm btn-primary" type="submit">
+                         Post Comment
+                        </button>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+        
+                <div show-authed="false">
+                  <a ui-sref="app.login">Sign in</a> or <a ui-sref="app.register">sign up</a> to add comments on this article.
+                </div>
+            </div>
+            <!-- COMMENTS -->
+            <comment ng-repeat="cmt in $ctrl.comments"
+                data="cmt"
+                delete-cb="$ctrl.deleteComment(cmt.id, $index)">
+            </comment>
+          </div>
+    
 </div>
 

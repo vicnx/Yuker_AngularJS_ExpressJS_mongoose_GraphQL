@@ -7,7 +7,6 @@ let yuksModule = angular.module('app.yuks', []);
 import YuksConfig from './yuks.config';
 yuksModule.config(YuksConfig);
 
-console.log("index.js del yuks despues del config")
 // Controllers
 import DetailYukCtrl from './detailyuk.controller';
 yuksModule.controller('DetailYukCtrl', DetailYukCtrl);
@@ -18,8 +17,8 @@ yuksModule.controller('ListYuks', ListYuks);
 // import YuksActions from './yuks-actions.component';
 // yuksModule.component('yuksActions', YuksActions);
 
-// import Comment from './comment.component';
-// yuksModule.component('comment', Comment);
+import Comment from './comment.component';
+yuksModule.component('comment', Comment);
 
 
 export default yuksModule;

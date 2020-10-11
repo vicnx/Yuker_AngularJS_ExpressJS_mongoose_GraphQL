@@ -1,5 +1,5 @@
 import angular from 'angular';
-
+console.log("CARGA FUK+CKING ARTICLE")
 // Create the module where our functionality can attach to
 let articleModule = angular.module('app.article', []);
 

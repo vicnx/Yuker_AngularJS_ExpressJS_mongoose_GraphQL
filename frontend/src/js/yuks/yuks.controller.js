@@ -5,21 +5,17 @@ class ListYuks {
       this.yuks = yuks;
       $scope.yuks = this.yuks;
       this.filter = $stateParams.filter;
-      console.log
       //filtro
       var yuksFiltrados = new Array();
       this.yuks.forEach(yuk => {
         // console.log(yuk.tagList)
         if(this.filter){
           this.namefilter="Yuks con el tag: "+this.filter
-          console.log(this.filter)
           if (yuk.tagList.includes(this.filter)) {
-            console.log(yuk)
             yuksFiltrados.push(yuk);
           }
         }else{
           this.namefilter="Todos los Yuks";
-          console.log("sin filtro")
           yuksFiltrados=this.yuks;
         }
 
@@ -27,8 +23,15 @@ class ListYuks {
       console.log(yuksFiltrados);
       this.yuksFiltrados = yuksFiltrados;
 
+      
+
   
     }
+
+    // removeFilter(){
+    //   console.log($stateParams.filter);
+    //   this.filter = false;
+    // }
   
     // changeList(newList) {
     //   this._$scope.$broadcast('setListTo', newList);

@@ -50344,1398 +50344,6 @@ require('./angular');
 module.exports = angular;
 
 },{"./angular":8}],10:[function(require,module,exports){
-(function (global){
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
-;(function(root) {
-'use strict';
-
-/**
- * Block-Level Grammar
- */
-
-var block = {
-  newline: /^\n+/,
-  code: /^( {4}[^\n]+\n*)+/,
-  fences: noop,
-  hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
-  heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
-  nptable: noop,
-  blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
-  list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
-  html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
-  def: /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/,
-  table: noop,
-  lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
-  paragraph: /^([^\n]+(?:\n?(?!hr|heading|lheading| {0,3}>|tag)[^\n]+)+)/,
-  text: /^[^\n]+/
-};
-
-block._label = /(?:\\[\[\]]|[^\[\]])+/;
-block._title = /(?:"(?:\\"|[^"]|"[^"\n]*")*"|'\n?(?:[^'\n]+\n?)*'|\([^()]*\))/;
-block.def = edit(block.def)
-  .replace('label', block._label)
-  .replace('title', block._title)
-  .getRegex();
-
-block.bullet = /(?:[*+-]|\d+\.)/;
-block.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
-block.item = edit(block.item, 'gm')
-  .replace(/bull/g, block.bullet)
-  .getRegex();
-
-block.list = edit(block.list)
-  .replace(/bull/g, block.bullet)
-  .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
-  .replace('def', '\\n+(?=' + block.def.source + ')')
-  .getRegex();
-
-block._tag = '(?!(?:'
-  + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
-  + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
-  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:|[^\\w\\s@]*@)\\b';
-
-block.html = edit(block.html)
-  .replace('comment', /<!--[\s\S]*?-->/)
-  .replace('closed', /<(tag)[\s\S]+?<\/\1>/)
-  .replace('closing', /<tag(?:"[^"]*"|'[^']*'|\s[^'"\/>\s]*)*?\/?>/)
-  .replace(/tag/g, block._tag)
-  .getRegex();
-
-block.paragraph = edit(block.paragraph)
-  .replace('hr', block.hr)
-  .replace('heading', block.heading)
-  .replace('lheading', block.lheading)
-  .replace('tag', '<' + block._tag)
-  .getRegex();
-
-block.blockquote = edit(block.blockquote)
-  .replace('paragraph', block.paragraph)
-  .getRegex();
-
-/**
- * Normal Block Grammar
- */
-
-block.normal = merge({}, block);
-
-/**
- * GFM Block Grammar
- */
-
-block.gfm = merge({}, block.normal, {
-  fences: /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\n? *\1 *(?:\n+|$)/,
-  paragraph: /^/,
-  heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
-});
-
-block.gfm.paragraph = edit(block.paragraph)
-  .replace('(?!', '(?!'
-    + block.gfm.fences.source.replace('\\1', '\\2') + '|'
-    + block.list.source.replace('\\1', '\\3') + '|')
-  .getRegex();
-
-/**
- * GFM + Tables Block Grammar
- */
-
-block.tables = merge({}, block.gfm, {
-  nptable: /^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,
-  table: /^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/
-});
-
-/**
- * Block Lexer
- */
-
-function Lexer(options) {
-  this.tokens = [];
-  this.tokens.links = {};
-  this.options = options || marked.defaults;
-  this.rules = block.normal;
-
-  if (this.options.gfm) {
-    if (this.options.tables) {
-      this.rules = block.tables;
-    } else {
-      this.rules = block.gfm;
-    }
-  }
-}
-
-/**
- * Expose Block Rules
- */
-
-Lexer.rules = block;
-
-/**
- * Static Lex Method
- */
-
-Lexer.lex = function(src, options) {
-  var lexer = new Lexer(options);
-  return lexer.lex(src);
-};
-
-/**
- * Preprocessing
- */
-
-Lexer.prototype.lex = function(src) {
-  src = src
-    .replace(/\r\n|\r/g, '\n')
-    .replace(/\t/g, '    ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/\u2424/g, '\n');
-
-  return this.token(src, true);
-};
-
-/**
- * Lexing
- */
-
-Lexer.prototype.token = function(src, top) {
-  src = src.replace(/^ +$/gm, '');
-  var next,
-      loose,
-      cap,
-      bull,
-      b,
-      item,
-      space,
-      i,
-      tag,
-      l,
-      isordered;
-
-  while (src) {
-    // newline
-    if (cap = this.rules.newline.exec(src)) {
-      src = src.substring(cap[0].length);
-      if (cap[0].length > 1) {
-        this.tokens.push({
-          type: 'space'
-        });
-      }
-    }
-
-    // code
-    if (cap = this.rules.code.exec(src)) {
-      src = src.substring(cap[0].length);
-      cap = cap[0].replace(/^ {4}/gm, '');
-      this.tokens.push({
-        type: 'code',
-        text: !this.options.pedantic
-          ? cap.replace(/\n+$/, '')
-          : cap
-      });
-      continue;
-    }
-
-    // fences (gfm)
-    if (cap = this.rules.fences.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'code',
-        lang: cap[2],
-        text: cap[3] || ''
-      });
-      continue;
-    }
-
-    // heading
-    if (cap = this.rules.heading.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'heading',
-        depth: cap[1].length,
-        text: cap[2]
-      });
-      continue;
-    }
-
-    // table no leading pipe (gfm)
-    if (top && (cap = this.rules.nptable.exec(src))) {
-      src = src.substring(cap[0].length);
-
-      item = {
-        type: 'table',
-        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
-        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3].replace(/\n$/, '').split('\n')
-      };
-
-      for (i = 0; i < item.align.length; i++) {
-        if (/^ *-+: *$/.test(item.align[i])) {
-          item.align[i] = 'right';
-        } else if (/^ *:-+: *$/.test(item.align[i])) {
-          item.align[i] = 'center';
-        } else if (/^ *:-+ *$/.test(item.align[i])) {
-          item.align[i] = 'left';
-        } else {
-          item.align[i] = null;
-        }
-      }
-
-      for (i = 0; i < item.cells.length; i++) {
-        item.cells[i] = item.cells[i].split(/ *\| */);
-      }
-
-      this.tokens.push(item);
-
-      continue;
-    }
-
-    // hr
-    if (cap = this.rules.hr.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'hr'
-      });
-      continue;
-    }
-
-    // blockquote
-    if (cap = this.rules.blockquote.exec(src)) {
-      src = src.substring(cap[0].length);
-
-      this.tokens.push({
-        type: 'blockquote_start'
-      });
-
-      cap = cap[0].replace(/^ *> ?/gm, '');
-
-      // Pass `top` to keep the current
-      // "toplevel" state. This is exactly
-      // how markdown.pl works.
-      this.token(cap, top);
-
-      this.tokens.push({
-        type: 'blockquote_end'
-      });
-
-      continue;
-    }
-
-    // list
-    if (cap = this.rules.list.exec(src)) {
-      src = src.substring(cap[0].length);
-      bull = cap[2];
-      isordered = bull.length > 1;
-
-      this.tokens.push({
-        type: 'list_start',
-        ordered: isordered,
-        start: isordered ? +bull : ''
-      });
-
-      // Get each top-level item.
-      cap = cap[0].match(this.rules.item);
-
-      next = false;
-      l = cap.length;
-      i = 0;
-
-      for (; i < l; i++) {
-        item = cap[i];
-
-        // Remove the list item's bullet
-        // so it is seen as the next token.
-        space = item.length;
-        item = item.replace(/^ *([*+-]|\d+\.) +/, '');
-
-        // Outdent whatever the
-        // list item contains. Hacky.
-        if (~item.indexOf('\n ')) {
-          space -= item.length;
-          item = !this.options.pedantic
-            ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
-            : item.replace(/^ {1,4}/gm, '');
-        }
-
-        // Determine whether the next list item belongs here.
-        // Backpedal if it does not belong in this list.
-        if (this.options.smartLists && i !== l - 1) {
-          b = block.bullet.exec(cap[i + 1])[0];
-          if (bull !== b && !(bull.length > 1 && b.length > 1)) {
-            src = cap.slice(i + 1).join('\n') + src;
-            i = l - 1;
-          }
-        }
-
-        // Determine whether item is loose or not.
-        // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
-        // for discount behavior.
-        loose = next || /\n\n(?!\s*$)/.test(item);
-        if (i !== l - 1) {
-          next = item.charAt(item.length - 1) === '\n';
-          if (!loose) loose = next;
-        }
-
-        this.tokens.push({
-          type: loose
-            ? 'loose_item_start'
-            : 'list_item_start'
-        });
-
-        // Recurse.
-        this.token(item, false);
-
-        this.tokens.push({
-          type: 'list_item_end'
-        });
-      }
-
-      this.tokens.push({
-        type: 'list_end'
-      });
-
-      continue;
-    }
-
-    // html
-    if (cap = this.rules.html.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: this.options.sanitize
-          ? 'paragraph'
-          : 'html',
-        pre: !this.options.sanitizer
-          && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
-        text: cap[0]
-      });
-      continue;
-    }
-
-    // def
-    if (top && (cap = this.rules.def.exec(src))) {
-      src = src.substring(cap[0].length);
-      if (cap[3]) cap[3] = cap[3].substring(1, cap[3].length - 1);
-      tag = cap[1].toLowerCase();
-      if (!this.tokens.links[tag]) {
-        this.tokens.links[tag] = {
-          href: cap[2],
-          title: cap[3]
-        };
-      }
-      continue;
-    }
-
-    // table (gfm)
-    if (top && (cap = this.rules.table.exec(src))) {
-      src = src.substring(cap[0].length);
-
-      item = {
-        type: 'table',
-        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
-        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3].replace(/(?: *\| *)?\n$/, '').split('\n')
-      };
-
-      for (i = 0; i < item.align.length; i++) {
-        if (/^ *-+: *$/.test(item.align[i])) {
-          item.align[i] = 'right';
-        } else if (/^ *:-+: *$/.test(item.align[i])) {
-          item.align[i] = 'center';
-        } else if (/^ *:-+ *$/.test(item.align[i])) {
-          item.align[i] = 'left';
-        } else {
-          item.align[i] = null;
-        }
-      }
-
-      for (i = 0; i < item.cells.length; i++) {
-        item.cells[i] = item.cells[i]
-          .replace(/^ *\| *| *\| *$/g, '')
-          .split(/ *\| */);
-      }
-
-      this.tokens.push(item);
-
-      continue;
-    }
-
-    // lheading
-    if (cap = this.rules.lheading.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'heading',
-        depth: cap[2] === '=' ? 1 : 2,
-        text: cap[1]
-      });
-      continue;
-    }
-
-    // top-level paragraph
-    if (top && (cap = this.rules.paragraph.exec(src))) {
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'paragraph',
-        text: cap[1].charAt(cap[1].length - 1) === '\n'
-          ? cap[1].slice(0, -1)
-          : cap[1]
-      });
-      continue;
-    }
-
-    // text
-    if (cap = this.rules.text.exec(src)) {
-      // Top-level should never reach here.
-      src = src.substring(cap[0].length);
-      this.tokens.push({
-        type: 'text',
-        text: cap[0]
-      });
-      continue;
-    }
-
-    if (src) {
-      throw new Error('Infinite loop on byte: ' + src.charCodeAt(0));
-    }
-  }
-
-  return this.tokens;
-};
-
-/**
- * Inline-Level Grammar
- */
-
-var inline = {
-  escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
-  autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
-  url: noop,
-  tag: /^<!--[\s\S]*?-->|^<\/?[a-zA-Z0-9\-]+(?:"[^"]*"|'[^']*'|\s[^<'">\/\s]*)*?\/?>/,
-  link: /^!?\[(inside)\]\(href\)/,
-  reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
-  nolink: /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\]/,
-  strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
-  em: /^_([^\s_](?:[^_]|__)+?[^\s_])_\b|^\*((?:\*\*|[^*])+?)\*(?!\*)/,
-  code: /^(`+)\s*([\s\S]*?[^`]?)\s*\1(?!`)/,
-  br: /^ {2,}\n(?!\s*$)/,
-  del: noop,
-  text: /^[\s\S]+?(?=[\\<!\[`*]|\b_| {2,}\n|$)/
-};
-
-inline._scheme = /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/;
-inline._email = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/;
-
-inline.autolink = edit(inline.autolink)
-  .replace('scheme', inline._scheme)
-  .replace('email', inline._email)
-  .getRegex()
-
-inline._inside = /(?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]]|\](?=[^\[]*\]))*/;
-inline._href = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
-
-inline.link = edit(inline.link)
-  .replace('inside', inline._inside)
-  .replace('href', inline._href)
-  .getRegex();
-
-inline.reflink = edit(inline.reflink)
-  .replace('inside', inline._inside)
-  .getRegex();
-
-/**
- * Normal Inline Grammar
- */
-
-inline.normal = merge({}, inline);
-
-/**
- * Pedantic Inline Grammar
- */
-
-inline.pedantic = merge({}, inline.normal, {
-  strong: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
-  em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/
-});
-
-/**
- * GFM Inline Grammar
- */
-
-inline.gfm = merge({}, inline.normal, {
-  escape: edit(inline.escape).replace('])', '~|])').getRegex(),
-  url: edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/)
-    .replace('email', inline._email)
-    .getRegex(),
-  _backpedal: /(?:[^?!.,:;*_~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_~)]+(?!$))+/,
-  del: /^~~(?=\S)([\s\S]*?\S)~~/,
-  text: edit(inline.text)
-    .replace(']|', '~]|')
-    .replace('|', '|https?://|ftp://|www\\.|[a-zA-Z0-9.!#$%&\'*+/=?^_`{\\|}~-]+@|')
-    .getRegex()
-});
-
-/**
- * GFM + Line Breaks Inline Grammar
- */
-
-inline.breaks = merge({}, inline.gfm, {
-  br: edit(inline.br).replace('{2,}', '*').getRegex(),
-  text: edit(inline.gfm.text).replace('{2,}', '*').getRegex()
-});
-
-/**
- * Inline Lexer & Compiler
- */
-
-function InlineLexer(links, options) {
-  this.options = options || marked.defaults;
-  this.links = links;
-  this.rules = inline.normal;
-  this.renderer = this.options.renderer || new Renderer();
-  this.renderer.options = this.options;
-
-  if (!this.links) {
-    throw new Error('Tokens array requires a `links` property.');
-  }
-
-  if (this.options.gfm) {
-    if (this.options.breaks) {
-      this.rules = inline.breaks;
-    } else {
-      this.rules = inline.gfm;
-    }
-  } else if (this.options.pedantic) {
-    this.rules = inline.pedantic;
-  }
-}
-
-/**
- * Expose Inline Rules
- */
-
-InlineLexer.rules = inline;
-
-/**
- * Static Lexing/Compiling Method
- */
-
-InlineLexer.output = function(src, links, options) {
-  var inline = new InlineLexer(links, options);
-  return inline.output(src);
-};
-
-/**
- * Lexing/Compiling
- */
-
-InlineLexer.prototype.output = function(src) {
-  var out = '',
-      link,
-      text,
-      href,
-      cap;
-
-  while (src) {
-    // escape
-    if (cap = this.rules.escape.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += cap[1];
-      continue;
-    }
-
-    // autolink
-    if (cap = this.rules.autolink.exec(src)) {
-      src = src.substring(cap[0].length);
-      if (cap[2] === '@') {
-        text = escape(this.mangle(cap[1]));
-        href = 'mailto:' + text;
-      } else {
-        text = escape(cap[1]);
-        href = text;
-      }
-      out += this.renderer.link(href, null, text);
-      continue;
-    }
-
-    // url (gfm)
-    if (!this.inLink && (cap = this.rules.url.exec(src))) {
-      cap[0] = this.rules._backpedal.exec(cap[0])[0];
-      src = src.substring(cap[0].length);
-      if (cap[2] === '@') {
-        text = escape(cap[0]);
-        href = 'mailto:' + text;
-      } else {
-        text = escape(cap[0]);
-        if (cap[1] === 'www.') {
-          href = 'http://' + text;
-        } else {
-          href = text;
-        }
-      }
-      out += this.renderer.link(href, null, text);
-      continue;
-    }
-
-    // tag
-    if (cap = this.rules.tag.exec(src)) {
-      if (!this.inLink && /^<a /i.test(cap[0])) {
-        this.inLink = true;
-      } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
-        this.inLink = false;
-      }
-      src = src.substring(cap[0].length);
-      out += this.options.sanitize
-        ? this.options.sanitizer
-          ? this.options.sanitizer(cap[0])
-          : escape(cap[0])
-        : cap[0]
-      continue;
-    }
-
-    // link
-    if (cap = this.rules.link.exec(src)) {
-      src = src.substring(cap[0].length);
-      this.inLink = true;
-      out += this.outputLink(cap, {
-        href: cap[2],
-        title: cap[3]
-      });
-      this.inLink = false;
-      continue;
-    }
-
-    // reflink, nolink
-    if ((cap = this.rules.reflink.exec(src))
-        || (cap = this.rules.nolink.exec(src))) {
-      src = src.substring(cap[0].length);
-      link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
-      link = this.links[link.toLowerCase()];
-      if (!link || !link.href) {
-        out += cap[0].charAt(0);
-        src = cap[0].substring(1) + src;
-        continue;
-      }
-      this.inLink = true;
-      out += this.outputLink(cap, link);
-      this.inLink = false;
-      continue;
-    }
-
-    // strong
-    if (cap = this.rules.strong.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.strong(this.output(cap[2] || cap[1]));
-      continue;
-    }
-
-    // em
-    if (cap = this.rules.em.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.em(this.output(cap[2] || cap[1]));
-      continue;
-    }
-
-    // code
-    if (cap = this.rules.code.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.codespan(escape(cap[2].trim(), true));
-      continue;
-    }
-
-    // br
-    if (cap = this.rules.br.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.br();
-      continue;
-    }
-
-    // del (gfm)
-    if (cap = this.rules.del.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.del(this.output(cap[1]));
-      continue;
-    }
-
-    // text
-    if (cap = this.rules.text.exec(src)) {
-      src = src.substring(cap[0].length);
-      out += this.renderer.text(escape(this.smartypants(cap[0])));
-      continue;
-    }
-
-    if (src) {
-      throw new Error('Infinite loop on byte: ' + src.charCodeAt(0));
-    }
-  }
-
-  return out;
-};
-
-/**
- * Compile Link
- */
-
-InlineLexer.prototype.outputLink = function(cap, link) {
-  var href = escape(link.href),
-      title = link.title ? escape(link.title) : null;
-
-  return cap[0].charAt(0) !== '!'
-    ? this.renderer.link(href, title, this.output(cap[1]))
-    : this.renderer.image(href, title, escape(cap[1]));
-};
-
-/**
- * Smartypants Transformations
- */
-
-InlineLexer.prototype.smartypants = function(text) {
-  if (!this.options.smartypants) return text;
-  return text
-    // em-dashes
-    .replace(/---/g, '\u2014')
-    // en-dashes
-    .replace(/--/g, '\u2013')
-    // opening singles
-    .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
-    // closing singles & apostrophes
-    .replace(/'/g, '\u2019')
-    // opening doubles
-    .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
-    // closing doubles
-    .replace(/"/g, '\u201d')
-    // ellipses
-    .replace(/\.{3}/g, '\u2026');
-};
-
-/**
- * Mangle Links
- */
-
-InlineLexer.prototype.mangle = function(text) {
-  if (!this.options.mangle) return text;
-  var out = '',
-      l = text.length,
-      i = 0,
-      ch;
-
-  for (; i < l; i++) {
-    ch = text.charCodeAt(i);
-    if (Math.random() > 0.5) {
-      ch = 'x' + ch.toString(16);
-    }
-    out += '&#' + ch + ';';
-  }
-
-  return out;
-};
-
-/**
- * Renderer
- */
-
-function Renderer(options) {
-  this.options = options || {};
-}
-
-Renderer.prototype.code = function(code, lang, escaped) {
-  if (this.options.highlight) {
-    var out = this.options.highlight(code, lang);
-    if (out != null && out !== code) {
-      escaped = true;
-      code = out;
-    }
-  }
-
-  if (!lang) {
-    return '<pre><code>'
-      + (escaped ? code : escape(code, true))
-      + '\n</code></pre>';
-  }
-
-  return '<pre><code class="'
-    + this.options.langPrefix
-    + escape(lang, true)
-    + '">'
-    + (escaped ? code : escape(code, true))
-    + '\n</code></pre>\n';
-};
-
-Renderer.prototype.blockquote = function(quote) {
-  return '<blockquote>\n' + quote + '</blockquote>\n';
-};
-
-Renderer.prototype.html = function(html) {
-  return html;
-};
-
-Renderer.prototype.heading = function(text, level, raw) {
-  return '<h'
-    + level
-    + ' id="'
-    + this.options.headerPrefix
-    + raw.toLowerCase().replace(/[^\w]+/g, '-')
-    + '">'
-    + text
-    + '</h'
-    + level
-    + '>\n';
-};
-
-Renderer.prototype.hr = function() {
-  return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
-};
-
-Renderer.prototype.list = function(body, ordered, start) {
-  var type = ordered ? 'ol' : 'ul',
-      startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
-  return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
-};
-
-Renderer.prototype.listitem = function(text) {
-  return '<li>' + text + '</li>\n';
-};
-
-Renderer.prototype.paragraph = function(text) {
-  return '<p>' + text + '</p>\n';
-};
-
-Renderer.prototype.table = function(header, body) {
-  return '<table>\n'
-    + '<thead>\n'
-    + header
-    + '</thead>\n'
-    + '<tbody>\n'
-    + body
-    + '</tbody>\n'
-    + '</table>\n';
-};
-
-Renderer.prototype.tablerow = function(content) {
-  return '<tr>\n' + content + '</tr>\n';
-};
-
-Renderer.prototype.tablecell = function(content, flags) {
-  var type = flags.header ? 'th' : 'td';
-  var tag = flags.align
-    ? '<' + type + ' style="text-align:' + flags.align + '">'
-    : '<' + type + '>';
-  return tag + content + '</' + type + '>\n';
-};
-
-// span level renderer
-Renderer.prototype.strong = function(text) {
-  return '<strong>' + text + '</strong>';
-};
-
-Renderer.prototype.em = function(text) {
-  return '<em>' + text + '</em>';
-};
-
-Renderer.prototype.codespan = function(text) {
-  return '<code>' + text + '</code>';
-};
-
-Renderer.prototype.br = function() {
-  return this.options.xhtml ? '<br/>' : '<br>';
-};
-
-Renderer.prototype.del = function(text) {
-  return '<del>' + text + '</del>';
-};
-
-Renderer.prototype.link = function(href, title, text) {
-  if (this.options.sanitize) {
-    try {
-      var prot = decodeURIComponent(unescape(href))
-        .replace(/[^\w:]/g, '')
-        .toLowerCase();
-    } catch (e) {
-      return text;
-    }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-      return text;
-    }
-  }
-  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
-    href = resolveUrl(this.options.baseUrl, href);
-  }
-  var out = '<a href="' + href + '"';
-  if (title) {
-    out += ' title="' + title + '"';
-  }
-  out += '>' + text + '</a>';
-  return out;
-};
-
-Renderer.prototype.image = function(href, title, text) {
-  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
-    href = resolveUrl(this.options.baseUrl, href);
-  }
-  var out = '<img src="' + href + '" alt="' + text + '"';
-  if (title) {
-    out += ' title="' + title + '"';
-  }
-  out += this.options.xhtml ? '/>' : '>';
-  return out;
-};
-
-Renderer.prototype.text = function(text) {
-  return text;
-};
-
-/**
- * TextRenderer
- * returns only the textual part of the token
- */
-
-function TextRenderer() {}
-
-// no need for block level renderers
-
-TextRenderer.prototype.strong =
-TextRenderer.prototype.em =
-TextRenderer.prototype.codespan =
-TextRenderer.prototype.del =
-TextRenderer.prototype.text = function (text) {
-  return text;
-}
-
-TextRenderer.prototype.link =
-TextRenderer.prototype.image = function(href, title, text) {
-  return '' + text;
-}
-
-TextRenderer.prototype.br = function() {
-  return '';
-}
-
-/**
- * Parsing & Compiling
- */
-
-function Parser(options) {
-  this.tokens = [];
-  this.token = null;
-  this.options = options || marked.defaults;
-  this.options.renderer = this.options.renderer || new Renderer();
-  this.renderer = this.options.renderer;
-  this.renderer.options = this.options;
-}
-
-/**
- * Static Parse Method
- */
-
-Parser.parse = function(src, options) {
-  var parser = new Parser(options);
-  return parser.parse(src);
-};
-
-/**
- * Parse Loop
- */
-
-Parser.prototype.parse = function(src) {
-  this.inline = new InlineLexer(src.links, this.options);
-  // use an InlineLexer with a TextRenderer to extract pure text
-  this.inlineText = new InlineLexer(
-    src.links,
-    merge({}, this.options, {renderer: new TextRenderer()})
-  );
-  this.tokens = src.reverse();
-
-  var out = '';
-  while (this.next()) {
-    out += this.tok();
-  }
-
-  return out;
-};
-
-/**
- * Next Token
- */
-
-Parser.prototype.next = function() {
-  return this.token = this.tokens.pop();
-};
-
-/**
- * Preview Next Token
- */
-
-Parser.prototype.peek = function() {
-  return this.tokens[this.tokens.length - 1] || 0;
-};
-
-/**
- * Parse Text Tokens
- */
-
-Parser.prototype.parseText = function() {
-  var body = this.token.text;
-
-  while (this.peek().type === 'text') {
-    body += '\n' + this.next().text;
-  }
-
-  return this.inline.output(body);
-};
-
-/**
- * Parse Current Token
- */
-
-Parser.prototype.tok = function() {
-  switch (this.token.type) {
-    case 'space': {
-      return '';
-    }
-    case 'hr': {
-      return this.renderer.hr();
-    }
-    case 'heading': {
-      return this.renderer.heading(
-        this.inline.output(this.token.text),
-        this.token.depth,
-        unescape(this.inlineText.output(this.token.text)));
-    }
-    case 'code': {
-      return this.renderer.code(this.token.text,
-        this.token.lang,
-        this.token.escaped);
-    }
-    case 'table': {
-      var header = '',
-          body = '',
-          i,
-          row,
-          cell,
-          j;
-
-      // header
-      cell = '';
-      for (i = 0; i < this.token.header.length; i++) {
-        cell += this.renderer.tablecell(
-          this.inline.output(this.token.header[i]),
-          { header: true, align: this.token.align[i] }
-        );
-      }
-      header += this.renderer.tablerow(cell);
-
-      for (i = 0; i < this.token.cells.length; i++) {
-        row = this.token.cells[i];
-
-        cell = '';
-        for (j = 0; j < row.length; j++) {
-          cell += this.renderer.tablecell(
-            this.inline.output(row[j]),
-            { header: false, align: this.token.align[j] }
-          );
-        }
-
-        body += this.renderer.tablerow(cell);
-      }
-      return this.renderer.table(header, body);
-    }
-    case 'blockquote_start': {
-      body = '';
-
-      while (this.next().type !== 'blockquote_end') {
-        body += this.tok();
-      }
-
-      return this.renderer.blockquote(body);
-    }
-    case 'list_start': {
-      body = '';
-      var ordered = this.token.ordered,
-          start = this.token.start;
-
-      while (this.next().type !== 'list_end') {
-        body += this.tok();
-      }
-
-      return this.renderer.list(body, ordered, start);
-    }
-    case 'list_item_start': {
-      body = '';
-
-      while (this.next().type !== 'list_item_end') {
-        body += this.token.type === 'text'
-          ? this.parseText()
-          : this.tok();
-      }
-
-      return this.renderer.listitem(body);
-    }
-    case 'loose_item_start': {
-      body = '';
-
-      while (this.next().type !== 'list_item_end') {
-        body += this.tok();
-      }
-
-      return this.renderer.listitem(body);
-    }
-    case 'html': {
-      var html = !this.token.pre && !this.options.pedantic
-        ? this.inline.output(this.token.text)
-        : this.token.text;
-      return this.renderer.html(html);
-    }
-    case 'paragraph': {
-      return this.renderer.paragraph(this.inline.output(this.token.text));
-    }
-    case 'text': {
-      return this.renderer.paragraph(this.parseText());
-    }
-  }
-};
-
-/**
- * Helpers
- */
-
-function escape(html, encode) {
-  return html
-    .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function unescape(html) {
-  // explicitly match decimal, hex, and named HTML entities
-  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function(_, n) {
-    n = n.toLowerCase();
-    if (n === 'colon') return ':';
-    if (n.charAt(0) === '#') {
-      return n.charAt(1) === 'x'
-        ? String.fromCharCode(parseInt(n.substring(2), 16))
-        : String.fromCharCode(+n.substring(1));
-    }
-    return '';
-  });
-}
-
-function edit(regex, opt) {
-  regex = regex.source;
-  opt = opt || '';
-  return {
-    replace: function(name, val) {
-      val = val.source || val;
-      val = val.replace(/(^|[^\[])\^/g, '$1');
-      regex = regex.replace(name, val);
-      return this;
-    },
-    getRegex: function() {
-      return new RegExp(regex, opt);
-    }
-  };
-}
-
-function resolveUrl(base, href) {
-  if (!baseUrls[' ' + base]) {
-    // we can ignore everything in base after the last slash of its path component,
-    // but we might need to add _that_
-    // https://tools.ietf.org/html/rfc3986#section-3
-    if (/^[^:]+:\/*[^/]*$/.test(base)) {
-      baseUrls[' ' + base] = base + '/';
-    } else {
-      baseUrls[' ' + base] = base.replace(/[^/]*$/, '');
-    }
-  }
-  base = baseUrls[' ' + base];
-
-  if (href.slice(0, 2) === '//') {
-    return base.replace(/:[\s\S]*/, ':') + href;
-  } else if (href.charAt(0) === '/') {
-    return base.replace(/(:\/*[^/]*)[\s\S]*/, '$1') + href;
-  } else {
-    return base + href;
-  }
-}
-var baseUrls = {};
-var originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
-
-function noop() {}
-noop.exec = noop;
-
-function merge(obj) {
-  var i = 1,
-      target,
-      key;
-
-  for (; i < arguments.length; i++) {
-    target = arguments[i];
-    for (key in target) {
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        obj[key] = target[key];
-      }
-    }
-  }
-
-  return obj;
-}
-
-/**
- * Marked
- */
-
-function marked(src, opt, callback) {
-  // throw error in case of non string input
-  if (typeof src === 'undefined' || src === null) {
-    throw new Error('marked(): input parameter is undefined or null');
-  }
-  if (typeof src !== 'string') {
-    throw new Error('marked(): input parameter is of type '
-      + Object.prototype.toString.call(src) + ', string expected');
-  }
-
-  if (callback || typeof opt === 'function') {
-    if (!callback) {
-      callback = opt;
-      opt = null;
-    }
-
-    opt = merge({}, marked.defaults, opt || {});
-
-    var highlight = opt.highlight,
-        tokens,
-        pending,
-        i = 0;
-
-    try {
-      tokens = Lexer.lex(src, opt)
-    } catch (e) {
-      return callback(e);
-    }
-
-    pending = tokens.length;
-
-    var done = function(err) {
-      if (err) {
-        opt.highlight = highlight;
-        return callback(err);
-      }
-
-      var out;
-
-      try {
-        out = Parser.parse(tokens, opt);
-      } catch (e) {
-        err = e;
-      }
-
-      opt.highlight = highlight;
-
-      return err
-        ? callback(err)
-        : callback(null, out);
-    };
-
-    if (!highlight || highlight.length < 3) {
-      return done();
-    }
-
-    delete opt.highlight;
-
-    if (!pending) return done();
-
-    for (; i < tokens.length; i++) {
-      (function(token) {
-        if (token.type !== 'code') {
-          return --pending || done();
-        }
-        return highlight(token.text, token.lang, function(err, code) {
-          if (err) return done(err);
-          if (code == null || code === token.text) {
-            return --pending || done();
-          }
-          token.text = code;
-          token.escaped = true;
-          --pending || done();
-        });
-      })(tokens[i]);
-    }
-
-    return;
-  }
-  try {
-    if (opt) opt = merge({}, marked.defaults, opt);
-    return Parser.parse(Lexer.lex(src, opt), opt);
-  } catch (e) {
-    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    if ((opt || marked.defaults).silent) {
-      return '<p>An error occurred:</p><pre>'
-        + escape(e.message + '', true)
-        + '</pre>';
-    }
-    throw e;
-  }
-}
-
-/**
- * Options
- */
-
-marked.options =
-marked.setOptions = function(opt) {
-  merge(marked.defaults, opt);
-  return marked;
-};
-
-marked.defaults = {
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  sanitizer: null,
-  mangle: true,
-  smartLists: false,
-  silent: false,
-  highlight: null,
-  langPrefix: 'lang-',
-  smartypants: false,
-  headerPrefix: '',
-  renderer: new Renderer(),
-  xhtml: false,
-  baseUrl: null
-};
-
-/**
- * Expose
- */
-
-marked.Parser = Parser;
-marked.parser = Parser.parse;
-
-marked.Renderer = Renderer;
-marked.TextRenderer = TextRenderer;
-
-marked.Lexer = Lexer;
-marked.lexer = Lexer.lex;
-
-marked.InlineLexer = InlineLexer;
-marked.inlineLexer = InlineLexer.output;
-
-marked.parse = marked;
-
-if (typeof module !== 'undefined' && typeof exports === 'object') {
-  module.exports = marked;
-} else if (typeof define === 'function' && define.amd) {
-  define(function() { return marked; });
-} else {
-  root.marked = marked;
-}
-})(this || (typeof window !== 'undefined' ? window : global));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
 'use strict';
 
 var _angular = require('angular');
@@ -51774,8 +50382,6 @@ require('./home');
 
 require('./profile');
 
-require('./article');
-
 require('./yuks');
 
 require('./noticias');
@@ -51801,9 +50407,13 @@ console.log("app.js");
 
 // Import our app functionaity
 
+// import './article';
+
 
 // Create and bootstrap application
-var requires = ['ui.router', 'ui.bootstrap', 'templates', 'app.layout', 'app.components', 'app.home', 'app.profile', 'app.article', 'app.yuks', 'app.noticias',
+var requires = ['ui.router', 'ui.bootstrap', 'templates', 'app.layout', 'app.components', 'app.home', 'app.profile',
+// 'app.article',
+'app.yuks', 'app.noticias',
 // 'app.listaryuks',
 'app.services', 'app.auth', 'app.settings', 'app.yuk_editor', 'app.noticias_editor', 'app.editor', "ngMessages", _angularToastr2.default];
 
@@ -51820,253 +50430,7 @@ _angular2.default.bootstrap(document, ['app'], {
   strictDi: true
 });
 
-},{"./article":16,"./auth":19,"./components":28,"./config/app.config":36,"./config/app.constants":37,"./config/app.run":38,"./config/app.templates":39,"./editor":43,"./home":47,"./layout":50,"./noticias":52,"./noticias_editor":55,"./profile":58,"./services":64,"./settings":72,"./yuk_editor":75,"./yuks":79,"angular":9,"angular-messages":2,"angular-toastr":4,"angular-ui-bootstrap":6,"angular-ui-router":7}],12:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ArticleActionsCtrl = function () {
-  ArticleActionsCtrl.$inject = ["Articles", "User", "$state"];
-  function ArticleActionsCtrl(Articles, User, $state) {
-    'ngInject';
-
-    _classCallCheck(this, ArticleActionsCtrl);
-
-    this._Articles = Articles;
-    this._$state = $state;
-
-    if (User.current) {
-      this.canModify = User.current.username === this.article.author.username;
-    } else {
-      this.canModify = false;
-    }
-  }
-
-  _createClass(ArticleActionsCtrl, [{
-    key: 'deleteArticle',
-    value: function deleteArticle() {
-      var _this = this;
-
-      this.isDeleting = true;
-      this._Articles.destroy(this.article.slug).then(function (success) {
-        return _this._$state.go('app.home');
-      }, function (err) {
-        return _this._$state.go('app.home');
-      });
-    }
-  }]);
-
-  return ArticleActionsCtrl;
-}();
-
-var ArticleActions = {
-  bindings: {
-    article: '='
-  },
-  controller: ArticleActionsCtrl,
-  templateUrl: 'article/article-actions.html'
-};
-
-exports.default = ArticleActions;
-
-},{}],13:[function(require,module,exports){
-'use strict';
-
-ArticleConfig.$inject = ["$stateProvider"];
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-function ArticleConfig($stateProvider) {
-  'ngInject';
-
-  $stateProvider.state('app.article', {
-    url: '/article/:slug',
-    controller: 'ArticleCtrl',
-    controllerAs: '$ctrl',
-    templateUrl: 'article/article.html',
-    title: 'Article',
-    resolve: {
-      article: ["Articles", "$state", "$stateParams", function article(Articles, $state, $stateParams) {
-        return Articles.get($stateParams.slug).then(function (article) {
-          return article;
-        }, function (err) {
-          return $state.go('app.home');
-        });
-      }]
-    }
-  });
-};
-
-exports.default = ArticleConfig;
-
-},{}],14:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _marked = require('marked');
-
-var _marked2 = _interopRequireDefault(_marked);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ArticleCtrl = function () {
-  ArticleCtrl.$inject = ["article", "User", "Comments", "$sce", "$rootScope"];
-  function ArticleCtrl(article, User, Comments, $sce, $rootScope) {
-    'ngInject';
-
-    var _this = this;
-
-    _classCallCheck(this, ArticleCtrl);
-
-    this.article = article;
-    this._Comments = Comments;
-
-    this.currentUser = User.current;
-
-    $rootScope.setPageTitle(this.article.title);
-
-    this.article.body = $sce.trustAsHtml((0, _marked2.default)(this.article.body, { sanitize: true }));
-
-    Comments.getAll(this.article.slug).then(function (comments) {
-      return _this.comments = comments;
-    });
-
-    this.resetCommentForm();
-  }
-
-  _createClass(ArticleCtrl, [{
-    key: 'resetCommentForm',
-    value: function resetCommentForm() {
-      this.commentForm = {
-        isSubmitting: false,
-        body: '',
-        errors: []
-      };
-    }
-  }, {
-    key: 'addComment',
-    value: function addComment() {
-      var _this2 = this;
-
-      this.commentForm.isSubmitting = true;
-
-      this._Comments.add(this.article.slug, this.commentForm.body).then(function (comment) {
-        _this2.comments.unshift(comment);
-        _this2.resetCommentForm();
-      }, function (err) {
-        _this2.commentForm.isSubmitting = false;
-        _this2.commentForm.errors = err.data.errors;
-      });
-    }
-  }, {
-    key: 'deleteComment',
-    value: function deleteComment(commentId, index) {
-      var _this3 = this;
-
-      this._Comments.destroy(commentId, this.article.slug).then(function (success) {
-        _this3.comments.splice(index, 1);
-      });
-    }
-  }]);
-
-  return ArticleCtrl;
-}();
-
-exports.default = ArticleCtrl;
-
-},{"marked":10}],15:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CommentCtrl = function CommentCtrl(User) {
-  'ngInject';
-
-  _classCallCheck(this, CommentCtrl);
-
-  if (User.current) {
-    this.canModify = User.current.username === this.data.author.username;
-  } else {
-    this.canModify = false;
-  }
-};
-CommentCtrl.$inject = ["User"];
-
-var Comment = {
-  bindings: {
-    data: '=',
-    deleteCb: '&'
-  },
-  controller: CommentCtrl,
-  templateUrl: 'article/comment.html'
-};
-
-exports.default = Comment;
-
-},{}],16:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _article = require('./article.config');
-
-var _article2 = _interopRequireDefault(_article);
-
-var _article3 = require('./article.controller');
-
-var _article4 = _interopRequireDefault(_article3);
-
-var _articleActions = require('./article-actions.component');
-
-var _articleActions2 = _interopRequireDefault(_articleActions);
-
-var _comment = require('./comment.component');
-
-var _comment2 = _interopRequireDefault(_comment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Create the module where our functionality can attach to
-var articleModule = _angular2.default.module('app.article', []);
-
-// Include our UI-Router config settings
-
-articleModule.config(_article2.default);
-
-// Controllers
-
-articleModule.controller('ArticleCtrl', _article4.default);
-
-articleModule.component('articleActions', _articleActions2.default);
-
-articleModule.component('comment', _comment2.default);
-
-exports.default = articleModule;
-
-},{"./article-actions.component":12,"./article.config":13,"./article.controller":14,"./comment.component":15,"angular":9}],17:[function(require,module,exports){
+},{"./auth":13,"./components":22,"./config/app.config":30,"./config/app.constants":31,"./config/app.run":32,"./config/app.templates":33,"./editor":37,"./home":41,"./layout":44,"./noticias":46,"./noticias_editor":49,"./profile":52,"./services":58,"./settings":66,"./yuk_editor":69,"./yuks":74,"angular":9,"angular-messages":2,"angular-toastr":4,"angular-ui-bootstrap":6,"angular-ui-router":7}],11:[function(require,module,exports){
 'use strict';
 
 AuthConfig.$inject = ["$stateProvider", "$httpProvider"];
@@ -52112,7 +50476,7 @@ function AuthConfig($stateProvider, $httpProvider) {
 
 exports.default = AuthConfig;
 
-},{}],18:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52163,7 +50527,7 @@ var AuthCtrl = function () {
 
 exports.default = AuthCtrl;
 
-},{}],19:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52203,7 +50567,7 @@ authModule.controller('SocialCtrl', _social2.default);
 
 exports.default = authModule;
 
-},{"./auth.config":17,"./auth.controller":18,"./social.controller":20,"angular":9}],20:[function(require,module,exports){
+},{"./auth.config":11,"./auth.controller":12,"./social.controller":14,"angular":9}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52248,7 +50612,7 @@ SocialCtrl.$inject = ["User", "$state", "$scope", "Toastr"];
 
 exports.default = SocialCtrl;
 
-},{}],21:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52289,8 +50653,23 @@ var YukActionsCtrl = function () {
   _createClass(YukActionsCtrl, [{
     key: 'deleteYuk',
     value: function deleteYuk() {
+      var _this2 = this;
+
+      //al borrar comprueba si estaba en home o en otro lado. SI ya esta en home recarga la pagina, si no va a home (siempre despues de eliminarlo)
       this.isDeleting = true;
-      this._Yuks.deleteYuk(this.yuk.slug).then(console.log(this._$state.current), this._$state.go('app.home')).then();
+      this._Yuks.deleteYuk(this.yuk.slug).then(function (success) {
+        return _this2._$state.current.name == "app.home" ? location.reload() : _this2._$state.go('app.home');
+      }, function (err) {
+        return _this2._$state.current.name == "app.home" ? location.reload() : _this2._$state.go('app.home');
+      }
+      // if(this._$state.current.name=="app.home"){
+      //   console.log("reload")
+      //   location.reload();
+      // }else{
+      //   console.log("go home");
+      //   this._$state.go('app.home')
+      // }
+      );
     }
   }]);
 
@@ -52307,7 +50686,7 @@ var YukActions = {
 
 exports.default = YukActions;
 
-},{}],22:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52323,7 +50702,7 @@ var ArticleMeta = {
 
 exports.default = ArticleMeta;
 
-},{}],23:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52376,7 +50755,7 @@ var ListPagination = {
 
 exports.default = ListPagination;
 
-},{}],24:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52459,7 +50838,7 @@ var DislikeBtn = {
 
 exports.default = DislikeBtn;
 
-},{}],25:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52524,7 +50903,7 @@ var FavoriteBtn = {
 
 exports.default = FavoriteBtn;
 
-},{}],26:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52540,18 +50919,29 @@ var FollowBtnCtrl = function () {
   function FollowBtnCtrl(Profile, User, $state) {
     'ngInject';
 
+    var _this = this;
+
     _classCallCheck(this, FollowBtnCtrl);
 
     this._Profile = Profile;
     this._User = User;
 
     this._$state = $state;
+
+    //comprobamos si el user del follow es igual al login
+    this.$onInit = function () {
+      if (User.current) {
+        _this.canModify = User.current.username === _this.user.username;
+      } else {
+        _this.canModify = false;
+      }
+    };
   }
 
   _createClass(FollowBtnCtrl, [{
     key: 'submit',
     value: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       this.isSubmitting = true;
 
@@ -52563,15 +50953,15 @@ var FollowBtnCtrl = function () {
       // If following already, unfollow
       if (this.user.following) {
         this._Profile.unfollow(this.user.username).then(function () {
-          _this.isSubmitting = false;
-          _this.user.following = false;
+          _this2.isSubmitting = false;
+          _this2.user.following = false;
         });
 
         // Otherwise, follow them
       } else {
         this._Profile.follow(this.user.username).then(function () {
-          _this.isSubmitting = false;
-          _this.user.following = true;
+          _this2.isSubmitting = false;
+          _this2.user.following = true;
         });
       }
     }
@@ -52590,7 +50980,7 @@ var FollowBtn = {
 
 exports.default = FollowBtn;
 
-},{}],27:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52673,7 +51063,7 @@ var LikeBtn = {
 
 exports.default = LikeBtn;
 
-},{}],28:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52787,7 +51177,7 @@ componentsModule.component('yukActions', _yukActions2.default);
 
 exports.default = componentsModule;
 
-},{"./actions/yuk-actions.component":21,"./article-helpers/article-meta.component":22,"./article-helpers/list-pagination.component":23,"./buttons/dislike-btn.component":24,"./buttons/favorite-btn.component":25,"./buttons/follow-btn.component":26,"./buttons/like-btn.component":27,"./list-errors.component":29,"./noticias-helpers/noticias-details.component":30,"./noticias-helpers/noticias-list.component":31,"./show-authed.directive":32,"./yuks-helpers/yuks-details.component":33,"./yuks-helpers/yuks-list.component":34,"./yuks-helpers/yuks-preview.component":35,"angular":9}],29:[function(require,module,exports){
+},{"./actions/yuk-actions.component":15,"./article-helpers/article-meta.component":16,"./article-helpers/list-pagination.component":17,"./buttons/dislike-btn.component":18,"./buttons/favorite-btn.component":19,"./buttons/follow-btn.component":20,"./buttons/like-btn.component":21,"./list-errors.component":23,"./noticias-helpers/noticias-details.component":24,"./noticias-helpers/noticias-list.component":25,"./show-authed.directive":26,"./yuks-helpers/yuks-details.component":27,"./yuks-helpers/yuks-list.component":28,"./yuks-helpers/yuks-preview.component":29,"angular":9}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52802,7 +51192,7 @@ var ListErrors = {
 
 exports.default = ListErrors;
 
-},{}],30:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52833,7 +51223,7 @@ var NoticiasDetail = {
 
 exports.default = NoticiasDetail;
 
-},{}],31:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52863,7 +51253,7 @@ var NoticiasList = {
 };
 exports.default = NoticiasList;
 
-},{}],32:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 ShowAuthed.$inject = ["User"];
@@ -52902,7 +51292,7 @@ function ShowAuthed(User) {
 
 exports.default = ShowAuthed;
 
-},{}],33:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52932,7 +51322,7 @@ var YuksDetail = {
 
 exports.default = YuksDetail;
 
-},{}],34:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52959,7 +51349,7 @@ var YuksList = {
 };
 exports.default = YuksList;
 
-},{}],35:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52974,7 +51364,7 @@ var YuksPreview = {
 
 exports.default = YuksPreview;
 
-},{}],36:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 AppConfig.$inject = ["$httpProvider", "$stateProvider", "$locationProvider", "$urlRouterProvider"];
@@ -53014,7 +51404,7 @@ function AppConfig($httpProvider, $stateProvider, $locationProvider, $urlRouterP
 
 exports.default = AppConfig;
 
-},{"./auth.interceptor":40}],37:[function(require,module,exports){
+},{"./auth.interceptor":34}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53029,7 +51419,7 @@ var AppConstants = {
 
 exports.default = AppConstants;
 
-},{}],38:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 AppRun.$inject = ["AppConstants", "$rootScope"];
@@ -53058,7 +51448,7 @@ function AppRun(AppConstants, $rootScope) {
 
 exports.default = AppRun;
 
-},{}],39:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 angular.module("templates", []).run(["$templateCache", function ($templateCache) {
@@ -53073,16 +51463,16 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("layout/app-view.html", "<app-header></app-header>\n\n<div ui-view></div>\n\n<app-footer></app-footer>\n");
   $templateCache.put("layout/footer.html", "<footer>\n  <div class=\"container\">\n    <a class=\"logo-font\" ui-sref=\"app.home\" ng-bind=\"::$ctrl.appName | lowercase\"></a>\n    <span class=\"attribution\">\n      &copy; {{::$ctrl.date | date:\'yyyy\'}}.\n      An interactive learning project from <a href=\"https://thinkster.io\">Thinkster</a>.\n      Code licensed under MIT.\n    </span>\n  </div>\n</footer>\n");
   $templateCache.put("layout/header.html", "<nav class=\"navbar navbar-light\">\n  <div class=\"container\">\n\n    <a class=\"navbar-brand\"\n      ui-sref=\"app.home\"\n      ng-bind=\"::$ctrl.appName | lowercase\">\n    </a>\n\n    <!-- Show this for logged out users -->\n    <ul show-authed=\"false\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.login\">\n          Sign in\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.register\">\n          Sign up\n        </a>\n      </li>\n\n    </ul>\n\n    <!-- Show this for logged in users -->\n    <ul show-authed=\"true\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.noticias_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New noticia\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.yuk_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New Yuk\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.settings\">\n          <i class=\"ion-gear-a\"></i>&nbsp;Settings\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.profile.main({ username: $ctrl.currentUser.username})\">\n          <img ng-src=\"{{$ctrl.currentUser.image}}\" class=\"user-pic\" />\n          {{ $ctrl.currentUser.username }}\n        </a>\n      </li>\n\n    </ul>\n\n\n  </div>\n</nav>\n");
+  $templateCache.put("noticias_editor/noticias_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <h1>EDITOR DE NOTICIAS</h1>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.noticia.titulo\"\n                type=\"text\"\n                placeholder=\"Titulo de la noticia\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.noticia.contenido\"\n                placeholder=\"Escribe tu Noticia\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.noticia.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publicar la nueva noticia\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("noticias/detailnoticia.html", "<div class=\"banner\" style=\"background-color: rgb(0, 172, 172);\" show-authed=\"false\">\n    <div class=\"container\">\n      <h1>DETAILS NOTICIAS</h1>\n    </div>\n  </div>\n  <div class=\"container page\">\n<noticias-detail noticia=\"$ctrl.noticia\"></noticias-detail>\n</div>");
   $templateCache.put("noticias/noticias.html", "<div class=\"banner\" style=\"background-color: rgb(0, 172, 172);\" show-authed=\"false\">\n  <div class=\"container\">\n    <h1>NOTICIAS</h1>\n    <p>Aqui tienes las noticias más recientes.</p>\n  </div>\n</div>\n<div class=\"container page\">\n<noticias-list noticias=\"$ctrl.noticias\"></noticias-list>\n</div>\n<!-- <div ng-repeat=\"noticia in noticias\">\n    <hr>\n    <a > {{noticia.titulo}}</a>\n    <a > {{noticia.contenido}}</a>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n      <span ng-repeat=\"t in noticia.tagList\">\n          <a>{{t}}</a>\n      </span>\n    </span>\n    <br>\n   <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n   <hr>\n</div> -->");
-  $templateCache.put("noticias_editor/noticias_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <h1>EDITOR DE NOTICIAS</h1>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.noticia.titulo\"\n                type=\"text\"\n                placeholder=\"Titulo de la noticia\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.noticia.contenido\"\n                placeholder=\"Escribe tu Noticia\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.noticia.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publicar la nueva noticia\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("profile/profile-articles.html", "<article-list limit=\"5\" list-config=\"$ctrl.listConfig\"></article-list>\n");
   $templateCache.put("profile/profile.html", "<div class=\"profile-page\">\n\n  <!-- User\'s basic info & action buttons -->\n  <div class=\"user-info\">\n    <div class=\"container\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n          <img ng-src=\"{{::$ctrl.profile.image}}\" class=\"user-img\" />\n          <h4 ng-bind=\"::$ctrl.profile.username\"></h4>\n          <p ng-bind=\"::$ctrl.profile.bio\"></p>\n\n          <a ui-sref=\"app.settings\"\n            class=\"btn btn-sm btn-outline-secondary action-btn\"\n            ng-show=\"$ctrl.isUser\">\n            <i class=\"ion-gear-a\"></i> Edit Profile Settings\n          </a>\n\n          <follow-btn user=\"$ctrl.profile\" ng-hide=\"$ctrl.isUser\"></follow-btn>\n\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Container where User\'s posts & favs are list w/ toggle tabs -->\n  <div class=\"container\">\n    <div class=\"row\">\n\n      <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n        <!-- Tabs for switching between author articles & favorites -->\n        <div class=\"articles-toggle\">\n          <ul class=\"nav nav-pills outline-active\">\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link active\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.main({username: $ctrl.profile.username})\">\n                My Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.favorites({username: $ctrl.profile.username})\">\n                Favorited Articles\n              </a>\n            </li>\n\n          </ul>\n        </div>\n\n        <!-- List of articles -->\n        <div ui-view></div>\n\n\n      </div>\n\n    <!-- End row & container divs -->\n    </div>\n  </div>\n\n</div>\n");
   $templateCache.put("settings/settings.html", "<div class=\"settings-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-6 offset-md-3 col-xs-12\">\n\n        <h1 class=\"text-xs-center\">Your Settings</h1>\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form ng-submit=\"$ctrl.submitForm()\">\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"URL of profile picture\"\n                ng-model=\"$ctrl.formData.image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"text\"\n                placeholder=\"Username\"\n                ng-model=\"$ctrl.formData.username\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control form-control-lg\"\n                rows=\"8\"\n                placeholder=\"Short bio about you\"\n                ng-model=\"$ctrl.formData.bio\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"email\"\n                placeholder=\"Email\"\n                ng-model=\"$ctrl.formData.email\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"New Password\"\n                ng-model=\"$ctrl.formData.password\" />\n            </fieldset>\n\n            <button class=\"btn btn-lg btn-primary pull-xs-right\"\n              type=\"submit\">\n              Update Settings\n            </button>\n\n          </fieldset>\n        </form>\n\n        <!-- Line break for logout button -->\n        <hr />\n\n        <button class=\"btn btn-outline-danger\"\n          ng-click=\"$ctrl.logout()\">\n          Or click here to logout.\n        </button>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("yuk_editor/yuk_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.yuk.title\"\n                type=\"text\"\n                placeholder=\"Yuk Title\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.yuk.content\"\n                placeholder=\"Escribe tu Yuk\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.yuk.image\"\n                type=\"text\"\n                placeholder=\"URL Image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.yuk.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publish New Yuk\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
-  $templateCache.put("yuks/comment.html", "<div class=\"card\">\n  <div class=\"card-block\">\n    <p class=\"card-text\" ng-bind=\"::$ctrl.data.body\"></p>\n  </div>\n  <div class=\"card-footer\">\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\">\n      <img ng-src=\"{{::$ctrl.data.author.image}}\" class=\"comment-author-img\" />\n    </a>\n    &nbsp;\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\" ng-bind=\"::$ctrl.data.author.username\">\n    </a>\n    <span class=\"date-posted\"\n      ng-bind=\"::$ctrl.data.createdAt | date: \'longDate\'\">\n    </span>\n    <span class=\"mod-options\" ng-show=\"$ctrl.canModify\">\n      <i class=\"ion-trash-a\" ng-click=\"$ctrl.deleteCb()\"></i>\n    </span>\n  </div>\n</div>\n");
-  $templateCache.put("yuks/detailyuk.html", "\n<div class=\"details\">\n    <yuks-detail yuk=\"$ctrl.yuk\"></yuks-detail>\n</div>\n\n");
-  $templateCache.put("yuks/yuks.html", "<div class=\"home-page\">\n    <!-- Splash banner that only shows when not logged in -->\n    <div class=\"banner\" style=\"background-color: rgb(172, 0, 0);\">\n      <div class=\"container\">\n        <p>{{$ctrl.namefilter}}</p>\n      </div>\n    </div>\n    <div class=\"container page\">\n      <div class=\"row\">\n        <div class=\"col-md-9\">\n          <div class=\"feed-toggle\">\n            <ul class=\"nav nav-pills outline-active\">\n            </ul>\n          </div>\n          <yuks-list yuks=\"$ctrl.yuksFiltrados\"></yuks-list>\n          <!-- <div ng-repeat=\"yuk in yuks\">\n            <hr>\n            <a > {{yuk.title}}</a>\n            <a > {{yuk.content}}</a>\n            <p id=\"author\">{{yuk.author.username}}</p>\n            <span><b>TAGS:</b>\n              <span ng-repeat=\"tag in yuk.tagList\">\n                  <a>{{tag}}</a>\n              </span>\n            </span>\n            <br>\n           <button ui-sref=\"app.detailyuk({slug:yuk.slug})\">Details</button> \n           <hr>\n        </div> -->\n        </div>\n      </div>\n    </div>\n  \n  </div>\n  ");
+  $templateCache.put("yuks/comment.html", "<!-- <div class=\"card\">\n  <div class=\"card-block\">\n    <p class=\"card-text\" ng-bind=\"::$ctrl.data.body\"></p>\n  </div>\n  <div class=\"card-footer\">\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\">\n      <img ng-src=\"{{::$ctrl.data.author.image}}\" class=\"comment-author-img\" />\n    </a>\n    &nbsp;\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\" ng-bind=\"::$ctrl.data.author.username\">\n    </a>\n    <span class=\"date-posted\"\n      ng-bind=\"::$ctrl.data.createdAt | date: \'longDate\'\">\n    </span>\n    <span class=\"mod-options\" ng-show=\"$ctrl.canModify\">\n      <i class=\"ion-trash-a\" ng-click=\"$ctrl.deleteCb()\"></i>\n    </span>\n  </div>\n</div> -->\n\n<div class=\"comment-main-level\">\n  <div class=\"comment-avatar\">\n    <img src=\"{{$ctrl.data.author.image}}\"/>\n  </div>\n  <div class=\"comment-box\">\n\n    <div class=\"comment-head\">\n      <h6 class=\"comment-name by-author\"><a ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\">{{$ctrl.data.author.username}}</a></h6>\n      <span class=\"date-posted\"\n        ng-bind=\"::$ctrl.data.createdAt | date: \'longDate\'\">\n      </span>\n      <span class=\"mod-options\" ng-show=\"$ctrl.canModify\">\n        <i class=\"ion-trash-a\" ng-click=\"$ctrl.deleteCb()\"></i>\n      </span>\n    </div>\n    <div class=\"comment-content\">\n      {{$ctrl.data.body}}    \n    </div>\n  </div>\n  </div>\n</div>\n");
+  $templateCache.put("yuks/detailyuk.html", "\n<div class=\"details\">\n    <yuks-detail yuk=\"$ctrl.yuk\"></yuks-detail>\n\n          <!-- COMETATIOS -->\n          <div class=\"comments-container\">\n            <h1>Comentarios</h1>\n            <!-- INPUT -->\n            <div class=\"row\">      \n                <div show-authed=\"true\" class=\"formulario-comment\">\n                  <list-errors from=\"$crl.commentForm.errors\"></list-errors>\n                  <form class=\"card comment-form\" ng-submit=\"$ctrl.addComment()\">\n                    <fieldset ng-disabled=\"$ctrl.commentForm.isSubmitting\">\n                      <div class=\"card-block\">\n                        <textarea class=\"form-control\"\n                          placeholder=\"Write a comment...\"\n                          rows=\"3\"\n                          ng-model=\"$ctrl.commentForm.body\"></textarea>\n                      </div>\n                      <div class=\"card-footer\">\n                        <img ng-src=\"{{::$ctrl.User.current.image}}\" class=\"comment-author-img\" />\n                        <button class=\"btn btn-sm btn-primary\" type=\"submit\">\n                         Post Comment\n                        </button>\n                      </div>\n                    </fieldset>\n                  </form>\n                </div>\n        \n                <div show-authed=\"false\">\n                  <a ui-sref=\"app.login\">Sign in</a> or <a ui-sref=\"app.register\">sign up</a> to add comments on this article.\n                </div>\n            </div>\n            <!-- COMMENTS -->\n            <comment ng-repeat=\"cmt in $ctrl.comments\"\n                data=\"cmt\"\n                delete-cb=\"$ctrl.deleteComment(cmt.id, $index)\">\n            </comment>\n          </div>\n    \n</div>\n\n");
+  $templateCache.put("yuks/yuks.html", "<div class=\"home-page\">\n    <!-- Splash banner that only shows when not logged in -->\n    <div class=\"banner\" style=\"background-color: rgb(172, 0, 0);\">\n      <div class=\"container\">\n        <p>{{$ctrl.namefilter}}</p>\n      </div>\n    </div>\n    <div class=\"container page\">\n      <div class=\"row\">\n        <div class=\"col-md-9\">\n          <button ng-click=\"$ctrl.removeFilter()\">Remove filters</button>\n          <yuks-list yuks=\"$ctrl.yuksFiltrados\"></yuks-list>\n          <!-- <div ng-repeat=\"yuk in yuks\">\n            <hr>\n            <a > {{yuk.title}}</a>\n            <a > {{yuk.content}}</a>\n            <p id=\"author\">{{yuk.author.username}}</p>\n            <span><b>TAGS:</b>\n              <span ng-repeat=\"tag in yuk.tagList\">\n                  <a>{{tag}}</a>\n              </span>\n            </span>\n            <br>\n           <button ui-sref=\"app.detailyuk({slug:yuk.slug})\">Details</button> \n           <hr>\n        </div> -->\n        </div>\n      </div>\n    </div>\n  \n  </div>\n  ");
   $templateCache.put("components/actions/yuk-actions.html", "<span ng-show=\"$ctrl.canModify\">\n    <a class=\"btn btn-sm btn-outline-secondary\"\n      ui-sref=\"app.yuk_editor({ slug: $ctrl.yuk.slug })\">\n      <i class=\"ion-edit\"></i> Edit Yuk\n    </a>\n\n    <button class=\"btn btn-sm btn-outline-danger\"\n      ng-class=\"{disabled: $ctrl.isDeleting}\"\n      ng-click=\"$ctrl.deleteYuk()\">\n      <i class=\"ion-trash-a\"></i> Delete Yuk\n    </button>\n  </span>\n\n<span ng-hide=\"$ctrl.canModify\">\n    <like-btn yuk=\"$ctrl.yuk\">\n        {{$ctrl.yuk.likesCount}}\n    </like-btn>\n    \n    <dislike-btn yuk=\"$ctrl.yuk\">\n        {{$ctrl.yuk.dislikesCount}}\n    </dislike-btn>\n</span>  \n");
   $templateCache.put("components/article-helpers/article-list.html", "<article-preview\n  article=\"article\"\n  ng-repeat=\"article in $ctrl.list\">\n</article-preview>\n\n<div class=\"article-preview\"\n  ng-hide=\"!$ctrl.loading\">\n  Loading articles...\n</div>\n\n<div class=\"article-preview\"\n  ng-show=\"!$ctrl.loading && !$ctrl.list.length\">\n  No articles are here... yet.\n</div>\n\n<list-pagination\n total-pages=\"$ctrl.listConfig.totalPages\"\n current-page=\"$ctrl.listConfig.currentPage\"\n ng-hide=\"$ctrl.listConfig.totalPages <= 1\">\n</list-pagination>\n");
   $templateCache.put("components/article-helpers/article-meta.html", "<div class=\"article-meta\">\n  <a ui-sref=\"app.profile.main({ username:$ctrl.article.author.username })\">\n    <img ng-src=\"{{$ctrl.article.author.image}}\" />\n  </a>\n\n  <div class=\"info\">\n    <a class=\"author\"\n      ui-sref=\"app.profile.main({ username:$ctrl.article.author.username })\"\n      ng-bind=\"$ctrl.article.author.username\">\n    </a>\n    <span class=\"date\"\n      ng-bind=\"$ctrl.article.createdAt | date: \'longDate\' \">\n    </span>\n  </div>\n\n  <ng-transclude></ng-transclude>\n</div>\n");
@@ -53090,7 +51480,7 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("components/article-helpers/list-pagination.html", "<nav>\n  <ul class=\"pagination\">\n\n    <li class=\"page-item\"\n      ng-class=\"{active: pageNumber === $ctrl.currentPage }\"\n      ng-repeat=\"pageNumber in $ctrl.pageRange($ctrl.totalPages)\"\n      ng-click=\"$ctrl.changePage(pageNumber)\">\n\n      <a class=\"page-link\" href=\"\">{{ pageNumber }}</a>\n\n    </li>\n\n  </ul>\n</nav>\n");
   $templateCache.put("components/buttons/dislike-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.disliked,\n    \'untoggled\': !$ctrl.yuk.disliked }\"\n    class=\"far fa-thumbs-down like-dislike-btn\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n");
   $templateCache.put("components/buttons/favorite-btn.html", "<button class=\"btn btn-sm\"\n  ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n              \'btn-outline-primary\': !$ctrl.article.favorited,\n              \'btn-primary\': $ctrl.article.favorited }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-heart\"></i> <ng-transclude></ng-transclude>\n</button>\n");
-  $templateCache.put("components/buttons/follow-btn.html", "<button\n  class=\"btn btn-sm action-btn\"\n  ng-class=\"{ \'disabled\': $ctrl.isSubmitting,\n              \'btn-outline-secondary\': !$ctrl.user.following,\n              \'btn-secondary\': $ctrl.user.following }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-plus-round\"></i>\n  &nbsp;\n  {{ $ctrl.user.following ? \'Unfollow\' : \'Follow\' }} {{ $ctrl.user.username }}\n</button>\n");
+  $templateCache.put("components/buttons/follow-btn.html", "<span ng-hide=\"$ctrl.canModify\">\n    <button\n    class=\"btn btn-sm action-btn\"\n    ng-class=\"{ \'disabled\': $ctrl.isSubmitting,\n                \'btn-outline-secondary\': !$ctrl.user.following,\n                \'btn-secondary\': $ctrl.user.following }\"\n    ng-click=\"$ctrl.submit()\">\n    <i class=\"ion-plus-round\"></i>\n    &nbsp;\n    {{ $ctrl.user.following ? \'Unfollow\' : \'Follow\' }} {{ $ctrl.user.username }}\n  </button>\n</span>\n\n<span ng-show=\"$ctrl.canModify\">\n  <a class=\"btn btn-sm btn-outline-secondary\"\n    ui-sref=\"app.profile.main({ username: $ctrl.user.username})\">Profile</a>\n</span>\n\n");
   $templateCache.put("components/buttons/like-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" class=\"far fa-thumbs-up like-dislike-btn\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.liked,\n    \'untoggled\': !$ctrl.yuk.liked }\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n    ");
   $templateCache.put("components/noticias-helpers/noticias-details.html", "<div class=\"noticia\">\n        <h2> {{$ctrl.noticia.titulo}}jj</h2>\n        <p> {{$ctrl.noticia.titulo}}</p>\n        <p>{{$ctrl.noticia.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.noticia.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <br>\n        <button ui-sref=\"app.listarnoticias\">Volver</button> \n</div>\n");
   $templateCache.put("components/noticias-helpers/noticias-list.html", "<div class=\"noticia\" ng-repeat=\"noticia in $ctrl.noticias\">\n    <hr>\n    <h3>{{noticia.titulo}}</h3>\n    <p>{{noticia.contenido}}</p>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n        <span ng-repeat=\"t in noticia.tagList\">\n            <a>{{t}}</a>\n        </span>\n    </span>\n    <br>\n    <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n</div>\n\n");
@@ -53099,7 +51489,7 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("components/yuks-helpers/yuks-preview.html", "\n<article class=\"yuk\">\n    <div class=\"leftyuk\">\n        <img class=\"image\" src=\"{{$ctrl.yuk.author.image}}\" alt=\"\">\n    </div>\n    <div class=\"rightyuk\">\n        <div class=\"info\">\n            <div class=\"yuk_title\">{{$ctrl.yuk.title}}</div>\n            <div class=\"yuk_body\">{{$ctrl.yuk.content}}</div>\n            <div class=\"yuk_author\">@{{$ctrl.yuk.author.username}}</div>\n        </div>\n        <div class=\"follow\">\n            <follow-btn user=\"$ctrl.yuk.author\"></follow-btn>\n        </div>\n\n        <div class=\"yuk_footer1\">\n            <div class=\"left_footer1\">\n                <span><b>TAGS:</b>\n                    <span ng-repeat=\"t in $ctrl.yuk.tagList\">\n                        <a>{{t}}</a>\n                    </span>\n                </span>\n            </div>\n            <div class=\"like_dislike\">\n                <yuk-actions yuk=\"$ctrl.yuk\"></yuk-actions>\n                <!-- <like-btn yuk=\"$ctrl.yuk\">\n                    {{$ctrl.yuk.likesCount}}\n                </like-btn>\n                <dislike-btn yuk=\"$ctrl.yuk\">\n                    {{$ctrl.yuk.dislikesCount}}\n                </dislike-btn> -->\n            </div>\n            <div class=\"rightyuk_footer1\">\n                <button class=\"btn btn-success\" ui-sref=\"app.detailyuk({slug:$ctrl.yuk.slug})\">Details</button> \n            </div>\n        </div>\n    </div>\n</article>\n<hr>");
 }]);
 
-},{}],40:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 authInterceptor.$inject = ["JWT", "AppConstants", "$window", "$q"];
@@ -53134,7 +51524,7 @@ function authInterceptor(JWT, AppConstants, $window, $q) {
 
 exports.default = authInterceptor;
 
-},{}],41:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 EditorConfig.$inject = ["$stateProvider"];
@@ -53177,7 +51567,7 @@ function EditorConfig($stateProvider) {
 
 exports.default = EditorConfig;
 
-},{}],42:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53246,7 +51636,7 @@ var EditorCtrl = function () {
 
 exports.default = EditorCtrl;
 
-},{}],43:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53280,7 +51670,7 @@ editorModule.controller('EditorCtrl', _editor4.default);
 
 exports.default = editorModule;
 
-},{"./editor.config":41,"./editor.controller":42,"angular":9}],44:[function(require,module,exports){
+},{"./editor.config":35,"./editor.controller":36,"angular":9}],38:[function(require,module,exports){
 'use strict';
 
 HomeConfig.$inject = ["$stateProvider"];
@@ -53318,7 +51708,7 @@ function HomeConfig($stateProvider) {
 
 exports.default = HomeConfig;
 
-},{}],45:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53379,7 +51769,7 @@ HomeCtrl.$inject = ["User", "yuks", "noticias", "yuktags", "AppConstants", "$sta
 
 exports.default = HomeCtrl;
 
-},{}],46:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53406,7 +51796,7 @@ var homeSlider = {
 
 exports.default = homeSlider;
 
-},{}],47:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53450,7 +51840,7 @@ homeModule.component('homeSliderCmp', _homeSlider2.default);
 
 exports.default = homeModule;
 
-},{"./home.config":44,"./home.controller":45,"./homeSlider.component":46,"angular":9}],48:[function(require,module,exports){
+},{"./home.config":38,"./home.controller":39,"./homeSlider.component":40,"angular":9}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53478,7 +51868,7 @@ var AppFooter = {
 
 exports.default = AppFooter;
 
-},{}],49:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53510,7 +51900,7 @@ var AppHeader = {
 
 exports.default = AppHeader;
 
-},{}],50:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53542,7 +51932,7 @@ layoutModule.component('appFooter', _footer2.default);
 
 exports.default = layoutModule;
 
-},{"./footer.component":48,"./header.component":49,"angular":9}],51:[function(require,module,exports){
+},{"./footer.component":42,"./header.component":43,"angular":9}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53566,7 +51956,7 @@ DetailNoticiaCtrl.$inject = ["noticia", "$scope"];
 
 exports.default = DetailNoticiaCtrl;
 
-},{}],52:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53621,7 +52011,7 @@ noticiasModule.controller('NoticiasCtrl', _noticias4.default);
 
 exports.default = noticiasModule;
 
-},{"./detailnoticia.controller":51,"./noticias.config":53,"./noticias.controller":54,"angular":9}],53:[function(require,module,exports){
+},{"./detailnoticia.controller":45,"./noticias.config":47,"./noticias.controller":48,"angular":9}],47:[function(require,module,exports){
 "use strict";
 
 NoticiasConfig.$inject = ["$stateProvider"];
@@ -53663,7 +52053,7 @@ function NoticiasConfig($stateProvider) {
 
 exports.default = NoticiasConfig;
 
-},{}],54:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53687,7 +52077,7 @@ NoticiasCtrl.$inject = ["noticias", "$state", "$scope", "$stateParams"];
 
 exports.default = NoticiasCtrl;
 
-},{}],55:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53722,7 +52112,7 @@ noticias_editorModule.controller('Noticias_EditorCtrl', _noticias_editor4.defaul
 
 exports.default = noticias_editorModule;
 
-},{"./noticias_editor.config":56,"./noticias_editor.controller":57,"angular":9}],56:[function(require,module,exports){
+},{"./noticias_editor.config":50,"./noticias_editor.controller":51,"angular":9}],50:[function(require,module,exports){
 'use strict';
 
 Noticias_EditorConfig.$inject = ["$stateProvider"];
@@ -53766,7 +52156,7 @@ function Noticias_EditorConfig($stateProvider) {
 
 exports.default = Noticias_EditorConfig;
 
-},{}],57:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53837,7 +52227,7 @@ var Noticias_EditorCtrl = function () {
 
 exports.default = Noticias_EditorCtrl;
 
-},{}],58:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53877,7 +52267,7 @@ profileModule.controller('ProfileArticlesCtrl', _profileArticles2.default);
 
 exports.default = profileModule;
 
-},{"./profile-articles.controller":59,"./profile.config":60,"./profile.controller":61,"angular":9}],59:[function(require,module,exports){
+},{"./profile-articles.controller":53,"./profile.config":54,"./profile.controller":55,"angular":9}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53915,7 +52305,7 @@ ProfileArticlesCtrl.$inject = ["profile", "$state", "$rootScope"];
 
 exports.default = ProfileArticlesCtrl;
 
-},{}],60:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 ProfileConfig.$inject = ["$stateProvider"];
@@ -53958,7 +52348,7 @@ function ProfileConfig($stateProvider) {
 
 exports.default = ProfileConfig;
 
-},{}],61:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53985,7 +52375,7 @@ ProfileCtrl.$inject = ["profile", "User"];
 
 exports.default = ProfileCtrl;
 
-},{}],62:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54102,7 +52492,7 @@ var Articles = function () {
 
 exports.default = Articles;
 
-},{}],63:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54131,7 +52521,7 @@ var Comments = function () {
     key: 'add',
     value: function add(slug, payload) {
       return this._$http({
-        url: this._AppConstants.api + '/articles/' + slug + '/comments',
+        url: this._AppConstants.api + '/yuks/' + slug + '/comments',
         method: 'POST',
         data: { comment: { body: payload } }
       }).then(function (res) {
@@ -54142,7 +52532,7 @@ var Comments = function () {
     key: 'getAll',
     value: function getAll(slug) {
       return this._$http({
-        url: this._AppConstants.api + '/articles/' + slug + '/comments',
+        url: this._AppConstants.api + '/yuks/' + slug + '/comments',
         method: 'GET'
       }).then(function (res) {
         return res.data.comments;
@@ -54152,7 +52542,7 @@ var Comments = function () {
     key: 'destroy',
     value: function destroy(commentId, articleSlug) {
       return this._$http({
-        url: this._AppConstants.api + '/articles/' + articleSlug + '/comments/' + commentId,
+        url: this._AppConstants.api + '/yuks/' + articleSlug + '/comments/' + commentId,
         method: 'DELETE'
       });
     }
@@ -54163,7 +52553,7 @@ var Comments = function () {
 
 exports.default = Comments;
 
-},{}],64:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54235,7 +52625,7 @@ servicesModule.service('Toastr', _toastr2.default);
 
 exports.default = servicesModule;
 
-},{"./articles.service":62,"./comments.service":63,"./jwt.service":65,"./noticias.service":66,"./profile.service":67,"./tags.service":68,"./toastr.service":69,"./user.service":70,"./yuks.service":71,"angular":9}],65:[function(require,module,exports){
+},{"./articles.service":56,"./comments.service":57,"./jwt.service":59,"./noticias.service":60,"./profile.service":61,"./tags.service":62,"./toastr.service":63,"./user.service":64,"./yuks.service":65,"angular":9}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54279,7 +52669,7 @@ var JWT = function () {
 
 exports.default = JWT;
 
-},{}],66:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54398,7 +52788,7 @@ var Noticias = function () {
 
 exports.default = Noticias;
 
-},{}],67:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54457,7 +52847,7 @@ var Profile = function () {
 
 exports.default = Profile;
 
-},{}],68:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54517,7 +52907,7 @@ var Tags = function () {
 
 exports.default = Tags;
 
-},{}],69:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54557,7 +52947,7 @@ var Toastr = function () {
 
 exports.default = Toastr;
 
-},{}],70:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54693,7 +53083,7 @@ var User = function () {
 
 exports.default = User;
 
-},{}],71:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54837,7 +53227,7 @@ var Yuks = function () {
 
 exports.default = Yuks;
 
-},{}],72:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54870,7 +53260,7 @@ settingsModule.controller('SettingsCtrl', _settings4.default);
 
 exports.default = settingsModule;
 
-},{"./settings.config":73,"./settings.controller":74,"angular":9}],73:[function(require,module,exports){
+},{"./settings.config":67,"./settings.controller":68,"angular":9}],67:[function(require,module,exports){
 'use strict';
 
 SettingsConfig.$inject = ["$stateProvider"];
@@ -54896,7 +53286,7 @@ function SettingsConfig($stateProvider) {
 
 exports.default = SettingsConfig;
 
-},{}],74:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54947,7 +53337,7 @@ var SettingsCtrl = function () {
 
 exports.default = SettingsCtrl;
 
-},{}],75:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54982,7 +53372,7 @@ yuk_editorModule.controller('Yuk_EditorCtrl', _yuk_editor4.default);
 
 exports.default = yuk_editorModule;
 
-},{"./yuk_editor.config":76,"./yuk_editor.controller":77,"angular":9}],76:[function(require,module,exports){
+},{"./yuk_editor.config":70,"./yuk_editor.controller":71,"angular":9}],70:[function(require,module,exports){
 'use strict';
 
 Yuk_EditorConfig.$inject = ["$stateProvider"];
@@ -55026,7 +53416,7 @@ function Yuk_EditorConfig($stateProvider) {
 
 exports.default = Yuk_EditorConfig;
 
-},{}],77:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55098,7 +53488,7 @@ var Yuk_EditorCtrl = function () {
 
 exports.default = Yuk_EditorCtrl;
 
-},{}],78:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55107,26 +53497,111 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DetailYukCtrl = function DetailYukCtrl(User, yuk, Tags, AppConstants, $state, $scope) {
-
-  // constructor(User, Tags, AppConstants, $scope) {
+var CommentCtrl = function CommentCtrl(User) {
   'ngInject';
-  // console.log(yuk)
-  // console.log("Yuks controller");
-  // this.appName = AppConstants.appName;
-  // this._$scope = $scope;
 
-  _classCallCheck(this, DetailYukCtrl);
+  var _this = this;
 
-  this.yuk = yuk;
-  // $scope.yuk = this.yuk;
+  _classCallCheck(this, CommentCtrl);
 
+  console.log("controller comment");
+  this.$onInit = function () {
+    console.log(_this.data);
+    if (User.current) {
+      _this.canModify = User.current.username === _this.data.author.username;
+    } else {
+      _this.canModify = false;
+    }
+  };
 };
-DetailYukCtrl.$inject = ["User", "yuk", "Tags", "AppConstants", "$state", "$scope"];
+CommentCtrl.$inject = ["User"];
+
+var Comment = {
+  bindings: {
+    data: '=',
+    deleteCb: '&'
+  },
+  controller: CommentCtrl,
+  templateUrl: 'yuks/comment.html'
+};
+
+exports.default = Comment;
+
+},{}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DetailYukCtrl = function () {
+  DetailYukCtrl.$inject = ["User", "yuk", "Comments", "Tags", "AppConstants", "$state", "$scope"];
+  function DetailYukCtrl(User, yuk, Comments, Tags, AppConstants, $state, $scope) {
+    'ngInject';
+
+    var _this = this;
+
+    _classCallCheck(this, DetailYukCtrl);
+
+    console.log("controller detail yuk");
+    this.yuk = yuk;
+    this._Comments = Comments;
+
+    this.$onInit = function () {
+      // console.log(this.yuk)
+      Comments.getAll(_this.yuk.slug).then(function (comments) {
+        return _this.comments = comments;
+      });
+    };
+
+    this.resetCommentForm();
+  }
+
+  _createClass(DetailYukCtrl, [{
+    key: 'resetCommentForm',
+    value: function resetCommentForm() {
+      this.commentForm = {
+        isSubmitting: false,
+        body: '',
+        errors: []
+      };
+    }
+  }, {
+    key: 'addComment',
+    value: function addComment() {
+      var _this2 = this;
+
+      this.commentForm.isSubmitting = true;
+
+      this._Comments.add(this.yuk.slug, this.commentForm.body).then(function (comment) {
+        _this2.comments.unshift(comment);
+        _this2.resetCommentForm();
+      }, function (err) {
+        _this2.commentForm.isSubmitting = false;
+        _this2.commentForm.errors = err.data.errors;
+      });
+    }
+  }, {
+    key: 'deleteComment',
+    value: function deleteComment(commentId, index) {
+      var _this3 = this;
+
+      this._Comments.destroy(commentId, this.yuk.slug).then(function (success) {
+        _this3.comments.splice(index, 1);
+      });
+    }
+  }]);
+
+  return DetailYukCtrl;
+}();
 
 exports.default = DetailYukCtrl;
 
-},{}],79:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55149,6 +53624,10 @@ var _yuks3 = require('./yuks.controller');
 
 var _yuks4 = _interopRequireDefault(_yuks3);
 
+var _comment = require('./comment.component');
+
+var _comment2 = _interopRequireDefault(_comment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 console.log("index.js del yukss");
@@ -55159,7 +53638,6 @@ var yuksModule = _angular2.default.module('app.yuks', []);
 
 yuksModule.config(_yuks2.default);
 
-console.log("index.js del yuks despues del config");
 // Controllers
 
 yuksModule.controller('DetailYukCtrl', _detailyuk2.default);
@@ -55169,13 +53647,11 @@ yuksModule.controller('ListYuks', _yuks4.default);
 // import YuksActions from './yuks-actions.component';
 // yuksModule.component('yuksActions', YuksActions);
 
-// import Comment from './comment.component';
-// yuksModule.component('comment', Comment);
-
+yuksModule.component('comment', _comment2.default);
 
 exports.default = yuksModule;
 
-},{"./detailyuk.controller":78,"./yuks.config":80,"./yuks.controller":81,"angular":9}],80:[function(require,module,exports){
+},{"./comment.component":72,"./detailyuk.controller":73,"./yuks.config":75,"./yuks.controller":76,"angular":9}],75:[function(require,module,exports){
 'use strict';
 
 YuksConfig.$inject = ["$stateProvider"];
@@ -55218,7 +53694,7 @@ function YuksConfig($stateProvider) {
 
 exports.default = YuksConfig;
 
-},{}],81:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55238,27 +53714,28 @@ var ListYuks = function ListYuks(yuks, $scope, $state, $stateParams) {
   this.yuks = yuks;
   $scope.yuks = this.yuks;
   this.filter = $stateParams.filter;
-  console.log;
   //filtro
   var yuksFiltrados = new Array();
   this.yuks.forEach(function (yuk) {
     // console.log(yuk.tagList)
     if (_this.filter) {
       _this.namefilter = "Yuks con el tag: " + _this.filter;
-      console.log(_this.filter);
       if (yuk.tagList.includes(_this.filter)) {
-        console.log(yuk);
         yuksFiltrados.push(yuk);
       }
     } else {
       _this.namefilter = "Todos los Yuks";
-      console.log("sin filtro");
       yuksFiltrados = _this.yuks;
     }
   });
   console.log(yuksFiltrados);
   this.yuksFiltrados = yuksFiltrados;
 }
+
+// removeFilter(){
+//   console.log($stateParams.filter);
+//   this.filter = false;
+// }
 
 // changeList(newList) {
 //   this._$scope.$broadcast('setListTo', newList);
@@ -55270,4 +53747,4 @@ ListYuks.$inject = ["yuks", "$scope", "$state", "$stateParams"];
 
 exports.default = ListYuks;
 
-},{}]},{},[11]);
+},{}]},{},[10]);

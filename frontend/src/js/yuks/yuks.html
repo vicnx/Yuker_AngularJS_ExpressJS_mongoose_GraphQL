@@ -8,10 +8,7 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
-          <div class="feed-toggle">
-            <ul class="nav nav-pills outline-active">
-            </ul>
-          </div>
+          <button ng-click="$ctrl.removeFilter()">Remove filters</button>
           <yuks-list yuks="$ctrl.yuksFiltrados"></yuks-list>
           <!-- <div ng-repeat="yuk in yuks">
             <hr>
