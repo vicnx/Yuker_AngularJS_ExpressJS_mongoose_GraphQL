@@ -1,17 +1,20 @@
 class HomeCtrl {
-  constructor(User, yuks,noticias, yuktags,AppConstants, $state,$scope) {
+  // constructor(User, yuks,noticias, yuktags,AppConstants, $state,$scope) {
+  constructor(User,noticias, yuktags,AppConstants, $state,$scope) {
+
     'ngInject';
-    console.log(noticias)
-    console.log("Home controller");
+    // console.log(noticias)
+    // console.log("Home controller");
     this.appName = AppConstants.appName;
     this._$scope = $scope;
-    this.yuks = yuks;
-    console.log(this.yuks);
+    // this.yuks = yuks;
+    // console.log(this.yuks);
     this.noticias = noticias;
     this.tagsYuks = yuktags;
-    $scope.yuks = this.yuks;
-    // Get list of all tags
-    console.log(this.yuktags);
+    // $scope.yuks = this.yuks;
+    // console.log(this.yuktags);
+
+    //UTILIZO LAS TAGS COMO CATEGORIAS
 
     // Tags
     //   .getAllYuksTags()
@@ -32,16 +35,18 @@ class HomeCtrl {
     //   );
       
 
-    // Set current list to either feed or all, depending on auth status.
-    // this.listConfig = {
-    //   type: User.current ? 'feed' : 'all'
-    // };
+    // Si no hay user login ponemos el type del list en ALL.
+    this.listConfig = {
+      type: User.current ? 'feed' : 'all'
+    };
+    console.log(this.listConfig);
 
   }
 
-  // changeList(newList) {
-  //   this._$scope.$broadcast('setListTo', newList);
-  // }
+  // functio n para cambiar la lista del home
+  changeList(newList) {
+    this._$scope.$broadcast('setListTo', newList);
+  }
 
 
 }

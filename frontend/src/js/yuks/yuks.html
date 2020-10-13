@@ -8,22 +8,10 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
-          <button ng-click="$ctrl.removeFilter()">Remove filters</button>
-          <yuks-list yuks="$ctrl.yuksFiltrados"></yuks-list>
-          <!-- <div ng-repeat="yuk in yuks">
-            <hr>
-            <a > {{yuk.title}}</a>
-            <a > {{yuk.content}}</a>
-            <p id="author">{{yuk.author.username}}</p>
-            <span><b>TAGS:</b>
-              <span ng-repeat="tag in yuk.tagList">
-                  <a>{{tag}}</a>
-              </span>
-            </span>
-            <br>
-           <button ui-sref="app.detailyuk({slug:yuk.slug})">Details</button> 
-           <hr>
-        </div> -->
+          <!-- <button ng-click="$ctrl.removeFilter()">Remove filters</button> -->
+          <yuks-list limit="2" list-config="$ctrl.listConfig"></yuks-list>
+          <!-- <yuks-list yuks="$ctrl.yuksFiltrados"></yuks-list> -->
+
         </div>
       </div>
     </div>

@@ -10,41 +10,39 @@
 
   <div class="container page">
     <div class="row">
-
-
-      <!-- Main view - contains tabs & article list -->
       <div class="col-md-9">
-        <!-- Tabs for toggling between feed, article lists -->
-        <!-- <div class="feed-toggle">
+        <!-- CAMBIAR LISTA HOME -->
+        <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
-
+            <!-- //recomendado -->
             <li class="nav-item" show-authed="true">
               <a href="" class="nav-link"
                 ng-class="{ active: $ctrl.listConfig.type === 'feed' }"
                 ng-click="$ctrl.changeList({ type: 'feed' })">
-                Your Feed
+                Seguidos
               </a>
             </li>
-
+            <!-- //explorar -->
             <li class="nav-item">
               <a href="" class="nav-link"
                 ng-class="{ active: $ctrl.listConfig.type === 'all' && !$ctrl.listConfig.filters }"
                 ng-click="$ctrl.changeList({ type: 'all' })">
-                Global Feed
+                Explorar
               </a>
             </li>
 
-            <li class="nav-item" ng-show="$ctrl.listConfig.filters.tag">
+            <!-- <li class="nav-item" ng-show="$ctrl.listConfig.filters.tag">
               <a href="" class="nav-link active">
                 <i class="ion-pound"></i> {{$ctrl.listConfig.filters.tag}}
               </a>
-            </li>
+            </li> -->
 
           </ul>
-        </div> -->
-        <h1>POPULAR YUKS</h1>
+        </div>
         <br>
-        <yuks-list yuks="$ctrl.yuks"></yuks-list>
+        <!-- YUKS HOME LIST -->
+        <!-- <yuks-list yuks="$ctrl.yuks"></yuks-list> -->
+        <yuks-list limit="2" list-config="$ctrl.listConfig"></yuks-list>
         
         <br><br><br>
         <h1>POPULAR NEWS</h1>
