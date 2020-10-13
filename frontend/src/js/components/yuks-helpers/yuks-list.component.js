@@ -12,6 +12,8 @@ class YuksListCtrl {
     this.$onInit = () => {
       this.setListTo(this.listConfig);
     }
+
+    // this.setListTo(this.listConfig);
     // console.log(this.listConfig);
     
 

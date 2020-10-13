@@ -51353,6 +51353,8 @@ var YuksListCtrl = function () {
     this.$onInit = function () {
       _this.setListTo(_this.listConfig);
     };
+
+    // this.setListTo(this.listConfig);
     // console.log(this.listConfig);
 
 
