@@ -28,6 +28,7 @@ export default class Yuks {
   //query del yuks
   query(config) {
     console.log("dentro query del yuks");
+    console.log(config);
     // Create the $http object for this request
     let request = {
       url: this._AppConstants.api + '/yuks' + ((config.type === 'feed') ? '/feed' : ''),

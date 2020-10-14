@@ -46,13 +46,15 @@ router.get('/', auth.optional, function(req, res, next) {
     if( typeof req.query.tag !== 'undefined' ){
       query.tagList = {"$in" : [req.query.tag]};
     }
-  
+  //añadimos liked i disliked
     Promise.all([
       req.query.author ? User.findOne({username: req.query.author}) : null,
-      req.query.liked ? User.findOne({username: req.query.liked}) : null
+      req.query.liked ? User.findOne({username: req.query.liked}) : null,
+      req.query.disliked ? User.findOne({username: req.query.disliked}) : null
     ]).then(function(results){
       var author = results[0];
       var liker = results[1];
+      var disliker = results[2];
   
       if(author){
         query.author = author._id;
@@ -61,6 +63,12 @@ router.get('/', auth.optional, function(req, res, next) {
       if(liker){
         query._id = {$in: liker.likes};
       } else if(req.query.liked){
+        query._id = {$in: []};
+      }
+
+      if(disliker){
+        query._id = {$in: disliker.dislikes};
+      } else if(req.query.disliked){
         query._id = {$in: []};
       }
   
@@ -87,6 +95,7 @@ router.get('/', auth.optional, function(req, res, next) {
       });
     }).catch(next);
 });
+
 router.get('/feed', auth.required, function(req, res, next) {
   var limit = 20;
   var offset = 0;

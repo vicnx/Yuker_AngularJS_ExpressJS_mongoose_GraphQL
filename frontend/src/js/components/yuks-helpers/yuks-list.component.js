@@ -87,7 +87,7 @@ class YuksListCtrl {
         
     //   }
     // }
-
+    // console.log(queryConfig);
     // Run the query
     this._Yuks
       .query(queryConfig)
@@ -97,6 +97,7 @@ class YuksListCtrl {
 
           // Update list and total pages
           this.list = res.yuks;
+          console.log(this.list);
           this.listConfig.totalPages = Math.ceil(res.yuksCount / this.limit);
         }
       );

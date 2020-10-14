@@ -44,14 +44,22 @@
             <li class="nav-item">
               <a class="nav-link"
                 ui-sref-active="active"
-                ui-sref="app.profile.favorites({username: $ctrl.profile.username})">
-                Favorited Articles
+                ui-sref="app.profile.likes({username: $ctrl.profile.username})">
+                Liked Articles
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                ui-sref-active="active"
+                ui-sref="app.profile.dislikes({username: $ctrl.profile.username})">
+                DisLiked Articles
               </a>
             </li>
 
           </ul>
         </div>
-
+        <br>
         <!-- List of articles -->
         <div ui-view></div>
 

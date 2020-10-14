@@ -21,17 +21,23 @@ function ProfileConfig($stateProvider) {
 
   .state('app.profile.main', {
     url:'',
-    controller: 'ProfileArticlesCtrl',
+    controller: 'ProfileYuksCtrl',
     controllerAs: '$ctrl',
-    templateUrl: 'profile/profile-articles.html',
+    templateUrl: 'profile/profile-yuks.html',
     title: 'Profile'
   })
-  .state('app.profile.favorites', {
-    url:'/favorites',
-    controller: 'ProfileArticlesCtrl',
+  .state('app.profile.likes', {
+    url:'/likes',
+    controller: 'ProfileYuksCtrl',
     controllerAs: '$ctrl',
-    templateUrl: 'profile/profile-articles.html',
-    title: 'Favorites'
+    templateUrl: 'profile/profile-yuks.html',
+    title: 'likes'
+  }).state('app.profile.dislikes', {
+    url:'/dislikes',
+    controller: 'ProfileYuksCtrl',
+    controllerAs: '$ctrl',
+    templateUrl: 'profile/profile-yuks.html',
+    title: 'dislikes'
   });
 
 };

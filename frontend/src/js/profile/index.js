@@ -11,8 +11,8 @@ profileModule.config(ProfileConfig);
 import ProfileCtrl from './profile.controller';
 profileModule.controller('ProfileCtrl', ProfileCtrl);
 
-import ProfileArticlesCtrl from './profile-articles.controller';
-profileModule.controller('ProfileArticlesCtrl', ProfileArticlesCtrl);
+import ProfileYuksCtrl from './profile-yuks.controller';
+profileModule.controller('ProfileYuksCtrl', ProfileYuksCtrl);
 
 
 export default profileModule;
