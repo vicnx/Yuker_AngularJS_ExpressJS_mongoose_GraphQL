@@ -24,7 +24,7 @@
           <fieldset ng-disabled="$ctrl.isSubmitting">
 
             <fieldset class="form-group" ng-show="$ctrl.authType === 'register'">
-              <input
+              <input required
                 class="form-control form-control-lg"
                 type="text"
                 placeholder="Username"
@@ -68,7 +68,7 @@
                 </div>
             </fieldset>
 
-            <fieldset class="form-group" ng-show="$ctrl.authType === 'login'">
+            <!-- <fieldset class="form-group" ng-show="$ctrl.authType === 'login'">
               <input required
                 class="form-control form-control-lg"
                 type="password"
@@ -78,7 +78,7 @@
                 <div ng-messages="formData.Password.$error">
                   <p ng-message="required" ng-show="formData.Password.$dirty">Password required</p>
                 </div>
-            </fieldset>
+            </fieldset> -->
 
             <button class="btn btn-lg btn-primary pull-xs-right"
               type="submit"

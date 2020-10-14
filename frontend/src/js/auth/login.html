@@ -1,0 +1,63 @@
+<div class="auth-page">
+    <div class="container page">
+      <div class="row">
+  
+        <div class="col-md-6 offset-md-3 col-xs-12">
+          <h1 class="text-xs-center" ng-bind="::$ctrl.title"></h1>
+          <p class="text-xs-center">
+            <a ui-sref="app.login"
+              ng-show="$ctrl.authType === 'register'">
+              Have an account?
+            </a>
+            <a ui-sref="app.register"
+              ng-show="$ctrl.authType === 'login'">
+              Need an account?
+            </a>
+          </p>
+          <div class="error" ng-show="$ctrl.error">
+            <p>El usuario o el correo ya existe.</p>
+          </div>
+          <!-- <list-errors errors="$ctrl.errors"></list-errors> -->
+          <a href="http://localhost:3000/api/auth/google" style="font-size: 25px; color:black"><i class="ion-social-google"></i>&nbsp;Google</a>
+          <a href="http://localhost:3000/api/auth/github" style="font-size: 25px; color:black"><i class="ion-social-github"></i>&nbsp;Github</a>
+          <form name="formData" ng-submit="$ctrl.submitForm()">
+            <fieldset ng-disabled="$ctrl.isSubmitting">
+
+  
+              <fieldset class="form-group">
+                <input required
+                  class="form-control form-control-lg"
+                  type="email"
+                  placeholder="Email"
+                  name="Email"
+                  ng-model="$ctrl.formData.email" />
+                  <div ng-messages="formData.Email.$error">
+                    <p ng-message="required" ng-show="formData.Email.$dirty">Email required</p>
+                  </div>
+              </fieldset>
+  
+              <fieldset class="form-group" ng-show="$ctrl.authType === 'login'">
+                <input required
+                  class="form-control form-control-lg"
+                  type="password"
+                  placeholder="Password"
+                  ng-model="$ctrl.formData.password" 
+                  name="Password" />
+                  <div ng-messages="formData.Password.$error">
+                    <p ng-message="required" ng-show="formData.Password.$dirty">Password required</p>
+                  </div>
+              </fieldset>
+  
+              <button class="btn btn-lg btn-primary pull-xs-right"
+                type="submit"
+                ng-bind="::$ctrl.title">
+              </button>
+  
+            </fieldset>
+          </form>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
