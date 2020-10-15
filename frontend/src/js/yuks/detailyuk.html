@@ -33,6 +33,7 @@
             </div>
             <!-- COMMENTS -->
             <comment ng-repeat="cmt in $ctrl.comments"
+                yuk="$ctrl.yuk"
                 data="cmt"
                 delete-cb="$ctrl.deleteComment(cmt.id, $index)">
             </comment>

@@ -168,7 +168,7 @@
 
 .comment-box .comment-name.by-author, .comment-box .comment-name.by-author a {color: #03658c;}
 .comment-box .comment-name.by-author:after {
-   content: 'autor';
+   /* content: 'autor'; */
    background: #03658c;
    color: #FFF;
    font-size: 12px;
@@ -178,6 +178,21 @@
    -webkit-border-radius: 3px;
    -moz-border-radius: 3px;
    border-radius: 3px;
+}
+
+.author{
+   box-sizing: border-box;
+   display: inline-block;
+   background-color:#03658c;
+   color: white !important;
+   border-radius: 3rem;
+   text-align: center;
+   font-size: 11px !important;
+   font-weight: bold;
+   padding: .05rem .5rem .1rem;
+   line-height: inherit;
+   margin-left: 10px;
+   margin-right: 10px;
 }
 
 /** =====================

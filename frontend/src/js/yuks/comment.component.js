@@ -9,12 +9,17 @@ class CommentCtrl {
       } else {
         this.canModify = false;
       }
+
+      // console.log(this.yuk);
+      this.showAuthor = (this.data.author.username === this.yuk.author.username);
     }
+
   }
 }
 
 let Comment = {
   bindings: {
+    yuk: '=',
     data: '=',
     deleteCb: '&'
   },
