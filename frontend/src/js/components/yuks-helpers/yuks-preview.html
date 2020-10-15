@@ -1,13 +1,13 @@
 
 <article class="yuk">
     <div class="leftyuk">
-        <img class="image" ng-src="{{$ctrl.yuk.author.image}}" alt="test">
+        <img class="image" ui-sref="app.profile.main({ username: $ctrl.yuk.author.username})" ng-src="{{$ctrl.yuk.author.image}}" alt="test">
     </div>
     <div class="rightyuk">
         <div class="info">
             <div class="yuk_title">{{$ctrl.yuk.title}}</div>
             <div class="yuk_body">{{$ctrl.yuk.content}}</div>
-            <div class="yuk_author">@{{$ctrl.yuk.author.username}}</div>
+            <div ui-sref="app.profile.main({ username: $ctrl.yuk.author.username})" class="yuk_author">@{{$ctrl.yuk.author.username}}</div>
         </div>
         <div class="follow">
             <follow-btn user="$ctrl.yuk.author"></follow-btn>
