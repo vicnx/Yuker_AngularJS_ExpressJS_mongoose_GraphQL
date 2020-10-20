@@ -14,11 +14,41 @@ var utils = require('./utils');
 
 
 router.post('/yuks/:qty/:email', async function(req, res, next) {
-    // console.log(req.params);
+
+    createyuks(req.params.email,req.params.qty);
+});
+
+//FAKER DE USUARIOS
+router.post('/users/:qty', async function(req, res, next) {
     try {
-        var qty = req.params.qty;
+        for (let i = 0; i < req.params.qty; i++) {
+            var user = await new User();
+            // console.log(user);
+          
+            user.username = faker.internet.userName();
+            user.email = faker.internet.email();
+            user.setPassword("12345678");
+            user.idsocial = user.username+faker.random.number();
+            //comprobamos si existe ya el usuario
+            var ok = await User.find( { $or:[ {'username':user.username}, {'idsocial':user.idsocial}]});
+            if(!ok[0]){
+                console.log(user);
+            }
+            await console.log(ok);
+            await user.save();
+            //a cada nuevo usuario le metemos 5 YUKS
+            await createyuks(user.email,5);
+        }
+        return res.sendStatus(200); 
+    } catch (e) {
+        next(e)
+    }
+});
+
+async function createyuks(email,qty){
+    try {
         //recogemos el email
-        var email = req.params.email
+        var email = email
         //primero obtenemos un usuario (en mi caso el que contiene este correo)
         var user = await utils.SearchUser(email);
         //hacemos un bucle por la cantidad
@@ -33,12 +63,13 @@ router.post('/yuks/:qty/:email', async function(req, res, next) {
             //añadimos el usuario al campo author
             yuk.author = user;
             //y lo guardamos.
-            yuk.save();
+            // console.log(yuk);
+            await yuk.save();
         }
-        return res.sendStatus(200);    
+        console.log("OKaaay");   
     } catch (e) {
-        next(e);
+        console.log(e);
     }
-});
+}
 
 module.exports = router;
