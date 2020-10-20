@@ -1,4 +1,3 @@
-// console.log("object");
 var router = require('express').Router();
 var faker = require('faker');
 var mongoose = require('mongoose');
@@ -29,6 +28,7 @@ router.post('/yuks/:qty/:email', async function(req, res, next) {
                 title: faker.lorem.words(),
                 content: faker.lorem.paragraphs(),
                 author:"",
+                tagList : [ "fake","dummies" ]
             })
             //añadimos el usuario al campo author
             yuk.author = user;
