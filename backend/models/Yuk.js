@@ -26,6 +26,7 @@ YukSchema.pre('validate', function(next){
 });
 
 YukSchema.methods.slugify = function() {
+  console.log(this);
     this.slug = slug(this.author.username) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
   };
 

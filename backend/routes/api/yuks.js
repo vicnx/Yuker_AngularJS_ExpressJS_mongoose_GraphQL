@@ -134,14 +134,12 @@ router.get('/feed', auth.required, function(req, res, next) {
 
 router.post('/', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
+    console.log(user);
     if (!user) { return res.sendStatus(401); }
-
     var yuk = new Yuk(req.body.yuk);
-
     yuk.author = user;
-
     return yuk.save().then(function(){
-      console.log(yuk.author);
+      // console.log(yuk.author);
       return res.json({yuk: yuk.toJSONFor(user)});
     });
   }).catch(next);
