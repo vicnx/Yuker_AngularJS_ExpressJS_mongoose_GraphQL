@@ -24,27 +24,27 @@ router.post('/users/:qty', async function(req, res, next) {
         for (let i = 0; i < req.params.qty; i++) {
             var user = await new User();
             // console.log(user);
-          
             user.username = faker.internet.userName();
             user.email = faker.internet.email();
             user.setPassword("12345678");
             user.idsocial = user.username+faker.random.number();
+            user.image = faker.internet.avatar();
             //comprobamos si existe ya el usuario
             var ok = await User.find( { $or:[ {'username':user.username}, {'idsocial':user.idsocial}]});
             if(!ok[0]){
                 console.log(user);
+                await user.save();
             }
-            await console.log(ok);
-            await user.save();
             //a cada nuevo usuario le metemos 5 YUKS
             await createyuks(user.email,5);
         }
         return res.sendStatus(200); 
-    } catch (e) {
+    } catch (e) {x
         next(e)
     }
 });
 
+//function que te cra yuks
 async function createyuks(email,qty){
     try {
         //recogemos el email
