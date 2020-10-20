@@ -186,8 +186,21 @@ router.put('/:yuk', auth.required, function(req, res, next) {
   });
 });
 
+// router.delete('/:yuk', auth.required, function(req, res, next) {
+//   User.findById(req.payload.id).then(function(user){
+//     if (!user) { return res.sendStatus(401); }
+
+//     if(req.yuk.author._id.toString() === req.payload.id.toString()){
+//       return req.yuk.remove().then(function(){
+//         return res.sendStatus(204);
+//       });
+//     } else {
+//       return res.sendStatus(403);
+//     }
+//   }).catch(next);
+// });
 // delete yuk
-router.delete('/:yuk', auth.required, function(req, res, next) {
+router.delete('/:yuk', auth.required, async function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
 
