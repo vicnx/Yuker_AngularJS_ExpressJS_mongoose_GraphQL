@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-      "description": "Conduit API",
+      "description": "Yuker API",
       "version": "1.0.0",
-      "title": "Conduit API",
+      "title": "Yuker API",
       "contact": {
-        "name": "RealWorld",
-        "url": "https://realworld.io"
+        "name": "Vicente",
+        "url": "https://github.com/vicnx"
       },
       "license": {
         "name": "MIT License",
@@ -298,7 +298,7 @@
           "summary": "Get recent yuks from users you follow",
           "description": "Get most recent yuks from users you follow. Use query parameters to limit. Auth is required",
           "tags": [
-            "yuks"
+            "Yuks"
           ],
           "security": [
             {
@@ -329,56 +329,6 @@
               "description": "OK",
               "schema": {
                 "$ref": "#/definitions/MultipleyuksResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        }
-      },
-      "/articles/feed": {
-        "get": {
-          "summary": "Get recent articles from users you follow",
-          "description": "Get most recent articles from users you follow. Use query parameters to limit. Auth is required",
-          "tags": [
-            "Articles"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "GetArticlesFeed",
-          "parameters": [
-            {
-              "name": "limit",
-              "in": "query",
-              "description": "Limit number of articles returned (default is 20)",
-              "required": false,
-              "default": 20,
-              "type": "integer"
-            },
-            {
-              "name": "offset",
-              "in": "query",
-              "description": "Offset/skip number of articles (default is 0)",
-              "required": false,
-              "default": 0,
-              "type": "integer"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/MultipleArticlesResponse"
               }
             },
             "401": {
@@ -477,7 +427,7 @@
               "required": true,
               "description": "yuk to create",
               "schema": {
-                "$ref": "#/definitions/NewyukRequest"
+                "$ref": "#/definitions/NewYukRequest"
               }
             }
           ],
@@ -486,113 +436,6 @@
               "description": "OK",
               "schema": {
                 "$ref": "#/definitions/SingleyukResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        }
-      },
-      "/articles": {
-        "get": {
-          "summary": "Get recent articles globally",
-          "description": "Get most recent articles globally. Use query parameters to filter results. Auth is optional",
-          "tags": [
-            "Articles"
-          ],
-          "operationId": "GetArticles",
-          "parameters": [
-            {
-              "name": "tag",
-              "in": "query",
-              "description": "Filter by tag",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "author",
-              "in": "query",
-              "description": "Filter by author (username)",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "favorited",
-              "in": "query",
-              "description": "Filter by favorites of a user (username)",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "limit",
-              "in": "query",
-              "description": "Limit number of articles returned (default is 20)",
-              "required": false,
-              "default": 20,
-              "type": "integer"
-            },
-            {
-              "name": "offset",
-              "in": "query",
-              "description": "Offset/skip number of articles (default is 0)",
-              "required": false,
-              "default": 0,
-              "type": "integer"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/MultipleArticlesResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        },
-        "post": {
-          "summary": "Create an article",
-          "description": "Create an article. Auth is required",
-          "tags": [
-            "Articles"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "CreateArticle",
-          "parameters": [
-            {
-              "name": "article",
-              "in": "body",
-              "required": true,
-              "description": "Article to create",
-              "schema": {
-                "$ref": "#/definitions/NewArticleRequest"
-              }
-            }
-          ],
-          "responses": {
-            "201": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/SingleArticleResponse"
               }
             },
             "401": {
@@ -665,7 +508,7 @@
               "required": true,
               "description": "yuk to update",
               "schema": {
-                "$ref": "#/definitions/UpdateyukRequest"
+                "$ref": "#/definitions/UpdateYuk"
               }
             }
           ],
@@ -705,123 +548,6 @@
               "in": "path",
               "required": true,
               "description": "Slug of the yuk to delete",
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK"
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        }
-      },
-      "/articles/{slug}": {
-        "get": {
-          "summary": "Get an article",
-          "description": "Get an article. Auth not required",
-          "tags": [
-            "Articles"
-          ],
-          "operationId": "GetArticle",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article to get",
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/SingleArticleResponse"
-              }
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        },
-        "put": {
-          "summary": "Update an article",
-          "description": "Update an article. Auth is required",
-          "tags": [
-            "Articles"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "UpdateArticle",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article to update",
-              "type": "string"
-            },
-            {
-              "name": "article",
-              "in": "body",
-              "required": true,
-              "description": "Article to update",
-              "schema": {
-                "$ref": "#/definitions/UpdateArticleRequest"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/SingleArticleResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        },
-        "delete": {
-          "summary": "Delete an article",
-          "description": "Delete an article. Auth is required",
-          "tags": [
-            "Articles"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "DeleteArticle",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article to delete",
               "type": "string"
             }
           ],
@@ -925,90 +651,6 @@
           }
         }
       },
-      "/articles/{slug}/comments": {
-        "get": {
-          "summary": "Get comments for an article",
-          "description": "Get the comments for an article. Auth is optional",
-          "tags": [
-            "Comments"
-          ],
-          "operationId": "GetArticleComments",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article that you want to get comments for",
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/MultipleCommentsResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        },
-        "post": {
-          "summary": "Create a comment for an article",
-          "description": "Create a comment for an article. Auth is required",
-          "tags": [
-            "Comments"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "CreateArticleComment",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article that you want to create a comment for",
-              "type": "string"
-            },
-            {
-              "name": "comment",
-              "in": "body",
-              "required": true,
-              "description": "Comment you want to create",
-              "schema": {
-                "$ref": "#/definitions/NewCommentRequest"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "$ref": "#/definitions/SingleCommentResponse"
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        }
-      },
       "/yuks/{slug}/comments/{id}": {
         "delete": {
           "summary": "Delete a comment for an yuk",
@@ -1054,70 +696,25 @@
           }
         }
       },
-      "/articles/{slug}/comments/{id}": {
-        "delete": {
-          "summary": "Delete a comment for an article",
-          "description": "Delete a comment for an article. Auth is required",
-          "tags": [
-            "Comments"
-          ],
-          "security": [
-            {
-              "Token": []
-            }
-          ],
-          "operationId": "DeleteArticleComment",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "required": true,
-              "description": "Slug of the article that you want to delete a comment for",
-              "type": "string"
-            },
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "description": "ID of the comment you want to delete",
-              "type": "integer"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK"
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "422": {
-              "description": "Unexpected error",
-              "schema": {
-                "$ref": "#/definitions/GenericErrorModel"
-              }
-            }
-          }
-        }
-      },
-      "/yuks/{slug}/favorite": {
+      "/yuks/{slug}/like": {
         "post": {
-          "summary": "Favorite an yuk",
-          "description": "Favorite an yuk. Auth is required",
+          "summary": "Like an yuk",
+          "description": "Like an yuk. Auth is required",
           "tags": [
-            "Favorites"
+            "Likes"
           ],
           "security": [
             {
               "Token": []
             }
           ],
-          "operationId": "CreateyukFavorite",
+          "operationId": "CreateyukLike",
           "parameters": [
             {
               "name": "slug",
               "in": "path",
               "required": true,
-              "description": "Slug of the yuk that you want to favorite",
+              "description": "Slug of the yuk that you want to like",
               "type": "string"
             }
           ],
@@ -1140,10 +737,10 @@
           }
         },
         "delete": {
-          "summary": "Unfavorite an yuk",
-          "description": "Unfavorite an yuk. Auth is required",
+          "summary": "Unlike an yuk",
+          "description": "Unlike an yuk. Auth is required",
           "tags": [
-            "Favorites"
+            "Likes"
           ],
           "security": [
             {
@@ -1156,7 +753,7 @@
               "name": "slug",
               "in": "path",
               "required": true,
-              "description": "Slug of the yuk that you want to unfavorite",
+              "description": "Slug of the yuk that you want to unlike",
               "type": "string"
             }
           ],
@@ -1179,25 +776,25 @@
           }
         }
       },
-      "/articles/{slug}/favorite": {
+      "/yuks/{slug}/dislike": {
         "post": {
-          "summary": "Favorite an article",
-          "description": "Favorite an article. Auth is required",
+          "summary": "DisLike an yuk",
+          "description": "DisLike an yuk. Auth is required",
           "tags": [
-            "Favorites"
+            "DisLikes"
           ],
           "security": [
             {
               "Token": []
             }
           ],
-          "operationId": "CreateArticleFavorite",
+          "operationId": "CreateyukDisLike",
           "parameters": [
             {
               "name": "slug",
               "in": "path",
               "required": true,
-              "description": "Slug of the article that you want to favorite",
+              "description": "Slug of the yuk that you want to dislike",
               "type": "string"
             }
           ],
@@ -1205,7 +802,7 @@
             "200": {
               "description": "OK",
               "schema": {
-                "$ref": "#/definitions/SingleArticleResponse"
+                "$ref": "#/definitions/SingleyukResponse"
               }
             },
             "401": {
@@ -1220,23 +817,23 @@
           }
         },
         "delete": {
-          "summary": "Unfavorite an article",
-          "description": "Unfavorite an article. Auth is required",
+          "summary": "Undislike an yuk",
+          "description": "Undislike an yuk. Auth is required",
           "tags": [
-            "Favorites"
+            "DisLikes"
           ],
           "security": [
             {
               "Token": []
             }
           ],
-          "operationId": "DeleteArticleFavorite",
+          "operationId": "DeleteyukFavorite",
           "parameters": [
             {
               "name": "slug",
               "in": "path",
               "required": true,
-              "description": "Slug of the article that you want to unfavorite",
+              "description": "Slug of the yuk that you want to undislike",
               "type": "string"
             }
           ],
@@ -1244,7 +841,7 @@
             "200": {
               "description": "OK",
               "schema": {
-                "$ref": "#/definitions/SingleArticleResponse"
+                "$ref": "#/definitions/SingleyukResponse"
               }
             },
             "401": {
@@ -1448,6 +1045,9 @@
           "slug": {
             "type": "string"
           },
+          "title": {
+            "type": "string"
+          },
           "content": {
             "type": "string"
           },
@@ -1476,10 +1076,17 @@
           },
           "author": {
             "$ref": "#/definitions/Profile"
+          },
+          "tagList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
           "slug",
+          "title",
           "content",
           "image",
           "createdAt",
@@ -1488,59 +1095,9 @@
           "disliked",
           "likesCount",
           "dislikesCount",
-          "author"
-        ]
-      },
-      "Article": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "body": {
-            "type": "string"
-          },
-          "tagList": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "favorited": {
-            "type": "boolean"
-          },
-          "favoritesCount": {
-            "type": "integer"
-          },
-          "author": {
-            "$ref": "#/definitions/Profile"
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "description",
-          "body",
-          "tagList",
-          "createdAt",
-          "updatedAt",
-          "favorited",
-          "favoritesCount",
-          "author"
+          "author",
+          "tagList"
+
         ]
       },
       "SingleyukResponse": {
@@ -1552,17 +1109,6 @@
         },
         "required": [
           "yuk"
-        ]
-      },
-      "SingleArticleResponse": {
-        "type": "object",
-        "properties": {
-          "article": {
-            "$ref": "#/definitions/Article"
-          }
-        },
-        "required": [
-          "article"
         ]
       },
       "MultipleyuksResponse": {
@@ -1583,49 +1129,16 @@
           "yuksCount"
         ]
       },
-      "MultipleArticlesResponse": {
-        "type": "object",
-        "properties": {
-          "articles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Article"
-            }
-          },
-          "articlesCount": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "articles",
-          "articlesCount"
-        ]
-      },
       "NewYuk": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string"
-          },
-          "image": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "content",
-          "image"
-        ]
-      },
-      "NewArticle": {
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
           },
-          "description": {
+          "content": {
             "type": "string"
           },
-          "body": {
+          "image": {
             "type": "string"
           },
           "tagList": {
@@ -1637,8 +1150,7 @@
         },
         "required": [
           "title",
-          "description",
-          "body"
+          "content"
         ]
       },
       "NewYukRequest": {
@@ -1652,55 +1164,25 @@
           "yuk"
         ]
       },
-      "NewArticleRequest": {
-        "type": "object",
-        "properties": {
-          "article": {
-            "$ref": "#/definitions/NewArticle"
-          }
-        },
-        "required": [
-          "article"
-        ]
-      },
       "UpdateYuk": {
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
           },
-          "description": {
+          "content": {
             "type": "string"
           },
-          "body": {
+          "image": {
             "type": "string"
+          },
+          "tagList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
-      },
-      "UpdateArticle": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "body": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateArticleRequest": {
-        "type": "object",
-        "properties": {
-          "article": {
-            "$ref": "#/definitions/UpdateArticle"
-          }
-        },
-        "required": [
-          "article"
-        ]
       },
       "Comment": {
         "type": "object",
