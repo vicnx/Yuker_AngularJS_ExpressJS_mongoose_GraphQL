@@ -200,12 +200,18 @@ router.put('/:yuk', auth.required, function(req, res, next) {
 //   }).catch(next);
 // });
 // delete yuk
-router.delete('/:yuk', auth.required, async function(req, res, next) {
-  User.findById(req.payload.id).then(function(user){
+//Actualizada, borra los comments de ese Yuk antes de 
+router.delete('/:yuk', auth.required,function(req, res, next) {
+  User.findById(req.payload.id).then( async function(user){
     if (!user) { return res.sendStatus(401); }
-
     if(req.yuk.author._id.toString() === req.payload.id.toString()){
-      return req.yuk.remove().then(function(){
+      //buscamos los comments y hacemos un map para borrarlos uno a uno. despues de borrarlos borramos el articulo
+      if(req.yuk.comments.length !== 0){
+        await req.yuk.comments.map((comment) =>{
+          Comment.find({_id: comment}).remove().exec()
+        });
+      }
+      return await req.yuk.remove().then(function(){
         return res.sendStatus(204);
       });
     } else {
