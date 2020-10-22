@@ -208,7 +208,7 @@ router.delete('/:yuk', auth.required,function(req, res, next) {
       //buscamos los comments y hacemos un map para borrarlos uno a uno. despues de borrarlos borramos el articulo
       if(req.yuk.comments.length !== 0){
         await req.yuk.comments.map((comment) =>{
-          Comment.find({_id: comment}).remove().exec()
+          Comment.find({_id: comment}).remove().exec();
         });
       }
       return await req.yuk.remove().then(function(){
