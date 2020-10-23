@@ -14,8 +14,12 @@ var UserSchema = new mongoose.Schema({
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   hash: String,
   salt: String,
+  followersCount: {type: Number, default: 0},
   idsocial: {type: String, lowercase: true, unique: true},
 }, {timestamps: true});
+
+const User = mongoose.model('User2', UserSchema);
+
 
 UserSchema.plugin(uniqueValidator, {message: 'is already taken.'});
 
@@ -27,6 +31,18 @@ UserSchema.methods.validPassword = function(password) {
 UserSchema.methods.setPassword = function(password){
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+};
+
+UserSchema.methods.updatefollowerscount = async function() {
+  var user = this;
+  console.log("''''''''''''''''''''''''''''''''''''''''''''''''DENTRO DE FOLLOWER COUNT UPDATE");
+
+  return await User.count({following: {$in: [user._id]}}).then(function(count){
+    console.log(count);
+    user.followersCount = count;
+    console.log(user.followersCount);
+    return user.save();
+  });
 };
 
 UserSchema.methods.generateJWT = function() {
