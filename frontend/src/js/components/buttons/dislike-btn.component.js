@@ -1,10 +1,11 @@
 class DislikeBtnCtrl {
-    constructor(User, Yuks, $state) {
+    constructor(User, Yuks, $state,$rootScope) {
       'ngInject';
   
       this._User = User;
       this._Yuks = Yuks;
       this._$state = $state;
+      this._$rootScope = $rootScope;
   
     }
   
@@ -20,15 +21,18 @@ class DislikeBtnCtrl {
                 console.log("estaba liked y le quitamos el like")
                 this.isSubmitting = false;
                 this.yuk.liked = false;
-                // this._Yuks.dislike(this.yuk.slug);
                 this.yuk.likesCount--;
-                // this.yuk.dislikesCount++;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
+
                 //damos dislike
                 this._Yuks.dislike(this.yuk.slug).then(
                   () => {
                     this.isSubmitting = false;
                     this.yuk.disliked = true;
                     this.yuk.dislikesCount++;
+                    //actualizamos el Karma
+                    this._$rootScope.setKarma();
                   }
                 )
           
@@ -45,6 +49,8 @@ class DislikeBtnCtrl {
                 this.isSubmitting = false;
                 this.yuk.disliked = false;
                 this.yuk.dislikesCount--;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
           
               }
             )
@@ -55,10 +61,13 @@ class DislikeBtnCtrl {
                 this.isSubmitting = false;
                 this.yuk.disliked = true;
                 this.yuk.dislikesCount++;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
               }
             )
           }
         }
+        // this._$rootScope.setKarma();
     }
   
   }

@@ -1,11 +1,14 @@
 class LikeBtnCtrl {
-    constructor(User, Yuks, $state, $scope) {
+    constructor(User, Yuks, $state, $rootScope) {
       'ngInject';
   
       this._User = User;
       this._Yuks = Yuks;
       this._$state = $state;
-      this._$scope = $scope;
+      this._$rootScope = $rootScope;
+      // this._$scope = $scope;
+      // $rootScope.karma=1000;
+      
   
     }
   
@@ -21,14 +24,17 @@ class LikeBtnCtrl {
                   console.log("estaba dislike, ahora esta like")
                 this.isSubmitting = false;
                 this.yuk.disliked = false;
-              //   this._Yuks.like(this.yuk.slug);
                 this.yuk.dislikesCount--;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
                 //damos like
                 this._Yuks.like(this.yuk.slug).then(
                   () => {
                     this.isSubmitting = false;
                     this.yuk.liked = true;
                     this.yuk.likesCount++;
+                    //actualizamos el Karma
+                    this._$rootScope.setKarma();
                   }
                 )
           
@@ -46,6 +52,9 @@ class LikeBtnCtrl {
                 this.isSubmitting = false;
                 this.yuk.liked = false;
                 this.yuk.likesCount--;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
+                
           
               }
             )
@@ -56,15 +65,18 @@ class LikeBtnCtrl {
                 this.isSubmitting = false;
                 this.yuk.liked = true;
                 this.yuk.likesCount++;
+                //actualizamos el Karma
+                this._$rootScope.setKarma();
                 // this._$scope.$broadcast('setKarma', this.yuk.author);
               }
             )
           }
         }
+        // this._$rootScope.setKarma();
 
         // this._$scope.$broadcast('setKarma', this.yuk.author);
 
-        
+        // $rootScope.karma =10000;
         // setTimeout(() => {
         //   var user = this.yuk.author 
         //   console.log(user);

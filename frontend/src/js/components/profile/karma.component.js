@@ -1,25 +1,25 @@
 class KarmaCtrl {
-    constructor(Profile, User, $state, $scope) {
+    constructor(Profile, User, $state, $scope,$rootScope,AppConstants, $http) {
       'ngInject';
+      this._AppConstants = AppConstants;
+      this._$http = $http;
       //primero pintamos el Karma
-    this.$onInit = () => {
+      this.$onInit = () => {
         this.karma=this.user.karma;
-    }
+      }
+      //con rootScope pintamos el karma nuevo siempre que se actualize (cuando das like/dislike) va al server y recoje el nuevo Karma
+      $rootScope.setKarma = () => {
+        console.log("dentro de setKarma");
+        this._$http({
+          url: this._AppConstants.api + '/profiles/' + this.user.username,
+          method: 'GET'
+        }).then((res) => {
+          // console.log(res.data.profile);
+          this.karma=res.data.profile.karma
+        });
+      };
 
-    //dejamos un on a la espera (cuando actualize el karma actuializa lo pintado xd)
-    $scope.$on('setKarma', (ev, user) => {
-        this.setKarmaTo(user.karma)
-        // this.karma = user.karma;
-    });
-      this._Profile = Profile;
-      this._User = User;
-  
-      this._$state = $state;
     }
-    setKarmaTo(karma) {
-        console.log("PENE");
-        this.karma=karma;
-    };
 }
 
   

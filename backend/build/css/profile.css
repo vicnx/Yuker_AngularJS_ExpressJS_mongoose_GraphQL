@@ -1,0 +1,7 @@
+.karma{
+    color: rgb(0, 0, 0) !important;
+    font-weight: bold !important;
+}
+.karma span{
+    color: rgb(39, 37, 161);
+}

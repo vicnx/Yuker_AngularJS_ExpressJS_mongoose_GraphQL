@@ -16,6 +16,18 @@ function AppRun(AppConstants, $rootScope) {
     $rootScope.pageTitle += AppConstants.appName;
   };
 
+  // $rootScope.setKarma = () => {
+  //   console.log("dentro de rootScrope set karma");
+  //   console.log(this.yuk.author);
+  //   $rootScope.karma = 10000000;
+  //   // $rootScope.pageTitle = '';
+  //   // if (title) {
+  //   //   $rootScope.pageTitle += title;
+  //   //   $rootScope.pageTitle += ' \u2014 ';
+  //   // }
+  //   // $rootScope.pageTitle += AppConstants.appName;
+  // };
+
 }
 
 export default AppRun;
