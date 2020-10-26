@@ -18,6 +18,7 @@ class YuksListCtrl {
     
 
     $scope.$on('setListTo', (ev, newList) => {
+      // console.log(newList);
       this.setListTo(newList);
     });
 
@@ -27,6 +28,8 @@ class YuksListCtrl {
   }
 
   setListTo(newList) {
+          console.log(newList);
+
     // Set the current list to an empty array
     this.list = [];
 

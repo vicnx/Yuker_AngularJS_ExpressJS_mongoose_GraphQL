@@ -1,16 +1,16 @@
 class LikeBtnCtrl {
-    constructor(User, Yuks, $state) {
+    constructor(User, Yuks, $state, $scope) {
       'ngInject';
   
       this._User = User;
       this._Yuks = Yuks;
       this._$state = $state;
+      this._$scope = $scope;
   
     }
   
     submit() {
       
-   
       this.isSubmitting = true;
         console.log("Like component")
         console.log(this.yuk)
@@ -56,10 +56,27 @@ class LikeBtnCtrl {
                 this.isSubmitting = false;
                 this.yuk.liked = true;
                 this.yuk.likesCount++;
+                // this._$scope.$broadcast('setKarma', this.yuk.author);
               }
             )
           }
         }
+
+        // this._$scope.$broadcast('setKarma', this.yuk.author);
+
+        
+        // setTimeout(() => {
+        //   var user = this.yuk.author 
+        //   console.log(user);
+        // }, 500);
+        //scope para que actualize el karma
+        // this.$onInit = () => {
+        //   user = this.yuk.author 
+        //   console.log(user);
+        // }
+        // var karma = this.yuk.author.karma +20;
+        // console.log(karma);
+        // this._$scope.$broadcast('setKarma', karma);
     }
   
   }

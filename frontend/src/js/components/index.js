@@ -56,5 +56,8 @@ componentsModule.component('dislikeBtn', DislikeBtn);
 import YukActions from './actions/yuk-actions.component';
 componentsModule.component('yukActions', YukActions);
 
+import Karma from './profile/karma.component';
+componentsModule.component('karma', Karma);
+
 
 export default componentsModule;

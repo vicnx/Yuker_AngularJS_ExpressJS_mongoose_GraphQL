@@ -8,7 +8,8 @@
 
           <img ng-src="{{::$ctrl.profile.image}}" class="user-img" />
           <h4 ng-bind="::$ctrl.profile.username"></h4>
-          <p ng-bind="::$ctrl.profile.bio"></p>
+          <karma user="$ctrl.profile"></karma>
+          <!-- <p>KARMA: <span ng-bind="::$ctrl.profile.karma"></span></p> -->
 
           <a ui-sref="app.settings"
             class="btn btn-sm btn-outline-secondary action-btn"
