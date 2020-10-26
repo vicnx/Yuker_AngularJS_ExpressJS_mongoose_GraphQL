@@ -4,6 +4,7 @@ var Yuk = mongoose.model('Yuk');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var auth = require('../auth');
+var user_utils = require('../../utils/UsersUtils');
 
 // Preload yuk objects on routes with ':yuk'
 //sirve para buscar un yuk concreto
@@ -140,6 +141,8 @@ router.post('/', auth.required, function(req, res, next) {
     yuk.author = user;
     return yuk.save().then(function(){
       // console.log(yuk.author);
+      //por cada yuk creado aumentamos un 5 el karma
+      user_utils.increaseKarmaByUserId(user.id, 20); 
       return res.json({yuk: yuk.toJSONFor(user)});
     });
   }).catch(next);
@@ -152,7 +155,6 @@ router.get('/:yuk', auth.optional, function(req, res, next) {
     req.yuk.populate('author').execPopulate()
   ]).then(function(results){
     var user = results[0];
-
     return res.json({yuk: req.yuk.toJSONFor(user)});
   }).catch(next);
 });
@@ -223,12 +225,17 @@ router.delete('/:yuk', auth.required,function(req, res, next) {
 // Like an yuk
 router.post('/:yuk/like', auth.required, function(req, res, next) {
   var yukId = req.yuk._id;
+  console.log(req.yuk.author.username);
 
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
 
     return user.like(yukId).then(function(){
       return req.yuk.updateLikesCount().then(function(yuk){
+        //si alguien da like a tu poost aumenta el karma del author de ese post en 20
+        user_utils.increaseKarmaByNickname(req.yuk.author.username, 20); 
+        //al dar like tu karma tambien aumenta en 5
+        user_utils.increaseKarmaByUserId(user.id, 5); 
         return res.json({yuk: yuk.toJSONFor(user)});
       });
     });
@@ -244,6 +251,10 @@ router.post('/:yuk/dislike', auth.required, function(req, res, next) {
 
     return user.dislike(yukId).then(function(){
       return req.yuk.updateDisLikesCount().then(function(yuk){
+        //si alguien da dislike a tu poost aumenta el karma del author de ese post en -15
+        user_utils.increaseKarmaByNickname(req.yuk.author.username, -15); 
+        //al dar dislikelike tu karma tambien aumenta en 5
+        user_utils.increaseKarmaByUserId(user.id, 5); 
         return res.json({yuk: yuk.toJSONFor(user)});
       });
     });
@@ -259,6 +270,10 @@ router.delete('/:yuk/like', auth.required, function(req, res, next) {
 
     return user.unlike(yukId).then(function(){
       return req.yuk.updateLikesCount().then(function(yuk){
+        //ssi alguien te quita el like que ya tenias, se te resta el karma en 20
+        user_utils.increaseKarmaByNickname(req.yuk.author.username, -20); 
+        //al usuario tambien se lo restamos
+        user_utils.increaseKarmaByUserId(user.id, -5); 
         return res.json({yuk: yuk.toJSONFor(user)});
       });
     });
@@ -274,6 +289,10 @@ router.delete('/:yuk/dislike', auth.required, function(req, res, next) {
 
     return user.undislike(yukId).then(function(){
       return req.yuk.updateDisLikesCount().then(function(yuk){
+        //ssi alguien te quita el dislike que ya tenias, se te suma el karma en 15 (se te devuelve el karma restado)
+        user_utils.increaseKarmaByNickname(req.yuk.author.username, 15); 
+        //al usuario tambien se lo restamos
+        user_utils.increaseKarmaByUserId(user.id, -5); 
         return res.json({yuk: yuk.toJSONFor(user)});
       });
     });
@@ -292,7 +311,7 @@ router.post('/:yuk/comments', auth.required, function(req, res, next) {
     return comment.save().then(function(){
       // req.yuk.comments.push(comment);
       req.yuk.comments=req.yuk.comments.concat(comment);
-
+      user_utils.increaseKarmaByUserId(user.id, 10); 
       return req.yuk.save().then(function(yuk) {
         res.json({comment: comment.toJSONFor(user)});
       });

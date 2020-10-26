@@ -15,6 +15,7 @@ var UserSchema = new mongoose.Schema({
   hash: String,
   salt: String,
   followersCount: {type: Number, default: 0},
+  karma:{type: Number, default: 0},
   idsocial: {type: String, lowercase: true, unique: true},
 }, {timestamps: true});
 
