@@ -37,6 +37,7 @@ class LikeBtnCtrl {
                     this._$rootScope.setKarma();
                   }
                 )
+                // this._$rootScope.setKarma();
           
               }
             )

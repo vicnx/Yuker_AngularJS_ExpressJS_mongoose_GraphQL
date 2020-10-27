@@ -33,8 +33,11 @@ class DislikeBtnCtrl {
                     this.yuk.dislikesCount++;
                     //actualizamos el Karma
                     this._$rootScope.setKarma();
+
+                    
                   }
                 )
+                // this._$rootScope.setKarma();
           
               }
             )
