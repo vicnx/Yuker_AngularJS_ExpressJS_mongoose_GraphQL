@@ -21,7 +21,7 @@ _DAW Second Year Project. Yuker is an application where users can put questions 
 
 _These instructions will allow you to get a copy of the project running on your local machine for development and testing purposes._
 
-### Pre-requisitos 📋
+### Pre requirements 📋
 
 _What things do you need to install the software and how to install them_
 
@@ -39,7 +39,7 @@ You also have to have mongo and gulp installed
 
 _There is a folder that is ignored in the repository. The credentials folder. You will have to create it with the credentials of the google and github api_
 
-### Instalation 🔧
+### Installation 🔧
 
 _Once all the requirements are completed, we proceed to clone the project._
 
