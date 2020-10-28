@@ -1,0 +1,58 @@
+--------------------------------- Install backend -----------------------------------------
+$ git clone git://github.com/gothinkster/node-express-realworld-example-app.git 2_backend
+$ cd 2_backend/
+$ npm install
+
+------------------------------------- MongoDB ---------------------------------------------
+$ sudo service mongod start
+$ sudo systemctl status mongod
+$ mongo
+    > show dbs
+    > use conduit_nodejs
+
+----------------------------- Posar en marxa el server ------------------------------------
+- A app.js canviar:
+    mongoose.connect('mongodb://localhost/conduit_nodejs');
+    port 3000
+$ npm run dev
+
+------------------------------------- MongoDB ---------------------------------------------
+$ mongo
+    > show dbs
+    > use conduit_nodejs
+    > show collections
+    > db.users.find().pretty()
+
+------------------------------------- Postman ---------------------------------------------- 
+POST http://0.0.0.0:3000/api/users
+{
+  "user":{
+    "username": "vicnx",
+    "email": "andanivicente@gmail.com",
+    "password": "vicnx1"
+  }
+}
+
+POST http://0.0.0.0:3000/api/users/login
+{
+  "user":{
+    "email": "andanivicente@gmail.com",
+    "password": "vicnx1"
+  }
+}
+
+POST http://0.0.0.0:3000/api/articles
+Authorization Token ...
+{
+  "article": {
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "body": "You have to believe",
+    "tagList": ["reactjs", "angularjs", "dragons"]
+  }
+}
+
+--------------------------------------- MongoDB -----------------------------------------------
+$ mongo
+    > db.users.find().pretty()
+    > db.articles.find().pretty()
