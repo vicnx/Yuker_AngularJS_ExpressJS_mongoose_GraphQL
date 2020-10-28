@@ -22,11 +22,11 @@ const resolvers = {
       }
     },
     //per a obtindre el user de cada sub
-    // Subscription: {
-    //   user: (parent) => {
-    //       return User.findOne({_id: parent.user}).exec();
-    //   }
-    // }
+    Subscription: {
+      user: (parent) => {
+          return User.findOne({_id: parent.user}).exec();
+      }
+    }
 };
 
 module.exports = resolvers;
