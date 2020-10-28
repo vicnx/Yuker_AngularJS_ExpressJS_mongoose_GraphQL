@@ -1,4 +1,4 @@
-var merge = require('lodash');
+var { merge }  = require('lodash');
 
 const QueryResolvers = {
   Query: {

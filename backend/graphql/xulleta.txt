@@ -1,0 +1,39 @@
+http://localhost:3001/api/graphql
+--------------------------GET ONE
+{
+  subscription(slug:"pokemon#3356") {
+    type
+    slug
+    start
+  }
+}
+
+-------------------------GET ALL
+{
+  subscriptions {
+    type
+    slug
+  }
+}
+
+-----------------------Insert ONE
+mutation createSubscription($input: SubscriptionInput) {
+  createSubscription(input: $input) {
+    id
+    slug
+    type
+    user{
+      username
+    }
+    start
+    finish
+    active
+  }
+}
+
+{
+  "input": {
+    "type": "TV",
+    "user": "5f9937cd19b6516b044db23f"
+  }
+}

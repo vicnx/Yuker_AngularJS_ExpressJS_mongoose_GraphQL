@@ -1,8 +1,7 @@
-var ApolloServer = require('apollo-server-express');
-var AuthenticationError = require('apollo-server-express');
+var { ApolloServer}  = require('apollo-server-express');
+var { AuthenticationError } = require('apollo-server-express');
 var typeDefs = require('../../graphql/schemas/schema');
 var resolvers = require('../../graphql/resolvers/resolver');
-
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 

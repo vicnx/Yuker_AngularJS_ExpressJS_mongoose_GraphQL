@@ -1,4 +1,10 @@
-var gql = require('apollo-server-express');
+// const express = require('express');
+const { gql } = require('apollo-server-express');
+// var { gql } = require('graphql-tag');
+// import {gql} from 'apollo-server-express';
+
+
+// console.log(gql);
 
 const Query = gql`
     scalar Date

@@ -1,9 +1,12 @@
-var gql = require('apollo-server-express');
+const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
     extend type Query {
         subscription(slug: String!): Subscription
         subscriptions: [Subscription]
+    }
+    extend type Mutation {
+        createSubscription(input: SubscriptionInput): Subscription
     }
     type Subscription {
         id: ID!
@@ -17,7 +20,6 @@ const typeDefs = gql`
     input SubscriptionInput {
         type: String
         user: String
-        finish: Date
     }
 `;
 

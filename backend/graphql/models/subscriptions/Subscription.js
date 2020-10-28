@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var slug = require('slug');
-require('./Subscription');
+// require('./Subscription');
 
-var User = mongoose.model('User');
+// var User = mongoose.model('User');
 
 var SubscriptionSchema = new mongoose.Schema({
   slug: {type: String, lowercase: true, unique: true},

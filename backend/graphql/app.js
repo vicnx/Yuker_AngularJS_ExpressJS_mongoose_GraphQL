@@ -14,6 +14,7 @@ var http = require('http'),
     var swaggerDocument = require('./swagger.json');
     swaggerDocument.host="localhost:3001"
     
+    
 
 var isProduction = process.env.NODE_ENV === 'production';
 
@@ -36,14 +37,36 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 
-if(isProduction){
-  mongoose.connect(process.env.MONGODB_URI);
-} else {
-  mongoose.connect('mongodb://localhost/app_social_conduit_js');
-  mongoose.set('debug', true);
+function mongooseConnect() {
+  setTimeout(() => {
+    if(isProduction){
+      mongoose.connect(process.env.MONGODB_URI);
+    } else {
+      mongoose.set('useNewUrlParser', true);
+      mongoose.set('useUnifiedTopology', true);
+      try {
+        mongoose.connect('mongodb://localhost/app_social_conduit_js');
+      } catch (error) {
+        console.log(error);
+        process.exit(1);
+        mongooseConnect();
+      }
+      mongoose.set('debug', true);
+    }
+  }, 10);
 }
 
-require('./models/User');
+mongooseConnect();
+// if(isProduction){
+//   mongoose.connect(process.env.MONGODB_URI);
+// } else {
+//   mongoose.connect('mongodb://localhost/app_social_conduit_js');
+//   mongoose.set('debug', true);
+// }
+require('./models/users/User');
+require('./models/subscriptions/Subscription');
+
+// require('./models/User');
 require('./models/Yuk');
 require('./models/Noticia');
 require('./models/Article');
@@ -101,3 +124,5 @@ app.use(function(err, req, res, next) {
 var server = app.listen( 3001, function(){
   console.log('Listening on port ' + server.address().port);
 });
+
+// app.use('/graphql', graphQLRouter)
