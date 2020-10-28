@@ -2,6 +2,21 @@
 
 _DAW Second Year Project. Yuker is an application where users can put questions and answer others. These questions can be rated positively or negatively. You can also follow a user._
 
+## Preview 📷
+
+### Home
+
+![Home](https://imgur.com/j1ZNfvO)
+
+### Yuk & Comments
+
+![Home](https://imgur.com/mXEw33r)
+
+### Profile
+
+![Profile](https://imgur.com/FhZPVGK)
+
+
 ## Start 🚀
 
 _These instructions will allow you to get a copy of the project running on your local machine for development and testing purposes._
@@ -24,7 +39,7 @@ You also have to have mongo and gulp installed
 
 _There is a folder that is ignored in the repository. The credentials folder. You will have to create it with the credentials of the google and github api_
 
-### Instalación 🔧
+### Instalation 🔧
 
 _Once all the requirements are completed, we proceed to clone the project._
 
@@ -50,7 +65,7 @@ gulp
 
 _Now we can use the application_
 
-## Construido con 🛠️
+## Build with 🛠️
 
 _Menciona las herramientas que utilizaste para crear tu proyecto_
 
@@ -60,41 +75,3 @@ _Menciona las herramientas que utilizaste para crear tu proyecto_
 * [mongoose](https://mongoosejs.com/)
 * [GraphQL](https://graphql.org/)
 * [MongoDB](https://www.mongodb.com/)
-
-
-## Contribuyendo 🖇️
-
-Por favor lee el [CONTRIBUTING.md](https://gist.github.com/villanuevand/xxxxxx) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
-
-## Wiki 📖
-
-Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Wiki](https://github.com/tu/proyecto/wiki)
-
-## Versionado 📌
-
-Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones disponibles, mira los [tags en este repositorio](https://github.com/tu/proyecto/tags).
-
-## Autores ✒️
-
-_Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios_
-
-* **Andrés Villanueva** - *Trabajo Inicial* - [villanuevand](https://github.com/villanuevand)
-* **Fulanito Detal** - *Documentación* - [fulanitodetal](#fulanito-de-tal)
-
-También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto. 
-
-## Licencia 📄
-
-Este proyecto está bajo la Licencia (Tu Licencia) - mira el archivo [LICENSE.md](LICENSE.md) para detalles
-
-## Expresiones de Gratitud 🎁
-
-* Comenta a otros sobre este proyecto 📢
-* Invita una cerveza 🍺 o un café ☕ a alguien del equipo. 
-* Da las gracias públicamente 🤓.
-* etc.
-
-
-
----
-⌨️ con ❤️ por [Villanuevand](https://github.com/Villanuevand) 😊
