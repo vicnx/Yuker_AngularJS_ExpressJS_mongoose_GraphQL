@@ -22,56 +22,45 @@ You also have to have mongo and gulp installed
 
 [How to install gulp](https://tecadmin.net/install-gulp-js-on-ubuntu/)
 
+_There is a folder that is ignored in the repository. The credentials folder. You will have to create it with the credentials of the google and github api_
 
 ### Instalación 🔧
 
-_Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener un entorno de desarrollo ejecutandose_
+_Once all the requirements are completed, we proceed to clone the project._
 
-_Dí cómo será ese paso_
-
-```
-Da un ejemplo
-```
-
-_Y repite_
+_We go to the backend folder and here we will have to start the different backends that we have. We go to the first folder (for example rest) and do npm install and npm start. We repeat this process with each of the backends_
 
 ```
-hasta finalizar
+npm install
 ```
 
-_Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para una pequeña demo_
-
-## Ejecutando las pruebas ⚙️
-
-_Explica como ejecutar las pruebas automatizadas para este sistema_
-
-### Analice las pruebas end-to-end 🔩
-
-_Explica que verifican estas pruebas y por qué_
-
 ```
-Da un ejemplo
+npm start
 ```
 
-### Y las pruebas de estilo de codificación ⌨️
-
-_Explica que verifican estas pruebas y por qué_
+_Once the backends are started, we go to the Frontend folder and perform an npm install and start it with gulp_
 
 ```
-Da un ejemplo
+npm install
 ```
 
-## Despliegue 📦
+```
+gulp
+```
 
-_Agrega notas adicionales sobre como hacer deploy_
+_Now we can use the application_
 
 ## Construido con 🛠️
 
 _Menciona las herramientas que utilizaste para crear tu proyecto_
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - El framework web usado
-* [Maven](https://maven.apache.org/) - Manejador de dependencias
-* [ROME](https://rometools.github.io/rome/) - Usado para generar RSS
+* [Angular JS](https://angularjs.org/)
+* [Node JS](https://nodejs.org/es/)
+* [Expressjs](https://expressjs.com/es/)
+* [mongoose](https://mongoosejs.com/)
+* [GraphQL](https://graphql.org/)
+* [MongoDB](https://www.mongodb.com/)
+
 
 ## Contribuyendo 🖇️
 
