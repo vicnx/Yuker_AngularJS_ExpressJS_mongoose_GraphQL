@@ -6,15 +6,15 @@ _DAW Second Year Project. Yuker is an application where users can put questions 
 
 ### Home
 
-![Home](https://imgur.com/j1ZNfvO)
+![Home](https://i.imgur.com/j1ZNfvO.png)
 
 ### Yuk & Comments
 
-![Home](https://imgur.com/mXEw33r)
+![Details](https://i.imgur.com/mXEw33r.png)
 
 ### Profile
 
-![Profile](https://imgur.com/FhZPVGK)
+![Profile](https://i.imgur.com/FhZPVGK.png)
 
 
 ## Start 🚀
