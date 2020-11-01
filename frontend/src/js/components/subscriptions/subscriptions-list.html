@@ -1,0 +1,23 @@
+<!-- <link rel="stylesheet" href="css/yuks-list.css"> -->
+<!-- <yuks-preview yuk="yuk" ng-repeat="yuk in $ctrl.yuks">
+</yuks-preview>  -->
+
+
+<subscriptions-preview subscription="subscription" ng-repeat="subscription in $ctrl.list">
+</subscriptions-preview> 
+
+<!-- {{$ctrl.list}} -->
+
+<!-- <div class="yuks-preview"
+  ng-show="!$ctrl.loading && !$ctrl.list.length">
+  Aun no hay yuks aqui! :(
+</div> -->
+
+<list-pagination
+ total-pages="$ctrl.listConfig.totalPages"
+ current-page="$ctrl.listConfig.currentPage"
+ ng-hide="$ctrl.listConfig.totalPages <= 1">
+</list-pagination>
+
+
+

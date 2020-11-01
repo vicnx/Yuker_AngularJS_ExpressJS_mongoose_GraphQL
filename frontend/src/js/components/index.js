@@ -59,5 +59,12 @@ componentsModule.component('yukActions', YukActions);
 import Karma from './profile/karma.component';
 componentsModule.component('karma', Karma);
 
+//SUBS
+import SubscriptionsList from './subscriptions/subscriptions-list.component';
+componentsModule.component('subscriptionsList', SubscriptionsList);
+
+import SubscriptionsPreview from './subscriptions/subscriptions-preview.component';
+componentsModule.component('subscriptionsPreview', SubscriptionsPreview);
+
 
 export default componentsModule;

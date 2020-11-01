@@ -26,6 +26,12 @@
     "angularjs-toaster": "^3.0.0",
     "angular-messages": "^1.7.5",
     "angular-ui-bootstrap": "^2.5.0",
-    "bootstrap-css-only": "^4.1.1"
+    "bootstrap-css-only": "^4.1.1",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-http": "^1.5.16"
   }
 }

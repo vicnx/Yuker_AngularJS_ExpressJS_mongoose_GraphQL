@@ -10,6 +10,9 @@ const resolvers = {
       },
       subscriptions: () =>  {
         return Subscription.find().exec();
+      },
+      subscriptionsCount: () => {
+        return Subscription.count().exec();
       }
     },
     Mutation: {

@@ -13,6 +13,9 @@ http://localhost:3001/api/graphql
   subscriptions {
     type
     slug
+    user{
+      username
+    }
   }
 }
 

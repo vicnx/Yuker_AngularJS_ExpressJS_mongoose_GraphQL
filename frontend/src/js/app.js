@@ -18,6 +18,7 @@ import './profile';
 // import './article';
 import './yuks';
 import './noticias';
+import './subscriptions';
 import './services';
 import './auth';
 import './settings';
@@ -39,6 +40,7 @@ const requires = [
   // 'app.article',
   'app.yuks',
   'app.noticias',
+  'app.subscriptions',
   // 'app.listaryuks',
   'app.services',
   'app.auth',

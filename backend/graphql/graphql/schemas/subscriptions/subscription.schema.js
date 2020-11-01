@@ -4,6 +4,7 @@ const typeDefs = gql`
     extend type Query {
         subscription(slug: String!): Subscription
         subscriptions: [Subscription]
+        subscriptionsCount: Int
     }
     extend type Mutation {
         createSubscription(input: SubscriptionInput): Subscription
