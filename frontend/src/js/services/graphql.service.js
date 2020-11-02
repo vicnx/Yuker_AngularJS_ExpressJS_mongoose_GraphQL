@@ -79,4 +79,5 @@ export default class GraphQL {
 
         return deferred.promise;
     }
+
 };

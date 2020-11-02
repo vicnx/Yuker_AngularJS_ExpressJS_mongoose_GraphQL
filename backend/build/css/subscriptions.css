@@ -42,6 +42,7 @@
 .card_sub_header span{
     font-weight: bold;
     font-size: 80px;
+    text-transform: capitalize;
 }
 .card_sub_body{
     padding: 20px;

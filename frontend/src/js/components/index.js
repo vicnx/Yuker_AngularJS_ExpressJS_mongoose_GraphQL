@@ -66,8 +66,8 @@ componentsModule.component('subscriptionsList', SubscriptionsList);
 import SubscriptionsPreview from './subscriptions/subscriptions-preview.component';
 componentsModule.component('subscriptionsPreview', SubscriptionsPreview);
 
-import BuySubscriptions from './subscriptions/buysubscriptions.component';
-componentsModule.component('buySubscriptions', BuySubscriptions);
+import BuySubscription from './subscriptions/buysubscriptions.component';
+componentsModule.component('buySubscription', BuySubscription);
 
 
 export default componentsModule;

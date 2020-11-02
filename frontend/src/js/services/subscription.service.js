@@ -101,46 +101,7 @@ export default class Subscriptions {
       `;
       return this._GQL.get(query);
     }
-
-    // destroy(slug) {
-    //   return this._$http({
-    //     url: this._AppConstants.rest + '/restaurants/' + slug,
-    //     method: 'DELETE'
-    //   })
-    // }
-  
-    // save(restaurant) {
-    //   let request = {};
-  
-    //   if (restaurant.slug) {
-    //     request.url = `${this._AppConstants.rest}/restaurants/${restaurant.slug}`;
-    //     request.method = 'PUT';
-    //     delete restaurant.slug;
-  
-    //   } else {
-    //     request.url = `${this._AppConstants.rest}/restaurants/`;
-    //     request.method = 'POST';
-    //   }
-  
-    //   request.data = { restaurant: restaurant };
-  
-    //   return this._$http(request).then((res) => res.data.restaurant);
-    // }
-  
-  
-    // favorite(slug) {
-    //   return this._$http({
-    //     url: this._AppConstants.rest + '/restaurants/' + slug + '/favorite',
-    //     method: 'POST'
-    //   })
-    // }
-  
-    // unfavorite(slug) {
-    //   return this._$http({
-    //     url: this._AppConstants.rest + '/restaurants/' + slug + '/favorite',
-    //     method: 'DELETE'
-    //   })
-    // }
+    
   
   
   }
