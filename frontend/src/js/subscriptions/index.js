@@ -7,13 +7,14 @@ let subscriptionsModule = angular.module('app.subscriptions', []);
 import SubscriptionsConfig from './subscriptions.config';
 subscriptionsModule.config(SubscriptionsConfig);
 
-// console.log("index.js del noticias despues del config")
-// Controllers
-// import DetailNoticiaCtrl from './detailnoticia.controller';
-// noticiasModule.controller('DetailNoticiaCtrl', DetailNoticiaCtrl);
-
 import SubscriptionsCtrl from './subscriptions.controller';
 subscriptionsModule.controller('SubscriptionsCtrl', SubscriptionsCtrl);
+
+// import BuysubscriptionsConfig from './buysubscriptions.config';
+// buysubscriptionsModule.config(BuysubscriptionsConfig);
+
+import BuysubscriptionsCtrl from './buysubscription.controller';
+subscriptionsModule.controller('BuysubscriptionsCtrl', BuysubscriptionsCtrl);
 
 // import NoticiasList from 'components/noticias-helpers/noticias-list.component';
 // noticiasModule.component('NoticiasList', NoticiasList);
