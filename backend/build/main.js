@@ -62431,7 +62431,7 @@ _angular2.default.bootstrap(document, ['app'], {
   strictDi: true
 });
 
-},{"./auth":57,"./components":66,"./config/app.config":78,"./config/app.constants":79,"./config/app.run":80,"./config/app.templates":81,"./editor":85,"./home":89,"./layout":92,"./noticias":94,"./noticias_editor":97,"./profile":100,"./services":107,"./settings":116,"./subscriptions":120,"./yuk_editor":123,"./yuks":128,"angular":11,"angular-messages":4,"angular-toastr":6,"angular-ui-bootstrap":8,"angular-ui-router":9}],55:[function(require,module,exports){
+},{"./auth":57,"./components":66,"./config/app.config":78,"./config/app.constants":79,"./config/app.run":80,"./config/app.templates":81,"./editor":85,"./home":89,"./layout":92,"./noticias":94,"./noticias_editor":97,"./profile":100,"./services":107,"./settings":116,"./subscriptions":121,"./yuk_editor":124,"./yuks":129,"angular":11,"angular-messages":4,"angular-toastr":6,"angular-ui-bootstrap":8,"angular-ui-router":9}],55:[function(require,module,exports){
 'use strict';
 
 AuthConfig.$inject = ["$stateProvider", "$httpProvider"];
@@ -63881,9 +63881,9 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("auth/auth.html", "<div class=\"auth-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n\n      <div class=\"col-md-6 offset-md-3 col-xs-12\">\n        <h1 class=\"text-xs-center\" ng-bind=\"::$ctrl.title\"></h1>\n        <p class=\"text-xs-center\">\n          <a ui-sref=\"app.login\"\n            ng-show=\"$ctrl.authType === \'register\'\">\n            Have an account?\n          </a>\n          <a ui-sref=\"app.register\"\n            ng-show=\"$ctrl.authType === \'login\'\">\n            Need an account?\n          </a>\n        </p>\n        <div class=\"error\" ng-show=\"$ctrl.error\">\n          <p>El usuario o el correo ya existe.</p>\n        </div>\n        <!-- <list-errors errors=\"$ctrl.errors\"></list-errors> -->\n        <a href=\"http://localhost:3000/api/auth/google\" style=\"font-size: 25px; color:black\"><i class=\"ion-social-google\"></i>&nbsp;Google</a>\n        <a href=\"http://localhost:3000/api/auth/github\" style=\"font-size: 25px; color:black\"><i class=\"ion-social-github\"></i>&nbsp;Github</a>\n        <form name=\"formData\" ng-submit=\"$ctrl.submitForm()\">\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\" ng-show=\"$ctrl.authType === \'register\'\">\n              <input required\n                class=\"form-control form-control-lg\"\n                type=\"text\"\n                placeholder=\"Username\"\n                ng-model=\"$ctrl.formData.username\"\n                name=\"Username\" \n                ng-minlength=\"4\" \n                ng-maxlength=\"20\"\n                autocomplete=false/>\n                <div ng-messages=\"formData.Username.$error\">\n                  <p ng-message=\"required\" ng-show=\"formData.Username.$dirty\">Username required</p>\n                  <p ng-message=\"minlength\">Username more than 4 char</p>\n                  <p ng-message=\"maxlength\">Username less than 20 char</p>\n                </div>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input required\n                class=\"form-control form-control-lg\"\n                type=\"email\"\n                placeholder=\"Email\"\n                name=\"Email\"\n                ng-model=\"$ctrl.formData.email\" />\n                <div ng-messages=\"formData.Email.$error\">\n                  <p ng-message=\"required\" ng-show=\"formData.Email.$dirty\">Email required</p>\n                </div>\n            </fieldset>\n\n            <fieldset class=\"form-group\" ng-show=\"$ctrl.authType === \'register\'\">\n              <input required\n                class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"Password\"\n                ng-model=\"$ctrl.formData.password\" \n                name=\"Password\" \n                ng-minlength=\"6\" \n                ng-maxlength=\"40\"/>\n                <div ng-messages=\"formData.Password.$error\">\n                  <p ng-message=\"required\" ng-show=\"formData.Password.$dirty\">Password required</p>\n                  <p ng-message=\"minlength\">Password more than 6 char</p>\n                  <p ng-message=\"maxlength\">Password less than 40 char</p>\n                </div>\n            </fieldset>\n\n            <!-- <fieldset class=\"form-group\" ng-show=\"$ctrl.authType === \'login\'\">\n              <input required\n                class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"Password\"\n                ng-model=\"$ctrl.formData.password\" \n                name=\"Password\" />\n                <div ng-messages=\"formData.Password.$error\">\n                  <p ng-message=\"required\" ng-show=\"formData.Password.$dirty\">Password required</p>\n                </div>\n            </fieldset> -->\n\n            <button class=\"btn btn-lg btn-primary pull-xs-right\"\n              type=\"submit\"\n              ng-bind=\"::$ctrl.title\">\n            </button>\n\n          </fieldset>\n        </form>\n      </div>\n\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("auth/login.html", "<div class=\"auth-page\">\n    <div class=\"container page\">\n      <div class=\"row\">\n  \n        <div class=\"col-md-6 offset-md-3 col-xs-12\">\n          <h1 class=\"text-xs-center\" ng-bind=\"::$ctrl.title\"></h1>\n          <p class=\"text-xs-center\">\n            <a ui-sref=\"app.login\"\n              ng-show=\"$ctrl.authType === \'register\'\">\n              Have an account?\n            </a>\n            <a ui-sref=\"app.register\"\n              ng-show=\"$ctrl.authType === \'login\'\">\n              Need an account?\n            </a>\n          </p>\n          <div class=\"error\" ng-show=\"$ctrl.error\">\n            <p>El usuario o el correo ya existe.</p>\n          </div>\n          <!-- <list-errors errors=\"$ctrl.errors\"></list-errors> -->\n          <a href=\"http://localhost:3000/api/auth/google\" style=\"font-size: 25px; color:black\"><i class=\"ion-social-google\"></i>&nbsp;Google</a>\n          <a href=\"http://localhost:3000/api/auth/github\" style=\"font-size: 25px; color:black\"><i class=\"ion-social-github\"></i>&nbsp;Github</a>\n          <form name=\"formData\" ng-submit=\"$ctrl.submitForm()\">\n            <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n  \n              <fieldset class=\"form-group\">\n                <input required\n                  class=\"form-control form-control-lg\"\n                  type=\"email\"\n                  placeholder=\"Email\"\n                  name=\"Email\"\n                  ng-model=\"$ctrl.formData.email\" />\n                  <div ng-messages=\"formData.Email.$error\">\n                    <p ng-message=\"required\" ng-show=\"formData.Email.$dirty\">Email required</p>\n                  </div>\n              </fieldset>\n  \n              <fieldset class=\"form-group\" ng-show=\"$ctrl.authType === \'login\'\">\n                <input required\n                  class=\"form-control form-control-lg\"\n                  type=\"password\"\n                  placeholder=\"Password\"\n                  ng-model=\"$ctrl.formData.password\" \n                  name=\"Password\" />\n                  <div ng-messages=\"formData.Password.$error\">\n                    <p ng-message=\"required\" ng-show=\"formData.Password.$dirty\">Password required</p>\n                  </div>\n              </fieldset>\n  \n              <button class=\"btn btn-lg btn-primary pull-xs-right\"\n                type=\"submit\"\n                ng-bind=\"::$ctrl.title\">\n              </button>\n  \n            </fieldset>\n          </form>\n        </div>\n  \n      </div>\n    </div>\n  </div>\n  ");
   $templateCache.put("components/list-errors.html", "<ul class=\"error-messages\" ng-show=\"$ctrl.errors\">\n  <div ng-repeat=\"(field, errors) in $ctrl.errors\">\n    <li ng-repeat=\"error in errors\">\n      {{field}} {{error}}\n    </li>\n  </div>\n</ul>\n");
+  $templateCache.put("editor/editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.article.title\"\n                type=\"text\"\n                placeholder=\"Article Title\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                ng-model=\"$ctrl.article.description\"\n                type=\"text\"\n                placeholder=\"What\'s this article about?\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.article.body\"\n                placeholder=\"Write your article (in markdown)\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.article.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-primary\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publish Article\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("home/home.html", " <div class=\"home-page\">\n  <home-slider-cmp></home-slider-cmp>\n  <!-- Splash banner that only shows when not logged in -->\n  <div class=\"banner\" style=\"background-color: rgb(0, 172, 172);\">\n    <div class=\"container\">\n      <h1 class=\"logo-font\" ng-bind=\"::$ctrl.appName | lowercase\"></h1>\n      <p>A place to share your knowledge.</p>\n    </div>\n  </div>\n\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-9\">\n        <!-- CAMBIAR LISTA HOME -->\n        <div class=\"feed-toggle\">\n          <ul class=\"nav nav-pills outline-active\">\n            <!-- //recomendado -->\n            <li class=\"nav-item\" show-authed=\"true\">\n              <a href=\"\" class=\"nav-link\"\n                ng-class=\"{ active: $ctrl.listConfig.type === \'feed\' }\"\n                ng-click=\"$ctrl.changeList({ type: \'feed\' })\">\n                Seguidos\n              </a>\n            </li>\n            <!-- //explorar -->\n            <li class=\"nav-item\">\n              <a href=\"\" class=\"nav-link\"\n                ng-class=\"{ active: $ctrl.listConfig.type === \'all\' && !$ctrl.listConfig.filters }\"\n                ng-click=\"$ctrl.changeList({ type: \'all\' })\">\n                Explorar\n              </a>\n            </li>\n\n            <!-- <li class=\"nav-item\" ng-show=\"$ctrl.listConfig.filters.tag\">\n              <a href=\"\" class=\"nav-link active\">\n                <i class=\"ion-pound\"></i> {{$ctrl.listConfig.filters.tag}}\n              </a>\n            </li> -->\n\n          </ul>\n        </div>\n        <br>\n        <!-- YUKS HOME LIST -->\n        <!-- <yuks-list yuks=\"$ctrl.yuks\"></yuks-list> -->\n        <yuks-list limit=\"5\" list-config=\"$ctrl.listConfig\"></yuks-list>\n        \n        <br><br><br>\n        <h1>POPULAR NEWS</h1>\n        <br>\n        <noticias-list noticias=\"$ctrl.noticias\"></noticias-list>\n\n      </div>\n\n      <!-- Sidebar where popular tags are listed -->\n      <div class=\"col-md-3\">\n        <div class=\"sidebar\">\n\n          <p>Popular Yuk Tags</p>\n          <div class=\"tag-list\" ng-repeat=\"tag in $ctrl.tagsYuks\">\n            <a ui-sref=\"app.listaryuks({filter:tag})\" class=\"tag-default tag-pill\">{{tag}} </a>\n          </div>\n        </div>\n\n        <div class=\"sidebar\">\n\n          <!-- <p>Categorias Noticias</p>\n\n          <div class=\"tag-list\" ng-show=\"$ctrl.tagsNoticias\">\n            <a href=\"\" class=\"tag-default tag-pill\"\n              ng-click=\"$ctrl.changeList({ type: \'all\', filters: { tag: tagName } })\"\n              ng-repeat=\"tagName in $ctrl.tagsNoticias\"\n              ng-bind=\"tagName\">\n            </a>\n          </div>\n\n          <div ng-show=\"!$ctrl.tagsNoticiasLoaded\">\n            Loading tags...\n          </div>\n\n          <div class=\"post-preview\"\n            ng-show=\"$ctrl.tagsNoticiasLoaded && !$ctrl.tagsNoticias.length\">\n            No tags are here... yet.\n          </div>\n\n        </div> -->\n      </div>\n\n      \n\n      <!-- End the row & container divs -->\n    </div>\n  </div>\n\n</div>\n");
   $templateCache.put("home/homeSlider.html", "<div style=\"height: 400px\">\n    <div uib-carousel active=\"active\" interval=\"$ctrl.myInterval\" no-wrap=\"$ctrl.noWrapSlides\">\n        <div uib-slide ng-repeat=\"slide in $ctrl.slides track by slide.id\" index=\"slide.id\" style=\"height: 400px\">\n        <img ng-src=\"{{slide.image}}\" class=\"img-fluid\" style=\"filter: blur(1px);\">\n        <div class=\"carousel-caption\" style=\"padding-bottom:100px;\">\n        </div>\n        </div>\n    </div>\n</div>\n \n");
-  $templateCache.put("editor/editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.article.title\"\n                type=\"text\"\n                placeholder=\"Article Title\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                ng-model=\"$ctrl.article.description\"\n                type=\"text\"\n                placeholder=\"What\'s this article about?\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.article.body\"\n                placeholder=\"Write your article (in markdown)\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.article.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-primary\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publish Article\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("layout/app-view.html", "<app-header></app-header>\n\n<div ui-view></div>\n\n<app-footer></app-footer>\n");
   $templateCache.put("layout/footer.html", "<footer>\n  <div class=\"container\">\n    <a class=\"logo-font\" ui-sref=\"app.home\" ng-bind=\"::$ctrl.appName | lowercase\"></a>\n    <span class=\"attribution\">\n      &copy; {{::$ctrl.date | date:\'yyyy\'}}.\n      An interactive learning project from <a href=\"https://thinkster.io\">Thinkster</a>.\n      Code licensed under MIT.\n    </span>\n  </div>\n</footer>\n");
   $templateCache.put("layout/header.html", "<nav class=\"navbar navbar-light\">\n  <div class=\"container\">\n\n    <a class=\"navbar-brand\"\n      ui-sref=\"app.home\"\n      ng-bind=\"::$ctrl.appName | lowercase\">\n    </a>\n\n    <!-- Show this for logged out users -->\n    <ul show-authed=\"false\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.subscriptions\">\n          SUBS\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.login\">\n          Sign in\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.register\">\n          Sign up\n        </a>\n      </li>\n\n    </ul>\n\n    <!-- Show this for logged in users -->\n    <ul show-authed=\"true\"\n      class=\"nav navbar-nav pull-xs-right\">\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.home\">\n          Home\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listaryuks\">\n          All Yuks\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.listarnoticias\">\n          Noticias\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.subscriptions\">\n          SUBS\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.noticias_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New noticia\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.yuk_editor\">\n          <i class=\"ion-compose\"></i>&nbsp;New Yuk\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.settings\">\n          <i class=\"ion-gear-a\"></i>&nbsp;Settings\n        </a>\n      </li>\n\n      <li class=\"nav-item\">\n        <a class=\"nav-link\"\n          ui-sref-active=\"active\"\n          ui-sref=\"app.profile.main({ username: $ctrl.currentUser.username})\">\n          <img ng-src=\"{{$ctrl.currentUser.image}}\" class=\"user-pic\" />\n          {{ $ctrl.currentUser.username }}\n        </a>\n      </li>\n\n    </ul>\n\n\n  </div>\n</nav>\n");
@@ -63894,6 +63894,7 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("profile/profile.html", "<div class=\"profile-page\">\n\n  <!-- User\'s basic info & action buttons -->\n  <div class=\"user-info\">\n    <div class=\"container\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n          <img ng-src=\"{{::$ctrl.profile.image}}\" class=\"user-img\" />\n          <h4 ng-bind=\"::$ctrl.profile.username\"></h4>\n          <karma user=\"$ctrl.profile\"></karma>\n          <!-- <p>KARMA: <span ng-bind=\"::$ctrl.profile.karma\"></span></p> -->\n\n          <a ui-sref=\"app.settings\"\n            class=\"btn btn-sm btn-outline-secondary action-btn\"\n            ng-show=\"$ctrl.isUser\">\n            <i class=\"ion-gear-a\"></i> Edit Profile Settings\n          </a>\n          <a ui-sref=\"app.buysubscriptions\" class=\"btn btn-sm btn-outline-secondary action-btn\" ng-show=\"$ctrl.isUser\" style=\"margin-right: 20px;\">\n            <i class=\"fas fa-shopping-cart\"></i> BUY SUB\n          </a>\n\n          <follow-btn user=\"$ctrl.profile\" ng-hide=\"$ctrl.isUser\"></follow-btn>\n\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Container where User\'s posts & favs are list w/ toggle tabs -->\n  <div class=\"container\">\n    <div class=\"row\">\n\n      <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n        <!-- Tabs for switching between author articles & favorites -->\n        <div class=\"articles-toggle\">\n          <ul class=\"nav nav-pills outline-active\">\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link active\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.main({username: $ctrl.profile.username})\">\n                My Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.likes({username: $ctrl.profile.username})\">\n                Liked Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.dislikes({username: $ctrl.profile.username})\">\n                DisLiked Articles\n              </a>\n            </li>\n\n          </ul>\n        </div>\n        <br>\n        <!-- List of articles -->\n        <div ui-view></div>\n\n\n      </div>\n\n    <!-- End row & container divs -->\n    </div>\n  </div>\n\n</div>\n");
   $templateCache.put("settings/settings.html", "<div class=\"settings-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-6 offset-md-3 col-xs-12\">\n\n        <h1 class=\"text-xs-center\">Your Settings</h1>\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form ng-submit=\"$ctrl.submitForm()\">\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"URL of profile picture\"\n                ng-model=\"$ctrl.formData.image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"text\"\n                placeholder=\"Username\"\n                ng-model=\"$ctrl.formData.username\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control form-control-lg\"\n                rows=\"8\"\n                placeholder=\"Short bio about you\"\n                ng-model=\"$ctrl.formData.bio\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"email\"\n                placeholder=\"Email\"\n                ng-model=\"$ctrl.formData.email\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"New Password\"\n                ng-model=\"$ctrl.formData.password\" />\n            </fieldset>\n\n            <button class=\"btn btn-lg btn-primary pull-xs-right\"\n              type=\"submit\">\n              Update Settings\n            </button>\n\n          </fieldset>\n        </form>\n\n        <!-- Line break for logout button -->\n        <hr />\n\n        <button class=\"btn btn-outline-danger\"\n          ng-click=\"$ctrl.logout()\">\n          Or click here to logout.\n        </button>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("subscriptions/buysubscriptions.html", "<div class=\"home-page\">\n    <!-- Splash banner that only shows when not logged in -->\n    <div class=\"banner\" style=\"background-color: rgb(172, 0, 0);\">\n      <div class=\"container\">\n        <p>BUY</p>\n      </div>\n    </div>\n    <div class=\"container page\">\n      <div class=\"row\">\n        <div class=\"col-md-9\">\n          <div class=\"subs_table\">\n            <buy-subscription tipo=\"$ctrl.netflix\"></buy-subscription>\n            <buy-subscription tipo=\"$ctrl.spotify\"></buy-subscription>\n            <buy-subscription tipo=\"$ctrl.books\"></buy-subscription>\n            <!-- NETFLIX -->\n            <!-- <div class=\"card_sub netflix\">\n              <div class=\"card_sub_header\">\n                <span>Netflix</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n            <!-- Spotify -->\n            <!-- <div class=\"card_sub spotify\">\n              <div class=\"card_sub_header\">\n                <span>Spotify</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n            <!-- Books -->\n            <!-- <div class=\"card_sub books\">\n              <div class=\"card_sub_header\">\n                <span>Books</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n\n          </div>\n        </div>\n        </div>\n      </div>\n    </div>\n  \n  </div>\n  ");
+  $templateCache.put("subscriptions/detailsubscription.html", "<div class=\"dsub__details\">\n  <div class=\"dsub\">\n    <div class=\"dsub__header\">\n      {{$ctrl.subscription.slug}}\n    </div>\n    <div class=\"dsub__body\">\n      <div class=\"dsub__left\">\n        <img src=\"{{$ctrl.subscription.user.image}}\" alt=\"{{$ctrl.subscription.user.username}}\" width=\"100\">\n        <span class=\"dsub__left__span\">Username: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.user.username}}</span></span>\n        <span class=\"dsub__left__span\">Type: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.type}}</span></span>\n        <span class=\"dsub__left__span\">START DATE: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.start}}</span></span>\n        <span class=\"dsub__left__span\">EXPIRE: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.finish}}</span></span>\n        <span class=\"dsub__left__span dsub__left__span--active\"> <span class=\"{{$ctrl.badge}}\">Active</span> </span>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- {{$ctrl.subscription}} -->");
   $templateCache.put("subscriptions/subscriptions.html", "<div class=\"home-page\">\n    <!-- Splash banner that only shows when not logged in -->\n    <div class=\"banner\" style=\"background-color: rgb(172, 0, 0);\">\n      <div class=\"container\">\n        <p>Subscriptions</p>\n      </div>\n    </div>\n    <div class=\"container page\">\n      <div class=\"row\">\n        <div class=\"col-md-9\">\n          <!-- <button ng-click=\"$ctrl.removeFilter()\">Remove filters</button> -->\n          <subscriptions-list limit=\"10\" list-config=\"$ctrl.listConfig\"></subscriptions-list>\n          <!-- <yuks-list yuks=\"$ctrl.yuksFiltrados\"></yuks-list> -->\n\n        </div>\n      </div>\n    </div>\n  \n  </div>\n  ");
   $templateCache.put("yuk_editor/yuk_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.yuk.title\"\n                type=\"text\"\n                placeholder=\"Yuk Title\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.yuk.content\"\n                placeholder=\"Escribe tu Yuk\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.yuk.image\"\n                type=\"text\"\n                placeholder=\"URL Image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.yuk.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publish New Yuk\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("yuks/comment.html", "<!-- <div class=\"card\">\n  <div class=\"card-block\">\n    <p class=\"card-text\" ng-bind=\"::$ctrl.data.body\"></p>\n  </div>\n  <div class=\"card-footer\">\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\">\n      <img ng-src=\"{{::$ctrl.data.author.image}}\" class=\"comment-author-img\" />\n    </a>\n    &nbsp;\n    <a class=\"comment-author\" ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\" ng-bind=\"::$ctrl.data.author.username\">\n    </a>\n    <span class=\"date-posted\"\n      ng-bind=\"::$ctrl.data.createdAt | date: \'longDate\'\">\n    </span>\n    <span class=\"mod-options\" ng-show=\"$ctrl.canModify\">\n      <i class=\"ion-trash-a\" ng-click=\"$ctrl.deleteCb()\"></i>\n    </span>\n  </div>\n</div> -->\n\n<div class=\"comment-main-level\">\n  <div class=\"comment-avatar\">\n    <img src=\"{{$ctrl.data.author.image}}\"/>\n  </div>\n  <div class=\"comment-box\">\n\n    <div class=\"comment-head\">\n      <h6 class=\"comment-name\"><a ui-sref=\"app.profile.main({ username: $ctrl.data.author.username })\">{{$ctrl.data.author.username}}</a></h6>\n      <span class=\"date-posted\"\n        ng-bind=\"::$ctrl.data.createdAt | date: \'longDate\'\">\n      </span>\n      <span class=\"mod-options\" ng-show=\"$ctrl.canModify\">\n        <i class=\"ion-trash-a\" ng-click=\"$ctrl.deleteCb()\"></i>\n      </span>\n      <span ng-show=\"$ctrl.showAuthor\" class=\"author\">CREADOR</span>\n    </div>\n    <div class=\"comment-content\">\n      {{$ctrl.data.body}}    \n    </div>\n  </div>\n  </div>\n</div>\n");
@@ -63908,12 +63909,12 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("components/buttons/favorite-btn.html", "<button class=\"btn btn-sm\"\n  ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n              \'btn-outline-primary\': !$ctrl.article.favorited,\n              \'btn-primary\': $ctrl.article.favorited }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-heart\"></i> <ng-transclude></ng-transclude>\n</button>\n");
   $templateCache.put("components/buttons/follow-btn.html", "<span ng-hide=\"$ctrl.canModify\">\n    <button\n    class=\"btn btn-sm action-btn\"\n    ng-class=\"{ \'disabled\': $ctrl.isSubmitting,\n                \'btn-outline-secondary\': !$ctrl.user.following,\n                \'btn-secondary\': $ctrl.user.following }\"\n    ng-click=\"$ctrl.submit()\">\n    <i class=\"ion-plus-round\"></i>\n    &nbsp;\n    {{ $ctrl.user.following ? \'Unfollow\' : \'Follow\' }} {{ $ctrl.user.username }}\n  </button>\n</span>\n\n<span ng-show=\"$ctrl.canModify\">\n  <a class=\"btn btn-sm btn-outline-secondary\"\n    ui-sref=\"app.profile.main({ username: $ctrl.user.username})\">Profile</a>\n</span>\n\n");
   $templateCache.put("components/buttons/like-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" class=\"far fa-thumbs-up like-dislike-btn\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.liked,\n    \'untoggled\': !$ctrl.yuk.liked }\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n    ");
+  $templateCache.put("components/profile/karma.html", "<p class=\"karma\">KARMA: <span>{{$ctrl.karma}}</span></p>");
   $templateCache.put("components/noticias-helpers/noticias-details.html", "<div class=\"noticia\">\n        <h2> {{$ctrl.noticia.titulo}}jj</h2>\n        <p> {{$ctrl.noticia.titulo}}</p>\n        <p>{{$ctrl.noticia.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.noticia.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <br>\n        <button ui-sref=\"app.listarnoticias\">Volver</button> \n</div>\n");
   $templateCache.put("components/noticias-helpers/noticias-list.html", "<div class=\"noticia\" ng-repeat=\"noticia in $ctrl.noticias\">\n    <hr>\n    <h3>{{noticia.titulo}}</h3>\n    <p>{{noticia.contenido}}</p>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n        <span ng-repeat=\"t in noticia.tagList\">\n            <a>{{t}}</a>\n        </span>\n    </span>\n    <br>\n    <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n</div>\n\n");
-  $templateCache.put("components/profile/karma.html", "<p class=\"karma\">KARMA: <span>{{$ctrl.karma}}</span></p>");
   $templateCache.put("components/subscriptions/buysubscriptions.html", "<div class=\"card_sub {{$ctrl.type}}\">\n  <div class=\"card_sub_header\">\n    <span>{{$ctrl.type}}</span>\n  </div>\n  <div class=\"card_sub_body\">\n    Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n  </div>\n  <div class=\"card_sub_footer\">\n    <button ng-click=\"$ctrl.buySub($ctrl.type)\" class=\"btn btn-light comprar\">COMPRAR</button>\n  </div>\n</div>\n\n\n\n");
   $templateCache.put("components/subscriptions/subscriptions-list.html", "<!-- <link rel=\"stylesheet\" href=\"css/yuks-list.css\"> -->\n<!-- <yuks-preview yuk=\"yuk\" ng-repeat=\"yuk in $ctrl.yuks\">\n</yuks-preview>  -->\n\n\n<subscriptions-preview subscription=\"subscription\" ng-repeat=\"subscription in $ctrl.list\">\n</subscriptions-preview> \n\n<!-- {{$ctrl.list}} -->\n\n<!-- <div class=\"yuks-preview\"\n  ng-show=\"!$ctrl.loading && !$ctrl.list.length\">\n  Aun no hay yuks aqui! :(\n</div> -->\n\n<list-pagination\n total-pages=\"$ctrl.listConfig.totalPages\"\n current-page=\"$ctrl.listConfig.currentPage\"\n ng-hide=\"$ctrl.listConfig.totalPages <= 1\">\n</list-pagination>\n\n\n\n");
-  $templateCache.put("components/subscriptions/subscriptions-preview.html", "<article class=\"sub\">\n    <div class=\"sub__username\">{{$ctrl.subscription.user.username}}</div>\n    <div class=\"sub__type\">{{$ctrl.subscription.type}}</div>\n    <div class=\"sub__active\">{{$ctrl.subscription.active}}</div>\n</article>\n<hr>");
+  $templateCache.put("components/subscriptions/subscriptions-preview.html", "<article class=\"sub\">\n    <div class=\"sub__username\">{{$ctrl.subscription.user.username}}</div>\n    <div class=\"sub__type\">{{$ctrl.subscription.type}}</div>\n    <div class=\"sub__active\">{{$ctrl.subscription.active}}</div>\n    <div>{{$ctrl.subscription.slug}}</div>\n    <button class=\"sub__button\" ui-sref=\"app.detailsubscriptions({slug:$ctrl.subscription.slug})\">VIEW MORE</button>\n</article>\n<hr>");
   $templateCache.put("components/yuks-helpers/list-pagination.html", "<nav>\n  <ul class=\"pagination\">\n\n    <li class=\"page-item\"\n      ng-class=\"{active: pageNumber === $ctrl.currentPage }\"\n      ng-repeat=\"pageNumber in $ctrl.pageRange($ctrl.totalPages)\"\n      ng-click=\"$ctrl.changePage(pageNumber)\">\n\n      <a class=\"page-link\" href=\"\">{{ pageNumber }}</a>\n\n    </li>\n\n  </ul>\n</nav>\n");
   $templateCache.put("components/yuks-helpers/yuks-details.html", "<!-- <div class=\"yuk\">\n        <h2> {{$ctrl.yuk.title}}</h2>\n        <p> {{$ctrl.yuk.content}}</p>\n        <p>{{$ctrl.yuk.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.yuk.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <yuk-actions yuk=\"$ctrl.yuk\"></yuk-actions>\n        <button ui-sref=\"app.listaryuks\">Volver</button> \n</div> -->\n\n<div class=\"yuk-box\">\n    <div class=\"left-yuk-box\">\n        <img class=\"image\" ng-src=\"{{$ctrl.yuk.author.image}}\" alt=\"profile_image\">\n        \n    </div>\n    <div class=\"rigth-yuk-box\">\n        <div class=\"yuk-text\">\n            <h2> {{$ctrl.yuk.title}}</h2>\n            <p> {{$ctrl.yuk.content}}</p>\n        </div>\n        <div class=\"yuk-author\">\n            @<span id=\"author\">{{$ctrl.yuk.author.username}}</span>\n            <br>\n            <follow-btn user=\"$ctrl.yuk.author\"></follow-btn>\n        </div>\n        <yuk-actions yuk=\"$ctrl.yuk\"></yuk-actions>\n    </div>\n\n</div>\n\n  \n");
   $templateCache.put("components/yuks-helpers/yuks-list.html", "<!-- <link rel=\"stylesheet\" href=\"css/yuks-list.css\"> -->\n<!-- <yuks-preview yuk=\"yuk\" ng-repeat=\"yuk in $ctrl.yuks\">\n</yuks-preview>  -->\n\n\n<yuks-preview yuk=\"yuk\" ng-repeat=\"yuk in $ctrl.list\">\n</yuks-preview> \n\n<div class=\"yuks-preview\"\n  ng-show=\"!$ctrl.loading && !$ctrl.list.length\">\n  Aun no hay yuks aqui! :(\n</div>\n\n<list-pagination\n total-pages=\"$ctrl.listConfig.totalPages\"\n current-page=\"$ctrl.listConfig.currentPage\"\n ng-hide=\"$ctrl.listConfig.totalPages <= 1\">\n</list-pagination>\n\n");
@@ -65442,7 +65443,7 @@ var Profile = function () {
 exports.default = Profile;
 
 },{}],111:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -65466,7 +65467,7 @@ var Subscriptions = function () {
   }
 
   _createClass(Subscriptions, [{
-    key: "query",
+    key: 'query',
     value: function query(config) {
       if (!config.filters.offset) {
         config.filters.offset = 0;
@@ -65490,27 +65491,21 @@ var Subscriptions = function () {
       //     subscriptionsCount
       //   }
       // `;
-      var query = "\n        query getSubscriptionsAndCount {\n          subscriptions {\n            type\n            slug\n            user{\n              username\n              id\n            }\n            start\n            finish\n            active\n          }\n          subscriptionsCount\n        }\n      ";
+      var query = '\n        query getSubscriptionsAndCount {\n          subscriptions {\n            type\n            slug\n            user{\n              username\n              id\n            }\n            start\n            finish\n            active\n          }\n          subscriptionsCount\n        }\n      ';
       return this._GQL.get(query);
     }
   }, {
-    key: "get",
+    key: 'get',
     value: function get(slug) {
-      var deferred = this._$q.defer();
 
-      if (!slug.replace(" ", "")) {
-        deferred.reject("Subscription slug is empty");
-
-        return deferred.promise;
-      }
-
-      var query = "\n        query getSubscription {\n          subscription(slug:\"" + slug + "\") {\n            id\n            title\n            slug\n            description\n            streetAddress\n            reservePrice\n            city {\n              id\n              slug\n              name\n              country {\n                id\n                slug\n                name\n              }\n            }\n          }\n        }\n      ";
-      return this._GQL.getAuth(query);
+      var query = '\n        query getSubscription {\n          subscription(slug:"' + slug + '") {\n            id\n            type\n            slug\n            user{\n              id\n              username\n              image\n            }\n            start\n            finish\n            active\n          }\n        }\n      ';
+      console.log(query);
+      return this._GQL.get(query);
     }
   }, {
-    key: "getSubscriptionsByType",
+    key: 'getSubscriptionsByType',
     value: function getSubscriptionsByType(type) {
-      var query = "\n        query {\n          restaurantsResults(slug:\"" + type + "\") {\n              id\n              slug\n              title\n              description\n              reservePrice\n              streetAddress\n              image\n            }\n        }\n      ";
+      var query = '\n        query {\n          restaurantsResults(slug:"' + type + '") {\n              id\n              slug\n              title\n              description\n              reservePrice\n              streetAddress\n              image\n            }\n        }\n      ';
       return this._GQL.get(query);
     }
   }]);
@@ -66047,6 +66042,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DetailsSubscriptionCtrl = function DetailsSubscriptionCtrl(subscription, AppConstants, $state, $scope) {
+  'ngInject';
+
+  var _this = this;
+
+  _classCallCheck(this, DetailsSubscriptionCtrl);
+
+  console.log("controller detail SUBSCRIPTIONS");
+
+  this.$onInit = function () {
+    // console.log(this.subscription);
+    _this.subscription = subscription.subscription;
+    console.log(_this.subscription.start.toString().split('T')[0]);
+    _this.subscription.start = _this.subscription.start.toString().split('T')[0];
+    if (_this.subscription.finish == null) _this.subscription.finish = "NEVER";
+    if (_this.subscription.active == true) {
+      _this.badge = "active active--true";
+    } else {
+      _this.badge = "active active--false";
+    }
+  };
+};
+DetailsSubscriptionCtrl.$inject = ["subscription", "AppConstants", "$state", "$scope"];
+
+exports.default = DetailsSubscriptionCtrl;
+
+},{}],121:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
@@ -66062,6 +66092,10 @@ var _subscriptions4 = _interopRequireDefault(_subscriptions3);
 var _buysubscription = require('./buysubscription.controller');
 
 var _buysubscription2 = _interopRequireDefault(_buysubscription);
+
+var _detailsubscription = require('./detailsubscription.controller');
+
+var _detailsubscription2 = _interopRequireDefault(_detailsubscription);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -66080,6 +66114,8 @@ subscriptionsModule.controller('SubscriptionsCtrl', _subscriptions4.default);
 
 subscriptionsModule.controller('BuysubscriptionsCtrl', _buysubscription2.default);
 
+subscriptionsModule.controller('DetailsSubscriptionCtrl', _detailsubscription2.default);
+
 // import NoticiasList from 'components/noticias-helpers/noticias-list.component';
 // noticiasModule.component('NoticiasList', NoticiasList);
 
@@ -66095,7 +66131,7 @@ subscriptionsModule.controller('BuysubscriptionsCtrl', _buysubscription2.default
 
 exports.default = subscriptionsModule;
 
-},{"./buysubscription.controller":119,"./subscriptions.config":121,"./subscriptions.controller":122,"angular":11}],121:[function(require,module,exports){
+},{"./buysubscription.controller":119,"./detailsubscription.controller":120,"./subscriptions.config":122,"./subscriptions.controller":123,"angular":11}],122:[function(require,module,exports){
 'use strict';
 
 SubscriptionsConfig.$inject = ["$stateProvider"];
@@ -66118,12 +66154,27 @@ function SubscriptionsConfig($stateProvider) {
     controllerAs: '$ctrl',
     templateUrl: 'subscriptions/buysubscriptions.html',
     title: 'Buy subscriptions'
+  }).state('app.detailsubscriptions', {
+    url: '/subscriptions/:slug',
+    controller: 'DetailsSubscriptionCtrl',
+    controllerAs: '$ctrl',
+    templateUrl: 'subscriptions/detailsubscription.html',
+    title: 'detailssubscription',
+    resolve: {
+      subscription: ["Subscriptions", "$stateParams", function subscription(Subscriptions, $stateParams) {
+        console.log($stateParams);
+        console.log("dentro resolve subscription detaiils");
+        return Subscriptions.get($stateParams.slug).then(function (subscription) {
+          return subscription;
+        });
+      }]
+    }
   });
 };
 
 exports.default = SubscriptionsConfig;
 
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66151,7 +66202,7 @@ SubscriptionsCtrl.$inject = ["$state", "$scope", "$stateParams"];
 
 exports.default = SubscriptionsCtrl;
 
-},{}],123:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66186,7 +66237,7 @@ yuk_editorModule.controller('Yuk_EditorCtrl', _yuk_editor4.default);
 
 exports.default = yuk_editorModule;
 
-},{"./yuk_editor.config":124,"./yuk_editor.controller":125,"angular":11}],124:[function(require,module,exports){
+},{"./yuk_editor.config":125,"./yuk_editor.controller":126,"angular":11}],125:[function(require,module,exports){
 'use strict';
 
 Yuk_EditorConfig.$inject = ["$stateProvider"];
@@ -66230,7 +66281,7 @@ function Yuk_EditorConfig($stateProvider) {
 
 exports.default = Yuk_EditorConfig;
 
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66302,7 +66353,7 @@ var Yuk_EditorCtrl = function () {
 
 exports.default = Yuk_EditorCtrl;
 
-},{}],126:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66345,7 +66396,7 @@ var Comment = {
 
 exports.default = Comment;
 
-},{}],127:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66419,7 +66470,7 @@ var DetailYukCtrl = function () {
 
 exports.default = DetailYukCtrl;
 
-},{}],128:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66469,7 +66520,7 @@ yuksModule.component('comment', _comment2.default);
 
 exports.default = yuksModule;
 
-},{"./comment.component":126,"./detailyuk.controller":127,"./yuks.config":129,"./yuks.controller":130,"angular":11}],129:[function(require,module,exports){
+},{"./comment.component":127,"./detailyuk.controller":128,"./yuks.config":130,"./yuks.controller":131,"angular":11}],130:[function(require,module,exports){
 'use strict';
 
 YuksConfig.$inject = ["$stateProvider"];
@@ -66512,7 +66563,7 @@ function YuksConfig($stateProvider) {
 
 exports.default = YuksConfig;
 
-},{}],130:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

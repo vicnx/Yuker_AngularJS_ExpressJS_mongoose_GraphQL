@@ -1,0 +1,20 @@
+<div class="dsub__details">
+  <div class="dsub">
+    <div class="dsub__header">
+      {{$ctrl.subscription.slug}}
+    </div>
+    <div class="dsub__body">
+      <div class="dsub__left">
+        <img src="{{$ctrl.subscription.user.image}}" alt="{{$ctrl.subscription.user.username}}" width="100">
+        <span class="dsub__left__span">Username: <span class="dsub__left__span__content">{{$ctrl.subscription.user.username}}</span></span>
+        <span class="dsub__left__span">Type: <span class="dsub__left__span__content">{{$ctrl.subscription.type}}</span></span>
+        <span class="dsub__left__span">START DATE: <span class="dsub__left__span__content">{{$ctrl.subscription.start}}</span></span>
+        <span class="dsub__left__span">EXPIRE: <span class="dsub__left__span__content">{{$ctrl.subscription.finish}}</span></span>
+        <span class="dsub__left__span dsub__left__span--active"> <span class="{{$ctrl.badge}}">Active</span> </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- {{$ctrl.subscription}} -->

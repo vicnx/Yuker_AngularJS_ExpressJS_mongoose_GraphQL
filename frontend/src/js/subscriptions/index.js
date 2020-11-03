@@ -16,6 +16,9 @@ subscriptionsModule.controller('SubscriptionsCtrl', SubscriptionsCtrl);
 import BuysubscriptionsCtrl from './buysubscription.controller';
 subscriptionsModule.controller('BuysubscriptionsCtrl', BuysubscriptionsCtrl);
 
+import DetailsSubscriptionCtrl from './detailsubscription.controller';
+subscriptionsModule.controller('DetailsSubscriptionCtrl', DetailsSubscriptionCtrl);
+
 // import NoticiasList from 'components/noticias-helpers/noticias-list.component';
 // noticiasModule.component('NoticiasList', NoticiasList);
 

@@ -52,37 +52,27 @@ export default class Subscriptions {
     }
   
     get(slug) {
-      let deferred = this._$q.defer();
-  
-      if (!slug.replace(" ", "")) {
-        deferred.reject("Subscription slug is empty");
-        
-        return deferred.promise;
-      }
-  
+
+      
       let query = `
         query getSubscription {
           subscription(slug:"${slug}") {
             id
-            title
+            type
             slug
-            description
-            streetAddress
-            reservePrice
-            city {
+            user{
               id
-              slug
-              name
-              country {
-                id
-                slug
-                name
-              }
+              username
+              image
             }
+            start
+            finish
+            active
           }
         }
       `;
-      return this._GQL.getAuth(query);
+      console.log(query);
+      return this._GQL.get(query);
     }
   
     getSubscriptionsByType(type) {

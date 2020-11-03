@@ -2,5 +2,7 @@
     <div class="sub__username">{{$ctrl.subscription.user.username}}</div>
     <div class="sub__type">{{$ctrl.subscription.type}}</div>
     <div class="sub__active">{{$ctrl.subscription.active}}</div>
+    <div>{{$ctrl.subscription.slug}}</div>
+    <button class="sub__button" ui-sref="app.detailsubscriptions({slug:$ctrl.subscription.slug})">VIEW MORE</button>
 </article>
 <hr>
