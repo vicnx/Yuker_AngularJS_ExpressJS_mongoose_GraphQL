@@ -19,6 +19,8 @@ const resolvers = {
       createSubscription: (root, {input}) => {
           const subscription = new Subscription(input);
           // no .exec();
+          console.log(input);
+          console.log(subscription);
           subscription.save();
           console.log(subscription);
           return subscription;

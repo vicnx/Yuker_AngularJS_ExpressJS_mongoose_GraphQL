@@ -63417,8 +63417,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var BuysubscriptionCtrl = function () {
-  BuysubscriptionCtrl.$inject = ["User"];
-  function BuysubscriptionCtrl(User) {
+  BuysubscriptionCtrl.$inject = ["Subscriptions", "User"];
+  function BuysubscriptionCtrl(Subscriptions, User) {
     'ngInject';
 
     var _this = this;
@@ -63426,17 +63426,27 @@ var BuysubscriptionCtrl = function () {
     _classCallCheck(this, BuysubscriptionCtrl);
 
     this._User = User;
+    this._Subscriptions = Subscriptions;
 
     this.$onInit = function () {
       _this.type = _this.tipo;
+      console.log(_this._User.current);
     };
   }
 
   _createClass(BuysubscriptionCtrl, [{
     key: 'buySub',
     value: function buySub(type) {
+      //creamos el input que se pasara al mute
+      var sub = {
+        type: type,
+        user: "5fa05d718dd011ad32f43f2b"
+      };
+
+      this._Subscriptions.mute(sub);
+
       console.log(this._User.current);
-      console.log(type);
+      // console.log(type);
     }
   }]);
 
@@ -63909,9 +63919,9 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("components/buttons/favorite-btn.html", "<button class=\"btn btn-sm\"\n  ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n              \'btn-outline-primary\': !$ctrl.article.favorited,\n              \'btn-primary\': $ctrl.article.favorited }\"\n  ng-click=\"$ctrl.submit()\">\n  <i class=\"ion-heart\"></i> <ng-transclude></ng-transclude>\n</button>\n");
   $templateCache.put("components/buttons/follow-btn.html", "<span ng-hide=\"$ctrl.canModify\">\n    <button\n    class=\"btn btn-sm action-btn\"\n    ng-class=\"{ \'disabled\': $ctrl.isSubmitting,\n                \'btn-outline-secondary\': !$ctrl.user.following,\n                \'btn-secondary\': $ctrl.user.following }\"\n    ng-click=\"$ctrl.submit()\">\n    <i class=\"ion-plus-round\"></i>\n    &nbsp;\n    {{ $ctrl.user.following ? \'Unfollow\' : \'Follow\' }} {{ $ctrl.user.username }}\n  </button>\n</span>\n\n<span ng-show=\"$ctrl.canModify\">\n  <a class=\"btn btn-sm btn-outline-secondary\"\n    ui-sref=\"app.profile.main({ username: $ctrl.user.username})\">Profile</a>\n</span>\n\n");
   $templateCache.put("components/buttons/like-btn.html", "\n\n    <i ng-click=\"$ctrl.submit()\" class=\"far fa-thumbs-up like-dislike-btn\" ng-class=\"{ \'disabled\' : $ctrl.isSubmitting,\n    \'toggled\': $ctrl.yuk.liked,\n    \'untoggled\': !$ctrl.yuk.liked }\"></i>\n    <span class=\"badge badge-light\">\n        <ng-transclude></ng-transclude>\n    </span>\n    ");
-  $templateCache.put("components/profile/karma.html", "<p class=\"karma\">KARMA: <span>{{$ctrl.karma}}</span></p>");
   $templateCache.put("components/noticias-helpers/noticias-details.html", "<div class=\"noticia\">\n        <h2> {{$ctrl.noticia.titulo}}jj</h2>\n        <p> {{$ctrl.noticia.titulo}}</p>\n        <p>{{$ctrl.noticia.author.username}}</p>\n        <span><b>TAGS:</b>\n            <span ng-repeat=\"t in $ctrl.noticia.tagList\">\n                <a>{{t}}</a>\n            </span>\n        </span>\n        <br>\n        <button ui-sref=\"app.listarnoticias\">Volver</button> \n</div>\n");
   $templateCache.put("components/noticias-helpers/noticias-list.html", "<div class=\"noticia\" ng-repeat=\"noticia in $ctrl.noticias\">\n    <hr>\n    <h3>{{noticia.titulo}}</h3>\n    <p>{{noticia.contenido}}</p>\n    <p id=\"author\">{{noticia.author.username}}</p>\n    <span><b>TAGS:</b>\n        <span ng-repeat=\"t in noticia.tagList\">\n            <a>{{t}}</a>\n        </span>\n    </span>\n    <br>\n    <button ui-sref=\"app.detailnoticia({slug:noticia.slug})\">View more</button> \n</div>\n\n");
+  $templateCache.put("components/profile/karma.html", "<p class=\"karma\">KARMA: <span>{{$ctrl.karma}}</span></p>");
   $templateCache.put("components/subscriptions/buysubscriptions.html", "<div class=\"card_sub {{$ctrl.type}}\">\n  <div class=\"card_sub_header\">\n    <span>{{$ctrl.type}}</span>\n  </div>\n  <div class=\"card_sub_body\">\n    Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n  </div>\n  <div class=\"card_sub_footer\">\n    <button ng-click=\"$ctrl.buySub($ctrl.type)\" class=\"btn btn-light comprar\">COMPRAR</button>\n  </div>\n</div>\n\n\n\n");
   $templateCache.put("components/subscriptions/subscriptions-list.html", "<!-- <link rel=\"stylesheet\" href=\"css/yuks-list.css\"> -->\n<!-- <yuks-preview yuk=\"yuk\" ng-repeat=\"yuk in $ctrl.yuks\">\n</yuks-preview>  -->\n\n\n<subscriptions-preview subscription=\"subscription\" ng-repeat=\"subscription in $ctrl.list\">\n</subscriptions-preview> \n\n<!-- {{$ctrl.list}} -->\n\n<!-- <div class=\"yuks-preview\"\n  ng-show=\"!$ctrl.loading && !$ctrl.list.length\">\n  Aun no hay yuks aqui! :(\n</div> -->\n\n<list-pagination\n total-pages=\"$ctrl.listConfig.totalPages\"\n current-page=\"$ctrl.listConfig.currentPage\"\n ng-hide=\"$ctrl.listConfig.totalPages <= 1\">\n</list-pagination>\n\n\n\n");
   $templateCache.put("components/subscriptions/subscriptions-preview.html", "<article class=\"sub\">\n    <div class=\"sub__username\">{{$ctrl.subscription.user.username}}</div>\n    <div class=\"sub__type\">{{$ctrl.subscription.type}}</div>\n    <div class=\"sub__active\">{{$ctrl.subscription.active}}</div>\n    <div>{{$ctrl.subscription.slug}}</div>\n    <button class=\"sub__button\" ui-sref=\"app.detailsubscriptions({slug:$ctrl.subscription.slug})\">VIEW MORE</button>\n</article>\n<hr>");
@@ -65128,6 +65138,28 @@ var GraphQL = function () {
 
             return deferred.promise;
         }
+    }, {
+        key: 'mute',
+        value: function mute(query, input) {
+            var server = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._AppConstants.gql + '/graphql/';
+
+            console.log(input);
+            var deferred = this._$q.defer();
+            if (!this._clients.has(server)) {
+                this._clients.set(server, this.createClient(server));
+            }
+            this._clients.get(server).mutate({
+                mutation: (0, _graphqlTag2.default)(query),
+                //los {} muy importantes
+                variables: { input: input }
+
+            }).then(function (res) {
+                return deferred.resolve(res.data);
+            }, function (err) {
+                return deferred.reject(err);
+            });
+            return deferred.promise;
+        }
     }]);
 
     return GraphQL;
@@ -65502,11 +65534,31 @@ var Subscriptions = function () {
       console.log(query);
       return this._GQL.get(query);
     }
+
+    // getSubscriptionsByType(type) {
+    //   let query = `
+    //     query {
+    //       restaurantsResults(slug:"${type}") {
+    //           id
+    //           slug
+    //           title
+    //           description
+    //           reservePrice
+    //           streetAddress
+    //           image
+    //         }
+    //     }
+    //   `;
+    //   return this._GQL.get(query);
+    // }
+
   }, {
-    key: 'getSubscriptionsByType',
-    value: function getSubscriptionsByType(type) {
-      var query = '\n        query {\n          restaurantsResults(slug:"' + type + '") {\n              id\n              slug\n              title\n              description\n              reservePrice\n              streetAddress\n              image\n            }\n        }\n      ';
-      return this._GQL.get(query);
+    key: 'mute',
+    value: function mute(SubscriptionInput) {
+      var mutation = '\n        mutation createSubscription($input: SubscriptionInput) {\n          createSubscription(input: $input) {\n            id\n            slug\n            type\n            user{\n              username\n            }\n            start\n            finish\n            active\n          }\n        }\n      ';
+      // console.log(mutation);
+      //en el return le pasamos la mutation y el INPUT
+      return this._GQL.mute(mutation, SubscriptionInput);
     }
   }]);
 
@@ -66017,7 +66069,7 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var BuysubscriptionsCtrl = function BuysubscriptionsCtrl($state, $scope, $stateParams) {
+var BuysubscriptionsCtrl = function BuysubscriptionsCtrl(Subscriptions, $state, $scope, $stateParams) {
   'ngInject';
 
   _classCallCheck(this, BuysubscriptionsCtrl);
@@ -66031,7 +66083,7 @@ var BuysubscriptionsCtrl = function BuysubscriptionsCtrl($state, $scope, $stateP
   // $scope.subscriptions = this.subscriptions;
   // console.log(subscriptions)
 };
-BuysubscriptionsCtrl.$inject = ["$state", "$scope", "$stateParams"];
+BuysubscriptionsCtrl.$inject = ["Subscriptions", "$state", "$scope", "$stateParams"];
 
 exports.default = BuysubscriptionsCtrl;
 
@@ -66054,10 +66106,14 @@ var DetailsSubscriptionCtrl = function DetailsSubscriptionCtrl(subscription, App
   console.log("controller detail SUBSCRIPTIONS");
 
   this.$onInit = function () {
+
     // console.log(this.subscription);
     _this.subscription = subscription.subscription;
+    console.log(_this.subscription);
     console.log(_this.subscription.start.toString().split('T')[0]);
     _this.subscription.start = _this.subscription.start.toString().split('T')[0];
+    _this.subscription.finish = _this.subscription.finish.toString().split('T')[0];
+
     if (_this.subscription.finish == null) _this.subscription.finish = "NEVER";
     if (_this.subscription.active == true) {
       _this.badge = "active active--true";

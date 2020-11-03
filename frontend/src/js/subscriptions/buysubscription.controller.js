@@ -1,5 +1,5 @@
 class BuysubscriptionsCtrl {
-    constructor($state,$scope,$stateParams) {
+    constructor(Subscriptions,$state,$scope,$stateParams) {
       'ngInject';
       console.log("controller buysubscriptions");
       this.netflix="netflix";

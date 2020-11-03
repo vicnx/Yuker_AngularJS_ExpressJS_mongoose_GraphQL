@@ -75,23 +75,43 @@ export default class Subscriptions {
       return this._GQL.get(query);
     }
   
-    getSubscriptionsByType(type) {
-      let query = `
-        query {
-          restaurantsResults(slug:"${type}") {
-              id
-              slug
-              title
-              description
-              reservePrice
-              streetAddress
-              image
+    // getSubscriptionsByType(type) {
+    //   let query = `
+    //     query {
+    //       restaurantsResults(slug:"${type}") {
+    //           id
+    //           slug
+    //           title
+    //           description
+    //           reservePrice
+    //           streetAddress
+    //           image
+    //         }
+    //     }
+    //   `;
+    //   return this._GQL.get(query);
+    // }
+    
+    mute(SubscriptionInput){
+      let mutation = `
+        mutation createSubscription($input: SubscriptionInput) {
+          createSubscription(input: $input) {
+            id
+            slug
+            type
+            user{
+              username
             }
+            start
+            finish
+            active
+          }
         }
       `;
-      return this._GQL.get(query);
+      // console.log(mutation);
+      //en el return le pasamos la mutation y el INPUT
+      return this._GQL.mute(mutation,SubscriptionInput);
     }
-    
   
   
   }
