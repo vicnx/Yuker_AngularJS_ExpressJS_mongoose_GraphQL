@@ -55,9 +55,11 @@ export default class GraphQL {
 
     get(query, server = this._AppConstants.gql + '/graphql/') {
         let deferred = this._$q.defer();
-        if (!this._clients.has(server)) {
-            this._clients.set(server, this.createClient(server));
-        }
+        //siempre va al servidor
+        this._clients.set(server, this.createClient(server));
+        // if (!this._clients.has(server)) {
+        //     this._clients.set(server, this.createClient(server));
+        // }
         this._clients.get(server).query({
             query: gql(query)
         }).then(

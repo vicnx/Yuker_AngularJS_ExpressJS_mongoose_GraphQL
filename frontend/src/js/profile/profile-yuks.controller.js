@@ -29,7 +29,6 @@ class ProfileYuksCtrl {
       $rootScope.setPageTitle(`Yuks DisLiked by ${this.profile.username}`);
     }else if(this.profileState === 'subscriptions'){
       this.listConfig.filters = {email: this.profile.email};
-
       $rootScope.setPageTitle(`SUBS ${this.profile.username}`);
     }
 

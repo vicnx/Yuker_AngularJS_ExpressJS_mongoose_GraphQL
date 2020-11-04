@@ -21,8 +21,14 @@ const resolvers = {
         }
         
       },
-      subscriptionsCount: () => {
-        return Subscription.count().exec();
+      subscriptionsCount: async (root,{user}) => {
+        if(user){
+          let usuario = await get_user_id(user)
+          return Subscription.find({'user':usuario._id}).count().exec();
+        }else{
+          return Subscription.count().exec();
+        }
+
       }
     },
     Mutation: {

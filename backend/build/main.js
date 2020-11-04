@@ -63562,21 +63562,25 @@ var SusbcriptionsListCtrl = function () {
       // Add the offset filter
       queryConfig.filters.offset = this.limit * (this.listConfig.currentPage - 1);
       // }
-
+      // console.log(this.limit);
       //miramos si le pasamos el email para añadirle las comillas
       if (queryConfig.filters.email) {
-        queryConfig.filters.email = '"' + queryConfig.filters.email + '"';
+        queryConfig.filters.emailform = '"' + queryConfig.filters.email + '"';
       }
 
       // console.log(queryConfig);
+
       // Run the query
       this._Subscriptions.query(queryConfig).then(function (res) {
+        console.log("ARRIBA" + res.subscriptionsCount);
         _this2.loading = false;
 
         // Update list and total pages
         _this2.list = res.subscriptions;
+        console.log(_this2.limit);
         // console.log(this.list);
         _this2.listConfig.totalPages = Math.ceil(res.subscriptionsCount / _this2.limit);
+        console.log(_this2.listConfig.totalPages);
       });
     }
   }]);
@@ -63913,7 +63917,7 @@ angular.module("templates", []).run(["$templateCache", function ($templateCache)
   $templateCache.put("noticias_editor/noticias_editor.html", "<div class=\"editor-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-10 offset-md-1 col-xs-12\">\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form>\n          <h1>EDITOR DE NOTICIAS</h1>\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                ng-model=\"$ctrl.noticia.titulo\"\n                type=\"text\"\n                placeholder=\"Titulo de la noticia\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control\"\n                rows=\"8\"\n                ng-model=\"$ctrl.noticia.contenido\"\n                placeholder=\"Escribe tu Noticia\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"Enter tags\"\n                ng-model=\"$ctrl.tagField\"\n                ng-keyup=\"$event.keyCode == 13 && $ctrl.addTag()\" />\n\n              <div class=\"tag-list\">\n                <span ng-repeat=\"tag in $ctrl.noticia.tagList\"\n                  class=\"tag-default tag-pill\">\n                  <i class=\"ion-close-round\" ng-click=\"$ctrl.removeTag(tag)\"></i>\n                  {{ tag }}\n                </span>\n              </div>\n            </fieldset>\n\n            <button class=\"btn btn-lg pull-xs-right btn-danger\" type=\"button\" ng-click=\"$ctrl.submit()\">\n              Publicar la nueva noticia\n            </button>\n\n          </fieldset>\n        </form>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("profile/profile-yuks.html", "<yuks-list limit=\"5\" list-config=\"$ctrl.listConfig\"></yuks-list>\n");
   $templateCache.put("profile/profile.html", "<div class=\"profile-page\">\n\n  <!-- User\'s basic info & action buttons -->\n  <div class=\"user-info\">\n    <div class=\"container\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n          <img ng-src=\"{{::$ctrl.profile.image}}\" class=\"user-img\" />\n          <h4 ng-bind=\"::$ctrl.profile.username\"></h4>\n          <karma user=\"$ctrl.profile\"></karma>\n          <!-- <p>KARMA: <span ng-bind=\"::$ctrl.profile.karma\"></span></p> -->\n\n          <a ui-sref=\"app.settings\"\n            class=\"btn btn-sm btn-outline-secondary action-btn\"\n            ng-show=\"$ctrl.isUser\">\n            <i class=\"ion-gear-a\"></i> Edit Profile Settings\n          </a>\n          <a ui-sref=\"app.buysubscriptions\" class=\"btn btn-sm btn-outline-secondary action-btn\" ng-show=\"$ctrl.isUser\" style=\"margin-right: 20px;\">\n            <i class=\"fas fa-shopping-cart\"></i> BUY SUB\n          </a>\n\n          <follow-btn user=\"$ctrl.profile\" ng-hide=\"$ctrl.isUser\"></follow-btn>\n\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Container where User\'s posts & favs are list w/ toggle tabs -->\n  <div class=\"container\">\n    <div class=\"row\">\n\n      <div class=\"col-xs-12 col-md-10 offset-md-1\">\n\n        <!-- Tabs for switching between author articles & favorites -->\n        <div class=\"articles-toggle\">\n          <ul class=\"nav nav-pills outline-active\">\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link active\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.main({username: $ctrl.profile.username})\">\n                My Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.likes({username: $ctrl.profile.username})\">\n                Liked Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.dislikes({username: $ctrl.profile.username})\">\n                DisLiked Articles\n              </a>\n            </li>\n\n            <li class=\"nav-item\">\n              <a class=\"nav-link\"\n                ui-sref-active=\"active\"\n                ui-sref=\"app.profile.subscriptions({username: $ctrl.profile.username})\">\n                User Subscriptions\n              </a>\n            </li>\n\n          </ul>\n        </div>\n        <br>\n        <!-- List of articles -->\n        <div ui-view></div>\n\n\n      </div>\n\n    <!-- End row & container divs -->\n    </div>\n  </div>\n\n</div>\n");
-  $templateCache.put("profile/profile_subs.html", "<subscriptions-list list-config=\"$ctrl.listConfig\"></subscriptions-list>\n");
+  $templateCache.put("profile/profile_subs.html", "<subscriptions-list limit=8 list-config=\"$ctrl.listConfig\"></subscriptions-list>\n");
   $templateCache.put("settings/settings.html", "<div class=\"settings-page\">\n  <div class=\"container page\">\n    <div class=\"row\">\n      <div class=\"col-md-6 offset-md-3 col-xs-12\">\n\n        <h1 class=\"text-xs-center\">Your Settings</h1>\n\n        <list-errors errors=\"$ctrl.errors\"></list-errors>\n\n        <form ng-submit=\"$ctrl.submitForm()\">\n          <fieldset ng-disabled=\"$ctrl.isSubmitting\">\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control\"\n                type=\"text\"\n                placeholder=\"URL of profile picture\"\n                ng-model=\"$ctrl.formData.image\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"text\"\n                placeholder=\"Username\"\n                ng-model=\"$ctrl.formData.username\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <textarea class=\"form-control form-control-lg\"\n                rows=\"8\"\n                placeholder=\"Short bio about you\"\n                ng-model=\"$ctrl.formData.bio\">\n              </textarea>\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"email\"\n                placeholder=\"Email\"\n                ng-model=\"$ctrl.formData.email\" />\n            </fieldset>\n\n            <fieldset class=\"form-group\">\n              <input class=\"form-control form-control-lg\"\n                type=\"password\"\n                placeholder=\"New Password\"\n                ng-model=\"$ctrl.formData.password\" />\n            </fieldset>\n\n            <button class=\"btn btn-lg btn-primary pull-xs-right\"\n              type=\"submit\">\n              Update Settings\n            </button>\n\n          </fieldset>\n        </form>\n\n        <!-- Line break for logout button -->\n        <hr />\n\n        <button class=\"btn btn-outline-danger\"\n          ng-click=\"$ctrl.logout()\">\n          Or click here to logout.\n        </button>\n\n      </div>\n    </div>\n  </div>\n</div>\n");
   $templateCache.put("subscriptions/buysubscriptions.html", "<div class=\"home-page\">\n    <!-- Splash banner that only shows when not logged in -->\n    <div class=\"banner\" style=\"background-color: rgb(172, 0, 0);\">\n      <div class=\"container\">\n        <p>BUY</p>\n      </div>\n    </div>\n    <div class=\"container page\">\n      <div class=\"row\">\n        <div class=\"col-md-9\">\n          <div class=\"subs_table\">\n            <buy-subscription tipo=\"$ctrl.netflix\"></buy-subscription>\n            <buy-subscription tipo=\"$ctrl.spotify\"></buy-subscription>\n            <buy-subscription tipo=\"$ctrl.books\"></buy-subscription>\n            <!-- NETFLIX -->\n            <!-- <div class=\"card_sub netflix\">\n              <div class=\"card_sub_header\">\n                <span>Netflix</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n            <!-- Spotify -->\n            <!-- <div class=\"card_sub spotify\">\n              <div class=\"card_sub_header\">\n                <span>Spotify</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n            <!-- Books -->\n            <!-- <div class=\"card_sub books\">\n              <div class=\"card_sub_header\">\n                <span>Books</span>\n              </div>\n              <div class=\"card_sub_body\">\n                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis ipsum quaerat ut doloremque illum dolor cumque, debitis magni recusandae optio. Officia voluptatum tempore ipsam, minus incidunt facere mollitia aperiam ipsum!\n              </div>\n              <div class=\"card_sub_footer\">\n                <button class=\"btn btn-light comprar\">COMPRAR</button>\n              </div>\n            </div> -->\n\n          </div>\n        </div>\n        </div>\n      </div>\n    </div>\n  \n  </div>\n  ");
   $templateCache.put("subscriptions/detailsubscription.html", "<div class=\"dsub__details\">\n  <div class=\"dsub\">\n    <div class=\"dsub__header\">\n      {{$ctrl.subscription.slug}}\n    </div>\n    <div class=\"dsub__body\">\n      <div class=\"dsub__left\">\n        <img src=\"{{$ctrl.subscription.user.image}}\" alt=\"{{$ctrl.subscription.user.username}}\" width=\"100\">\n        <span class=\"dsub__left__span\">Username: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.user.username}}</span></span>\n        <span class=\"dsub__left__span\">Type: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.type}}</span></span>\n        <span class=\"dsub__left__span\">START DATE: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.start}}</span></span>\n        <span class=\"dsub__left__span\">EXPIRE: <span class=\"dsub__left__span__content\">{{$ctrl.subscription.finish}}</span></span>\n        <span class=\"dsub__left__span dsub__left__span--active\"> <span class=\"{{$ctrl.badge}}\">Active</span> </span>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- {{$ctrl.subscription}} -->");
@@ -64774,7 +64778,6 @@ var ProfileYuksCtrl = function ProfileYuksCtrl(profile, $state, $rootScope) {
     $rootScope.setPageTitle('Yuks DisLiked by ' + this.profile.username);
   } else if (this.profileState === 'subscriptions') {
     this.listConfig.filters = { email: this.profile.email };
-
     $rootScope.setPageTitle('SUBS ' + this.profile.username);
   }
 };
@@ -65133,9 +65136,11 @@ var GraphQL = function () {
             var server = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._AppConstants.gql + '/graphql/';
 
             var deferred = this._$q.defer();
-            if (!this._clients.has(server)) {
-                this._clients.set(server, this.createClient(server));
-            }
+            //siempre va al servidor
+            this._clients.set(server, this.createClient(server));
+            // if (!this._clients.has(server)) {
+            //     this._clients.set(server, this.createClient(server));
+            // }
             this._clients.get(server).query({
                 query: (0, _graphqlTag2.default)(query)
             }).then(function (res) {
@@ -65530,46 +65535,11 @@ var Subscriptions = function () {
         config.filters.limit = 8;
       }
 
-      if (!config.filters.email) {
-        config.filters.email = null;
+      if (!config.filters.emailform) {
+        config.filters.emailform = null;
       }
-      var query = '\n      query getSubscriptionsAndCount {\n        subscriptions(limit:' + config.filters.limit + ',offset:' + config.filters.offset + ',user:' + config.filters.email + ') {\n          type\n          slug\n          user{\n            username\n            id\n          }\n          start\n          finish\n          active\n        }\n        subscriptionsCount\n      }\n    ';
-      // if(config.filters.email){
-      //   query = `
-      //   query getSubscriptionsAndCount {
-      //     subscriptions(user:"${config.filters.email}") {
-      //       type
-      //       slug
-      //       user{
-      //         username
-      //         id
-      //       }
-      //       start
-      //       finish
-      //       active
-      //     }
-      //     subscriptionsCount
-      //   }
-      // `;
-      // }
-      console.log(config.filters);
-      //   let query = `
-      //   query getSubscriptionsAndCount {
-      //     subscriptions(limit:${config.filters.limit},offset:${config.filters.offset}) {
-      //       type
-      //       slug
-      //       user{
-      //         username
-      //         id
-      //       }
-      //       start
-      //       finish
-      //       active
-      //     }
-      //     subscriptionsCount
-      //   }
-      // `;
-
+      var query = '\n      query getSubscriptionsAndCount {\n        subscriptions(limit:' + config.filters.limit + ',offset:' + config.filters.offset + ',user:' + config.filters.emailform + ') {\n          type\n          slug\n          user{\n            username\n            id\n          }\n          start\n          finish\n          active\n        }\n        subscriptionsCount(user:' + config.filters.emailform + ')\n      }\n    ';
+      console.log(query);
       return this._GQL.get(query);
     }
   }, {

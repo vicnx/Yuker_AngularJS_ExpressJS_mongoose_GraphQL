@@ -70,24 +70,28 @@ class SusbcriptionsListCtrl {
     // Add the offset filter
     queryConfig.filters.offset = (this.limit * (this.listConfig.currentPage - 1));
     // }
-
+// console.log(this.limit);
     //miramos si le pasamos el email para añadirle las comillas
     if(queryConfig.filters.email){
-      queryConfig.filters.email = '"'+queryConfig.filters.email+'"';
+      queryConfig.filters.emailform = '"'+queryConfig.filters.email+'"';
     }
     
     // console.log(queryConfig);
+    
     // Run the query
     this._Subscriptions
       .query(queryConfig)
       .then(
         (res) => {
+          console.log("ARRIBA"+res.subscriptionsCount);
           this.loading = false;
 
           // Update list and total pages
           this.list = res.subscriptions;
+          console.log(this.limit);
           // console.log(this.list);
           this.listConfig.totalPages = Math.ceil(res.subscriptionsCount / this.limit);
+          console.log(this.listConfig.totalPages);
         }
       );
   }

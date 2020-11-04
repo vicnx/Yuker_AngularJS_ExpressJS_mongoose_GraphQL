@@ -17,12 +17,12 @@ export default class Subscriptions {
         config.filters.limit = 8;
       }
 
-      if(!config.filters.email){
-        config.filters.email = null;
+      if(!config.filters.emailform){
+        config.filters.emailform = null;
       }
       let query = `
       query getSubscriptionsAndCount {
-        subscriptions(limit:${config.filters.limit},offset:${config.filters.offset},user:${config.filters.email}) {
+        subscriptions(limit:${config.filters.limit},offset:${config.filters.offset},user:${config.filters.emailform}) {
           type
           slug
           user{
@@ -33,45 +33,10 @@ export default class Subscriptions {
           finish
           active
         }
-        subscriptionsCount
+        subscriptionsCount(user:${config.filters.emailform})
       }
     `;
-      // if(config.filters.email){
-      //   query = `
-      //   query getSubscriptionsAndCount {
-      //     subscriptions(user:"${config.filters.email}") {
-      //       type
-      //       slug
-      //       user{
-      //         username
-      //         id
-      //       }
-      //       start
-      //       finish
-      //       active
-      //     }
-      //     subscriptionsCount
-      //   }
-      // `;
-      // }
-      console.log(config.filters);
-    //   let query = `
-    //   query getSubscriptionsAndCount {
-    //     subscriptions(limit:${config.filters.limit},offset:${config.filters.offset}) {
-    //       type
-    //       slug
-    //       user{
-    //         username
-    //         id
-    //       }
-    //       start
-    //       finish
-    //       active
-    //     }
-    //     subscriptionsCount
-    //   }
-    // `;
-
+    console.log(query);
       return this._GQL.get(query);
     }
   
