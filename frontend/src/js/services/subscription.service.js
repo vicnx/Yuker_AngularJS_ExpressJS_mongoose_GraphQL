@@ -50,6 +50,10 @@ export default class Subscriptions {
       `;
       return this._GQL.get(query);
     }
+
+    getByUser(email){
+
+    }
   
     get(slug) {
 
