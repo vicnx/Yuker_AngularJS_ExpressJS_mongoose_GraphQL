@@ -28,7 +28,7 @@ class SusbcriptionsListCtrl {
   }
 
   setListTo(newList) {
-          console.log(newList);
+          // console.log(newList);
 
     // Set the current list to an empty array
     this.list = [];
@@ -50,13 +50,14 @@ class SusbcriptionsListCtrl {
     // Show the loading indicator
     this.loading = true;
     this.listConfig = this.listConfig || {};
-    console.log(this.listConfig);
+    // console.log(this.listConfig);
 
     // Create an object for this query
     let queryConfig = {
       type: this.listConfig.type || undefined,
       filters: this.listConfig.filters || {}
     };
+    console.log(queryConfig);
 
     // Set the limit filter from the component's attribute
     queryConfig.filters.limit = this.limit;
@@ -69,6 +70,12 @@ class SusbcriptionsListCtrl {
     // Add the offset filter
     queryConfig.filters.offset = (this.limit * (this.listConfig.currentPage - 1));
     // }
+
+    //miramos si le pasamos el email para añadirle las comillas
+    if(queryConfig.filters.email){
+      queryConfig.filters.email = '"'+queryConfig.filters.email+'"';
+    }
+    
     // console.log(queryConfig);
     // Run the query
     this._Subscriptions

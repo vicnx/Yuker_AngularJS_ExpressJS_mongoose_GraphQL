@@ -38,7 +38,13 @@ function ProfileConfig($stateProvider) {
     controllerAs: '$ctrl',
     templateUrl: 'profile/profile-yuks.html',
     title: 'dislikes'
-  });
+  }).state('app.profile.subscriptions', {
+    url:'/user_subs',
+    controller: 'ProfileYuksCtrl',
+    controllerAs: '$ctrl',
+    templateUrl: 'profile/profile_subs.html',
+    title: 'User Subs'
+  })
 
 };
 
