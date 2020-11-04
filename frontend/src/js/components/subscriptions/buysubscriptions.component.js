@@ -14,15 +14,19 @@ class BuysubscriptionCtrl {
   }
 
   buySub(type) {
-    //creamos el input que se pasara al mute
+    //calculamos la fecha de exp
+    var exp_date = new Date();
+    exp_date.setMonth(exp_date.getMonth() + 1);
+
+    //creamos el input que se pasara al mute (le pasamos email del usuario actual que despues obtendra su id)
     let sub = {
       type: type,
-      user: "5fa05d718dd011ad32f43f2b"
+      user: this._User.current.email,
+      finish: exp_date
     };
-
     this._Subscriptions.mute(sub);
 
-    console.log(this._User.current);
+    // console.log(this._User.current.email);
     // console.log(type);
   }
 

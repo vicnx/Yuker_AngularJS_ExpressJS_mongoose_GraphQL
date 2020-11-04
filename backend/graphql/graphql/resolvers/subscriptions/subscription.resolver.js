@@ -17,13 +17,18 @@ const resolvers = {
     },
     Mutation: {
       createSubscription: (root, {input}) => {
-          const subscription = new Subscription(input);
-          // no .exec();
-          console.log(input);
-          console.log(subscription);
-          subscription.save();
-          console.log(subscription);
-          return subscription;
+          //buscamos el usuario por email
+          User.findOne({email: input.user}, async function(err, user){
+            console.log(user.id);
+            input.user = user.id;
+            let subscription = new Subscription(input);
+            console.log(input);
+            await subscription.save();
+            console.log(subscription);
+            return subscription;
+          });
+          
+          
       }
     },
     //per a obtindre el user de cada sub

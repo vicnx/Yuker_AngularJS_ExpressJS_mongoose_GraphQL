@@ -21,6 +21,7 @@ const typeDefs = gql`
     input SubscriptionInput {
         type: String
         user: String
+        finish: Date
     }
 `;
 
