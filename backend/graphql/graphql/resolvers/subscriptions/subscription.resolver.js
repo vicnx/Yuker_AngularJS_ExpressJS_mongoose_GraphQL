@@ -10,14 +10,14 @@ const resolvers = {
       subscription: (root, {slug}) => {
         return Subscription.findOne({slug: slug}).exec();
       },
-      subscriptions: async (root, {user}) =>  {
+      subscriptions: async (root, {limit, offset, user}) =>  {
         //si le pasamos user (email) recoge el ID del usuario y lo filtra.
         if(user){
           let usuario = await get_user_id(user)
-          return Subscription.find({'user':usuario._id}).exec();
+          return Subscription.find({'user':usuario._id}).skip(offset).limit(limit).exec();
         }else{
           //si no le pasamos user los muestra todos
-          return Subscription.find().exec();
+          return Subscription.find().skip(offset).limit(limit).exec();
         }
         
       },

@@ -3,7 +3,7 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
     extend type Query {
         subscription(slug: String!): Subscription
-        subscriptions(user: String): [Subscription]
+        subscriptions(limit: Int, offset: Int,user: String): [Subscription]
         subscriptionsCount: Int
     }
     extend type Mutation {

@@ -22,7 +22,7 @@ export default class Subscriptions {
       }
       let query = `
       query getSubscriptionsAndCount {
-        subscriptions(user:${config.filters.email}) {
+        subscriptions(limit:${config.filters.limit},offset:${config.filters.offset},user:${config.filters.email}) {
           type
           slug
           user{
