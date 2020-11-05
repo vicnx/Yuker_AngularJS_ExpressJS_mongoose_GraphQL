@@ -37,18 +37,6 @@ const resolvers = {
           let subscription = new Subscription(input);
           await subscription.save();
           return subscription;
-
-          // User.findOne({email: input.user}, async function(err, user){
-          //   console.log(user.id);
-          //   input.user = user.id;
-          //   let subscription = new Subscription(input);
-          //   console.log(input);
-          //   await subscription.save();
-          //   console.log(subscription);
-          //   return subscription;
-          // });
-          
-          
       },
       deleteSubscription: async (parent, { input }) => {
         var ok = Boolean(input);

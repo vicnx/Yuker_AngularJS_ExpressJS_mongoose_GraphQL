@@ -97,7 +97,6 @@ export default class Subscriptions {
           }
         }
       `;
-      // console.log(mutation);
       //en el return le pasamos la mutation y el INPUT
       return this._GQL.mute(mutation,SubscriptionInput);
     }
@@ -109,8 +108,6 @@ export default class Subscriptions {
           }
         }
       `;
-      console.log(input);
-      console.log(mutation);
       //en el return le pasamos la mutation y el INPUT
       return this._GQL.mute(mutation,input);
     }

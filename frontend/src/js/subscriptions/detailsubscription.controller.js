@@ -1,9 +1,11 @@
 class DetailsSubscriptionCtrl {
-  constructor(User,Subscriptions,subscription,AppConstants, $state,$scope) {
+  constructor(User,Subscriptions,subscription,AppConstants, $state,$scope,Toastr) {
     'ngInject';
     console.log("controller detail SUBSCRIPTIONS")
     this._Subscriptions=Subscriptions
     this._$state = $state;
+    this._toaster = Toastr;
+
     this.$onInit = () => {
       
       // console.log(this.subscription);
@@ -15,9 +17,9 @@ class DetailsSubscriptionCtrl {
 
       if(this.subscription.finish == null) this.subscription.finish = "NEVER"
       if(this.subscription.active == true){
-        this.badge = "active active--true"
+        this.badge = "active active--true";
       }else{
-        this.badge = "active active--false"
+        this.badge = "active active--false";
       }
 
       if (User.current) {
@@ -37,8 +39,18 @@ class DetailsSubscriptionCtrl {
       "slug": slug,
     };
     this._Subscriptions.delete(input).then(
-      (success) => this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home'),
-      (err) =>this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home')
+      (success) =>{
+        this._toaster.showToastr('success','Borrada la subscripción con exito');
+        setTimeout(() => {
+          this._$state.go('app.home');
+        }, 1500); 
+      }, 
+      (err) =>{
+        this._toaster.showToastr('error','Error al borrar');
+        setTimeout(() => {
+          this._$state.go('app.home');
+        }, 1500); 
+      }
     )
   }
 

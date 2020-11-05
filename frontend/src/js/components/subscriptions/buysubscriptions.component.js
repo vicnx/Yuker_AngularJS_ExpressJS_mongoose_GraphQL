@@ -1,9 +1,11 @@
 class BuysubscriptionCtrl {
-  constructor(Subscriptions,User) {
+  constructor(Subscriptions,User,Toastr,$state,) {
     'ngInject';
 
     this._User=User;
-    this._Subscriptions=Subscriptions
+    this._Subscriptions=Subscriptions;
+    this._$state = $state;
+    this._toaster = Toastr;
 
     this.$onInit = () => {
       this.type=this.tipo;
@@ -24,7 +26,20 @@ class BuysubscriptionCtrl {
       user: this._User.current.email,
       finish: exp_date
     };
-    this._Subscriptions.post(sub);
+    this._Subscriptions.post(sub).then(
+      (success) =>{
+        this._toaster.showToastr('success','COMPRADA la subscripción con exito');
+        setTimeout(() => {
+          this._$state.go('app.home');
+        }, 1500); 
+      }, 
+      (err) =>{
+        this._toaster.showToastr('error','Error al comprar');
+        setTimeout(() => {
+          this._$state.go('app.home');
+        }, 1500); 
+      }
+    )
 
     // console.log(this._User.current.email);
     // console.log(type);
