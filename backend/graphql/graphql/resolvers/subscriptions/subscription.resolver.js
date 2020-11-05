@@ -49,7 +49,19 @@ const resolvers = {
           // });
           
           
-      }
+      },
+      deleteSubscription: async (parent, { slug }) => {
+        var ok = Boolean(slug);
+        var sub = await Subscription.findOne({slug: slug});
+        if(sub == null){
+          ok = false;
+          // return {false};
+        }else{
+          Subscription.find({slug: slug}).remove().exec()
+        }
+        
+        return { ok };
+      },
     },
     //per a obtindre el user de cada sub
     Subscription: {

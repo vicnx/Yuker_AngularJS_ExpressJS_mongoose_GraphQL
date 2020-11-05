@@ -8,6 +8,7 @@ const typeDefs = gql`
     }
     extend type Mutation {
         createSubscription(input: SubscriptionInput): Subscription
+        deleteSubscription(slug: String!): DeleteResponse
     }
     type Subscription {
         id: ID!
@@ -17,6 +18,9 @@ const typeDefs = gql`
         start: Date
         finish: Date
         active: Boolean
+    }
+    type DeleteResponse{
+        ok: Boolean!
     }
     input SubscriptionInput {
         type: String
