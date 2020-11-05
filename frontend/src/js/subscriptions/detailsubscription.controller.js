@@ -1,8 +1,9 @@
 class DetailsSubscriptionCtrl {
-  constructor(Subscriptions,subscription,AppConstants, $state,$scope) {
+  constructor(User,Subscriptions,subscription,AppConstants, $state,$scope) {
     'ngInject';
     console.log("controller detail SUBSCRIPTIONS")
     this._Subscriptions=Subscriptions
+    this._$state = $state;
     this.$onInit = () => {
       
       // console.log(this.subscription);
@@ -19,6 +20,12 @@ class DetailsSubscriptionCtrl {
         this.badge = "active active--false"
       }
 
+      if (User.current) {
+        this.canModify = (User.current.username === this.subscription.user.username);
+      } else {
+        this.canModify = false;
+      }
+
     }
     
   }
@@ -29,7 +36,10 @@ class DetailsSubscriptionCtrl {
     let input = {
       "slug": slug,
     };
-    this._Subscriptions.delete(input);
+    this._Subscriptions.delete(input).then(
+      (success) => this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home'),
+      (err) =>this._$state.current.name=="app.home" ? location.reload() : this._$state.go('app.home')
+    )
   }
 
 }

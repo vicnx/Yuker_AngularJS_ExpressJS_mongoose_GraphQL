@@ -33,7 +33,7 @@ class ListYuks {
       }
 
 
-      console.log(this.listConfig);
+      // console.log(this.listConfig);
 
   
     }
