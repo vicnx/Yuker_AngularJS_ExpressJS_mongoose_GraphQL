@@ -24,7 +24,7 @@ class BuysubscriptionCtrl {
       user: this._User.current.email,
       finish: exp_date
     };
-    this._Subscriptions.mute(sub);
+    this._Subscriptions.post(sub);
 
     // console.log(this._User.current.email);
     // console.log(type);

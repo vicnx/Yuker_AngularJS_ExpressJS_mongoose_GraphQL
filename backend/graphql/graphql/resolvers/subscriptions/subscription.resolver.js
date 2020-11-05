@@ -50,14 +50,14 @@ const resolvers = {
           
           
       },
-      deleteSubscription: async (parent, { slug }) => {
-        var ok = Boolean(slug);
-        var sub = await Subscription.findOne({slug: slug});
+      deleteSubscription: async (parent, { input }) => {
+        var ok = Boolean(input);
+        var sub = await Subscription.findOne({slug: input.slug});
         if(sub == null){
           ok = false;
           // return {false};
         }else{
-          Subscription.find({slug: slug}).remove().exec()
+          Subscription.find({slug: input.slug}).remove().exec()
         }
         
         return { ok };

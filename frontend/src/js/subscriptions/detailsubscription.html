@@ -11,6 +11,7 @@
         <span class="dsub__left__span">START DATE: <span class="dsub__left__span__content">{{$ctrl.subscription.start}}</span></span>
         <span class="dsub__left__span">EXPIRE: <span class="dsub__left__span__content">{{$ctrl.subscription.finish}}</span></span>
         <span class="dsub__left__span dsub__left__span--active"> <span class="{{$ctrl.badge}}">Active</span> </span>
+        <button ng-click="$ctrl.removeSub($ctrl.subscription.slug)" class="btn btn-light comprar">Eliminar</button>
       </div>
     </div>
   </div>

@@ -83,7 +83,7 @@ export default class GraphQL {
     }
 
     mute(query, input,server = this._AppConstants.gql + '/graphql/') {
-        console.log(input);
+        console.log({input});
         let deferred = this._$q.defer();
         if (!this._clients.has(server)) {
             this._clients.set(server, this.createClient(server));

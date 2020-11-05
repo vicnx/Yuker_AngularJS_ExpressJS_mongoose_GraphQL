@@ -81,7 +81,7 @@ export default class Subscriptions {
     //   return this._GQL.get(query);
     // }
     
-    mute(SubscriptionInput){
+    post(SubscriptionInput){
       let mutation = `
         mutation createSubscription($input: SubscriptionInput) {
           createSubscription(input: $input) {
@@ -100,6 +100,19 @@ export default class Subscriptions {
       // console.log(mutation);
       //en el return le pasamos la mutation y el INPUT
       return this._GQL.mute(mutation,SubscriptionInput);
+    }
+    delete(input){
+      let mutation = `
+        mutation deleteSubscription($input: DeleteInput) {
+          deleteSubscription(input: $input) {
+            ok
+          }
+        }
+      `;
+      console.log(input);
+      console.log(mutation);
+      //en el return le pasamos la mutation y el INPUT
+      return this._GQL.mute(mutation,input);
     }
   
   
