@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Subscription = mongoose.model('Subscription');
 const User = mongoose.model('User');
+var auth  = require("../../../routes/auth")
+
+const request = require("../../../routes/api/requests")
 //const City = mongoose.model('City');
 
 
@@ -33,10 +36,14 @@ const resolvers = {
     },
     Mutation: {
       createSubscription: async (root, {input}) => {
-          input.user= await get_user_id(input.user);
-          let subscription = new Subscription(input);
-          await subscription.save();
-          return subscription;
+        console.log(input);
+          console.log(await request.get_all_yuks());
+          let user = await request.get_user_by_username(input.username);
+          console.log(user);
+          input.user= await get_user_id(user.profile.email);
+          // let subscription = new Subscription(input);
+          // await subscription.save();
+          // return subscription;
       },
       deleteSubscription: async (parent, { input }) => {
         var ok = Boolean(input);

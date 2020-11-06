@@ -24,16 +24,19 @@ class BuysubscriptionCtrl {
     let sub = {
       type: type,
       user: this._User.current.email,
+      username: this._User.current.username,
       finish: exp_date
     };
     this._Subscriptions.post(sub).then(
       (success) =>{
+        console.log(success);
         this._toaster.showToastr('success','COMPRADA la subscripción con exito');
         setTimeout(() => {
           this._$state.go('app.home');
         }, 1500); 
       }, 
       (err) =>{
+        console.log(err);
         this._toaster.showToastr('error','Error al comprar');
         setTimeout(() => {
           this._$state.go('app.home');

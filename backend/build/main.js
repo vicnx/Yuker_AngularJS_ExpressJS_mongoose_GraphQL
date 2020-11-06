@@ -63449,14 +63449,17 @@ var BuysubscriptionCtrl = function () {
       var sub = {
         type: type,
         user: this._User.current.email,
+        username: this._User.current.username,
         finish: exp_date
       };
       this._Subscriptions.post(sub).then(function (success) {
+        console.log(success);
         _this2._toaster.showToastr('success', 'COMPRADA la subscripción con exito');
         setTimeout(function () {
           _this2._$state.go('app.home');
         }, 1500);
       }, function (err) {
+        console.log(err);
         _this2._toaster.showToastr('error', 'Error al comprar');
         setTimeout(function () {
           _this2._$state.go('app.home');
