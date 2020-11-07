@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const Subscription = mongoose.model('Subscription');
 const User = mongoose.model('User');
-var auth  = require("../../../routes/auth")
 
-const request = require("../../../routes/api/requests")
+const request = require("../../../routes/api/requests");
 //const City = mongoose.model('City');
 
 
@@ -35,15 +34,15 @@ const resolvers = {
       }
     },
     Mutation: {
-      createSubscription: async (root, {input}) => {
-        console.log(input);
-          console.log(await request.get_all_yuks());
-          let user = await request.get_user_by_username(input.username);
-          console.log(user);
-          input.user= await get_user_id(user.profile.email);
-          // let subscription = new Subscription(input);
-          // await subscription.save();
-          // return subscription;
+      createSubscription: async (root, {input},context) => {
+        //Comprobamos que haya user LOGIN
+        if (!context.user) throw new context.AuthenticationError('You must be logged in');
+        //cambiamos el campo user del input por el id del user logeado
+        input.user= await context.user.id;
+        //creamos la subscripcion
+        let subscription = new Subscription(input);
+        await subscription.save();
+        return subscription;
       },
       deleteSubscription: async (parent, { input }) => {
         var ok = Boolean(input);

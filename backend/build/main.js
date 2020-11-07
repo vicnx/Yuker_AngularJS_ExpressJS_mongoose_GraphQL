@@ -63448,8 +63448,7 @@ var BuysubscriptionCtrl = function () {
       //creamos el input que se pasara al mute (le pasamos email del usuario actual que despues obtendra su id)
       var sub = {
         type: type,
-        user: this._User.current.email,
-        username: this._User.current.username,
+        user: null,
         finish: exp_date
       };
       this._Subscriptions.post(sub).then(function (success) {
@@ -65137,7 +65136,7 @@ var GraphQL = function () {
 
                 // get the authentication token from local storage if it exists
                 var token = _this._JWT.get();
-
+                console.log(token);
                 // return the headers to the context so httpLink can read them
                 return {
                     headers: {
@@ -65182,17 +65181,39 @@ var GraphQL = function () {
 
             return deferred.promise;
         }
+
+        // mute(query, input,server = this._AppConstants.gql + '/graphql/') {
+        //     console.log({input});
+        //     let deferred = this._$q.defer();
+        //     if (!this._clients.has(server)) {
+        //         this._clients.set(server, this.createClient(server));
+        //     }
+        //     this._clients.get(server).mutate({
+        //         mutation: gql(query),
+        //         //los {} muy importantes
+        //         variables: {input},
+
+        //     }).then(
+        //         (res) => deferred.resolve(res.data),
+        //         (err) => deferred.reject(err)
+        //     );
+        //     return deferred.promise;
+        // }
+
+        //Necesita que el user este login
+
     }, {
         key: 'mute',
         value: function mute(query, input) {
-            var server = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._AppConstants.gql + '/graphql/';
+            var server = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._AppConstants.gql + '/graphqlauth/';
 
             console.log({ input: input });
             var deferred = this._$q.defer();
             if (!this._clients.has(server)) {
-                this._clients.set(server, this.createClient(server));
+                this._clients.set(server, this.createAuthClient());
             }
-            this._clients.get(server).mutate({
+            console.log(this._authClient);
+            this._authClient.mutate({
                 mutation: (0, _graphqlTag2.default)(query),
                 //los {} muy importantes
                 variables: { input: input }

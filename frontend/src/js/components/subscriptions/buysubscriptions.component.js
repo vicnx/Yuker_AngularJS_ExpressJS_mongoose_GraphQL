@@ -23,8 +23,7 @@ class BuysubscriptionCtrl {
     //creamos el input que se pasara al mute (le pasamos email del usuario actual que despues obtendra su id)
     let sub = {
       type: type,
-      user: this._User.current.email,
-      username: this._User.current.username,
+      user: null,
       finish: exp_date
     };
     this._Subscriptions.post(sub).then(

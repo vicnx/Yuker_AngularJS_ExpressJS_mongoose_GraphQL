@@ -28,7 +28,6 @@ const typeDefs = gql`
     input SubscriptionInput {
         type: String
         user: String
-        username: String
         finish: Date
     }
 `;

@@ -15,7 +15,8 @@ const SERVERAUTH = new ApolloServer({
     resolvers,
     context: async ({ req }) => {
         let user = null;
-        
+        console.log("---------------------------------------------------------");
+        console.log(req.payload);
         if (req.payload) {
             user = await User.findById(req.payload.id);
         } // else do nothing and let user be null
@@ -29,6 +30,8 @@ const SERVERS = {
     graphql: SERVER,
     graphqlauth: SERVERAUTH
 };
+// console.log("+++++++++++++++++++++++++++++SERVERS++++++++++++++++++++++++++++++++++++");
+// console.log(SERVERS);
 
 module.exports = SERVERS;
 

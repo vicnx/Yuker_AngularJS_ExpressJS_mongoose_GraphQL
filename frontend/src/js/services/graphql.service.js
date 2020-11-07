@@ -42,7 +42,7 @@ export default class GraphQL {
         return setContext((_, { headers }) => {
             // get the authentication token from local storage if it exists
             let token = this._JWT.get();
-
+            console.log(token);
             // return the headers to the context so httpLink can read them
             return {
                 headers: {
@@ -82,13 +82,33 @@ export default class GraphQL {
         return deferred.promise;
     }
 
-    mute(query, input,server = this._AppConstants.gql + '/graphql/') {
+    // mute(query, input,server = this._AppConstants.gql + '/graphql/') {
+    //     console.log({input});
+    //     let deferred = this._$q.defer();
+    //     if (!this._clients.has(server)) {
+    //         this._clients.set(server, this.createClient(server));
+    //     }
+    //     this._clients.get(server).mutate({
+    //         mutation: gql(query),
+    //         //los {} muy importantes
+    //         variables: {input},
+            
+    //     }).then(
+    //         (res) => deferred.resolve(res.data),
+    //         (err) => deferred.reject(err)
+    //     );
+    //     return deferred.promise;
+    // }
+
+    //Necesita que el user este login
+    mute(query, input,server = this._AppConstants.gql + '/graphqlauth/') {
         console.log({input});
         let deferred = this._$q.defer();
         if (!this._clients.has(server)) {
-            this._clients.set(server, this.createClient(server));
+            this._clients.set(server, this.createAuthClient());
         }
-        this._clients.get(server).mutate({
+        console.log(this._authClient);
+        this._authClient.mutate({
             mutation: gql(query),
             //los {} muy importantes
             variables: {input},
