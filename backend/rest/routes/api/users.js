@@ -143,4 +143,23 @@ router.get('/user_full', auth.required, function(req, res, next){
   }).catch(next);
 });
 
+router.param('iduser', function(req, res, next, iduser){
+  User.findOne({_id: iduser}).then(function(user){
+    if (!user) { return res.sendStatus(404); }
+
+    req.user = user;
+
+    return next();
+  }).catch(next);
+});
+
+router.get('/user_id/:iduser', function(req, res, next){
+  // console.log(req.user);
+  return res.json(req.user);
+  // User.findById(req.iduser).then(function(user){
+  //   if(!user){ return res.sendStatus(401); }
+  //   return res.json({user: user});
+  // }).catch(next);
+});
+
 module.exports = router;
