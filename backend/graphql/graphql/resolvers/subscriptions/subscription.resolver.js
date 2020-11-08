@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Subscription = mongoose.model('Subscription');
-const User = mongoose.model('User');
 
 const request = require("../../../routes/api/requests");
 //const City = mongoose.model('City');
@@ -63,8 +62,6 @@ const resolvers = {
     Subscription: {
       user: async (parent) => {
         let user = await request.get_user_by_id(parent.user);
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++");
-        console.log(user);
         return user;
           // return User.findOne({_id: parent.user}).exec();
       }
@@ -72,7 +69,8 @@ const resolvers = {
 };
 //funcion para obtener el ID de un usuario por email
 async function get_user_id(email){
-  var user = await User.findOne({'email':email});
+  let user = await request.get_user_by_email(email);
+  // var user = await User.findOne({'email':email});
   return user;
 }
 module.exports = resolvers;

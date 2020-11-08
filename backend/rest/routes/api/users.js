@@ -153,13 +153,22 @@ router.param('iduser', function(req, res, next, iduser){
   }).catch(next);
 });
 
+router.param('email', function(req, res, next, email){
+  User.findOne({email: email}).then(function(user){
+    if (!user) { return res.sendStatus(404); }
+
+    req.user = user;
+
+    return next();
+  }).catch(next);
+});
+
 router.get('/user_id/:iduser', function(req, res, next){
-  // console.log(req.user);
   return res.json(req.user);
-  // User.findById(req.iduser).then(function(user){
-  //   if(!user){ return res.sendStatus(401); }
-  //   return res.json({user: user});
-  // }).catch(next);
+});
+
+router.get('/user_email/:email', function(req, res, next){
+  return res.json(req.user);
 });
 
 module.exports = router;

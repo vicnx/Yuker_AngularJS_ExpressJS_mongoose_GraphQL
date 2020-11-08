@@ -27,7 +27,7 @@ export default class Subscriptions {
           slug
           user{
             username
-            id
+            _id
           }
           start
           finish
@@ -50,7 +50,7 @@ export default class Subscriptions {
             type
             slug
             user{
-              id
+              _id
               username
               image
             }
@@ -60,7 +60,7 @@ export default class Subscriptions {
           }
         }
       `;
-      console.log(query);
+      console.log(this._GQL.get(query));
       return this._GQL.get(query);
     }
   

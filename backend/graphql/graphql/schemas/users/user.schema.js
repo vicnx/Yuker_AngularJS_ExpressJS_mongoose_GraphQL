@@ -6,7 +6,7 @@ const typeDefs = gql`
         users: [User]
     }
     type User {
-        id: ID!
+        _id: ID!
         username: String
         email: String
         image: String

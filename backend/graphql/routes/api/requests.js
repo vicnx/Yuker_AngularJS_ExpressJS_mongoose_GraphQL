@@ -18,6 +18,15 @@ exports.get_user_by_username = async (username) => {
     });
 }
 
+exports.get_user_by_email= async (email) => {
+    return fetch(`http://localhost:3000/api/user_email/${email}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        return data;
+    });
+}
+
 exports.get_user_by_id = async (id) => {
     return fetch(`http://localhost:3000/api/user_id/${id}`)
     .then(response => response.json())
