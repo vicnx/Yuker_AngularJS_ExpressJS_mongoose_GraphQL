@@ -35,10 +35,12 @@ const resolvers = {
     },
     Mutation: {
       createSubscription: async (root, {input},context) => {
+        //convertimos a la forma antigua del context
+        context.user = context.user.user;
         //Comprobamos que haya user LOGIN
         if (!context.user) throw new context.AuthenticationError('You must be logged in');
         //cambiamos el campo user del input por el id del user logeado
-        input.user= await context.user.id;
+        input.user= await context.user._id;
         //creamos la subscripcion
         let subscription = new Subscription(input);
         await subscription.save();
@@ -59,8 +61,12 @@ const resolvers = {
     },
     //per a obtindre el user de cada sub
     Subscription: {
-      user: (parent) => {
-          return User.findOne({_id: parent.user}).exec();
+      user: async (parent) => {
+        let user = await request.get_user_by_id(parent.user);
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++");
+        console.log(user);
+        return user;
+          // return User.findOne({_id: parent.user}).exec();
       }
     }
 };

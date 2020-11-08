@@ -135,4 +135,12 @@ router.get("/auth/google/callback",
   })
 );
 
+//get user by token
+router.get('/user_full', auth.required, function(req, res, next){
+  User.findById(req.payload.id).then(function(user){
+    if(!user){ return res.sendStatus(401); }
+    return res.json({user: user});
+  }).catch(next);
+});
+
 module.exports = router;
