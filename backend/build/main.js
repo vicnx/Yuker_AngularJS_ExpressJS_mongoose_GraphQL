@@ -62785,6 +62785,7 @@ var DislikeBtnCtrl = function () {
     value: function submit() {
       var _this = this;
 
+      console.log(this._$state);
       this.isSubmitting = true;
       console.log("disLike component");
       console.log(this.yuk);
@@ -62796,7 +62797,9 @@ var DislikeBtnCtrl = function () {
           _this.yuk.liked = false;
           _this.yuk.likesCount--;
           //actualizamos el Karma
-          _this._$rootScope.setKarma();
+          if (_this._$state.current.name == "app.profile") {
+            _this._$rootScope.setKarma();
+          }
 
           //damos dislike
           _this._Yuks.dislike(_this.yuk.slug).then(function () {
@@ -62804,7 +62807,9 @@ var DislikeBtnCtrl = function () {
             _this.yuk.disliked = true;
             _this.yuk.dislikesCount++;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
           });
           // this._$rootScope.setKarma();
         });
@@ -62819,7 +62824,9 @@ var DislikeBtnCtrl = function () {
             _this.yuk.disliked = false;
             _this.yuk.dislikesCount--;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
           });
         } else {
           this._Yuks.dislike(this.yuk.slug).then(function () {
@@ -62827,7 +62834,9 @@ var DislikeBtnCtrl = function () {
             _this.yuk.disliked = true;
             _this.yuk.dislikesCount++;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
           });
         }
       }
@@ -63034,14 +63043,18 @@ var LikeBtnCtrl = function () {
           _this.yuk.disliked = false;
           _this.yuk.dislikesCount--;
           //actualizamos el Karma
-          _this._$rootScope.setKarma();
+          if (_this._$state.current.name == "app.profile") {
+            _this._$rootScope.setKarma();
+          }
           //damos like
           _this._Yuks.like(_this.yuk.slug).then(function () {
             _this.isSubmitting = false;
             _this.yuk.liked = true;
             _this.yuk.likesCount++;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
           });
           // this._$rootScope.setKarma();
         });
@@ -63057,7 +63070,9 @@ var LikeBtnCtrl = function () {
             _this.yuk.liked = false;
             _this.yuk.likesCount--;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
           });
         } else {
           this._Yuks.like(this.yuk.slug).then(function () {
@@ -63065,7 +63080,9 @@ var LikeBtnCtrl = function () {
             _this.yuk.liked = true;
             _this.yuk.likesCount++;
             //actualizamos el Karma
-            _this._$rootScope.setKarma();
+            if (_this._$state.current.name == "app.profile") {
+              _this._$rootScope.setKarma();
+            }
             // this._$scope.$broadcast('setKarma', this.yuk.author);
           });
         }

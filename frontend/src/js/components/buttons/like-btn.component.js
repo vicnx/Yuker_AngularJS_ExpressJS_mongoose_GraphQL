@@ -26,7 +26,9 @@ class LikeBtnCtrl {
                 this.yuk.disliked = false;
                 this.yuk.dislikesCount--;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
                 //damos like
                 this._Yuks.like(this.yuk.slug).then(
                   () => {
@@ -34,7 +36,9 @@ class LikeBtnCtrl {
                     this.yuk.liked = true;
                     this.yuk.likesCount++;
                     //actualizamos el Karma
-                    this._$rootScope.setKarma();
+                    if(this._$state.current.name=="app.profile"){
+                      this._$rootScope.setKarma();
+                    }
                   }
                 )
                 // this._$rootScope.setKarma();
@@ -54,7 +58,9 @@ class LikeBtnCtrl {
                 this.yuk.liked = false;
                 this.yuk.likesCount--;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
                 
           
               }
@@ -67,7 +73,9 @@ class LikeBtnCtrl {
                 this.yuk.liked = true;
                 this.yuk.likesCount++;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
                 // this._$scope.$broadcast('setKarma', this.yuk.author);
               }
             )

@@ -10,7 +10,7 @@ class DislikeBtnCtrl {
     }
   
     submit() {
-   
+      console.log(this._$state);
       this.isSubmitting = true;
         console.log("disLike component")
         console.log(this.yuk)
@@ -23,7 +23,9 @@ class DislikeBtnCtrl {
                 this.yuk.liked = false;
                 this.yuk.likesCount--;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
 
                 //damos dislike
                 this._Yuks.dislike(this.yuk.slug).then(
@@ -32,7 +34,9 @@ class DislikeBtnCtrl {
                     this.yuk.disliked = true;
                     this.yuk.dislikesCount++;
                     //actualizamos el Karma
-                    this._$rootScope.setKarma();
+                    if(this._$state.current.name=="app.profile"){
+                      this._$rootScope.setKarma();
+                    }
 
                     
                   }
@@ -53,7 +57,9 @@ class DislikeBtnCtrl {
                 this.yuk.disliked = false;
                 this.yuk.dislikesCount--;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
           
               }
             )
@@ -65,7 +71,9 @@ class DislikeBtnCtrl {
                 this.yuk.disliked = true;
                 this.yuk.dislikesCount++;
                 //actualizamos el Karma
-                this._$rootScope.setKarma();
+                if(this._$state.current.name=="app.profile"){
+                  this._$rootScope.setKarma();
+                }
               }
             )
           }
