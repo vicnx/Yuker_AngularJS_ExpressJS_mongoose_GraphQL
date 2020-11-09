@@ -27,7 +27,6 @@ export default class Subscriptions {
           slug
           user{
             username
-            _id
           }
           start
           finish

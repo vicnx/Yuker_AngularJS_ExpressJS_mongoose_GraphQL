@@ -65576,7 +65576,7 @@ var Subscriptions = function () {
       if (!config.filters.emailform) {
         config.filters.emailform = null;
       }
-      var query = '\n      query getSubscriptionsAndCount {\n        subscriptions(limit:' + config.filters.limit + ',offset:' + config.filters.offset + ',user:' + config.filters.emailform + ') {\n          type\n          slug\n          user{\n            username\n            _id\n          }\n          start\n          finish\n          active\n        }\n        subscriptionsCount(user:' + config.filters.emailform + ')\n      }\n    ';
+      var query = '\n      query getSubscriptionsAndCount {\n        subscriptions(limit:' + config.filters.limit + ',offset:' + config.filters.offset + ',user:' + config.filters.emailform + ') {\n          type\n          slug\n          user{\n            username\n          }\n          start\n          finish\n          active\n        }\n        subscriptionsCount(user:' + config.filters.emailform + ')\n      }\n    ';
       console.log(query);
       return this._GQL.get(query);
     }
