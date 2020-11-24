@@ -40,7 +40,9 @@ if (!isProduction) {
 if(isProduction){
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-  mongoose.connect('mongodb://localhost/app_social_conduit_js');
+  //CAMBIAR PARA USAR EN LOCA/COMPOSE
+  mongoose.connect('mongodb://mongo:27017/app_social_conduit_js');
+  // mongoose.connect('mongodb://localhost/app_social_conduit_js');
   mongoose.set('debug', true);
 }
 

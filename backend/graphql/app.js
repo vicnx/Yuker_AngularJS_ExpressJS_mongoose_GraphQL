@@ -45,7 +45,9 @@ function mongooseConnect() {
       mongoose.set('useNewUrlParser', true);
       mongoose.set('useUnifiedTopology', true);
       try {
-        mongoose.connect('mongodb://localhost/app_social_conduit_js');
+        //CAMBIAR PARA USAR EN LOCA/COMPOSE
+        // mongoose.connect('mongodb://localhost/app_social_conduit_js');
+        mongoose.connect('mongodb://mongo:27017/app_social_conduit_js');
       } catch (error) {
         console.log(error);
         process.exit(1);

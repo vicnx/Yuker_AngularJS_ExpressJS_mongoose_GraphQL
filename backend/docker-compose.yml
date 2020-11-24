@@ -1,0 +1,36 @@
+version: "3"
+services:
+ yuker_rest:
+  image: mhart/alpine-node:8
+  container_name: yuker_rest
+  restart: on-failure
+  working_dir: /yuker
+  command: npm start
+  ports:
+   - "3000:3000"
+  volumes:
+   - ./rest:/yuker
+  links: 
+   - mongo
+  depends_on:
+   - mongo
+ yuker_graphql:
+  image: mhart/alpine-node:8
+  container_name: yuker_graphql
+  restart: on-failure
+  working_dir: /yuker
+  command: npm start
+  ports:
+   - "3001:3001"
+  volumes:
+   - ./graphql:/yuker
+  links: 
+   - 'mongo'
+  depends_on:
+   - 'mongo'
+ mongo:
+  image: mvertes/alpine-mongo
+  ports:
+  - "27018:27017"
+  volumes:
+  - /data/db
