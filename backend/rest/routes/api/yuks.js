@@ -5,6 +5,16 @@ var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var auth = require('../auth');
 var user_utils = require('../../utils/UsersUtils');
+//pROMETHEUS
+let client = require('prom-client');
+
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics({ timeout: 5000 });
+
+const counterYuksEndpoint = new client.Counter({
+  name: 'counterYuksEndpoint',
+  help: 'The total number of processed requests to get endpoint'
+});
 
 // Preload yuk objects on routes with ':yuk'
 //sirve para buscar un yuk concreto
@@ -32,6 +42,7 @@ router.param('comment', function(req, res, next, id) {
 });
 
 router.get('/', auth.optional, function(req, res, next) {
+    counterYuksEndpoint.inc();
     var query = {};
     var limit = 20;
     var offset = 0;

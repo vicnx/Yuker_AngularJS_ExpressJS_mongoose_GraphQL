@@ -14,6 +14,8 @@ services:
    - mongo
   depends_on:
    - mongo
+  networks:
+   - network_yuker
  yuker_graphql:
   image: mhart/alpine-node:8
   container_name: yuker_graphql
@@ -28,9 +30,33 @@ services:
    - 'mongo'
   depends_on:
    - 'mongo'
+  networks:
+   - network_yuker
+ prometheus:
+  image: prom/prometheus:v2.20.1
+  container_name: prometheus_yuker
+  volumes:
+  - ./prometheus/:/etc/prometheus
+  ports:
+  - "9090:9090"
+  depends_on:
+  - yuker_rest
+  links:
+  - yuker_rest
+  command: ["--config.file=/etc/prometheus/prometheus.yml"]
+  networks:
+  - network_yuker
  mongo:
   image: mvertes/alpine-mongo
+  container_name: mongo_yuker
   ports:
-  - "27018:27017"
+   - "27018:27017"
   volumes:
-  - /data/db
+   - /data/db
+  networks:
+   - network_yuker
+volumes:
+  myGrafanaVol: {}
+networks:
+  network_yuker:
+ 
