@@ -50,7 +50,7 @@ npm install
 ```
 
 ```
-npm start
+npm run dev
 ```
 
 _Once the backends are started, we go to the Frontend folder and perform an npm install and start it with gulp_
@@ -66,8 +66,6 @@ gulp
 _Now we can use the application_
 
 ## Build with 🛠️
-
-_Menciona las herramientas que utilizaste para crear tu proyecto_
 
 * [Angular JS](https://angularjs.org/)
 * [Node JS](https://nodejs.org/es/)
